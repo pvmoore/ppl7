@@ -1,0 +1,51 @@
+
+name "ppl7"
+platforms "windows"
+
+buildType "debug" {
+	buildOptions "debugMode" "debugInfo" "alwaysStackFrame" "stackStomping" "warningsAsErrors"
+}
+buildType "release" {
+	buildOptions "releaseMode" "optimize" "inline" "noBoundsCheck"
+}
+
+configuration "test" {
+	targetType "executable"
+	targetName "ppl7"
+	excludedSourceFiles "src/lsp.d"
+}
+configuration "library" {
+	targetType "library"
+	excludedSourceFiles "src/test.d" "src/lsp.d"
+}
+
+# Headers and libs directly from the llvm git repo
+dflags "-P=-IC:/Temp/llvm-project/llvm/include/"
+dflags "-P=-IC:/Temp/llvm-project/llvm/build/include/"
+lflags "/LIBPATH:C:/Temp/llvm-project/llvm/build/Release/lib"
+#lflags "/LIBPATH:C:/Temp/llvm-project/llvm/build/Debug/lib"
+
+# llvm 22 libs (from llvm-config --libnames all)
+libs "LLVMAggressiveInstCombine" "LLVMAnalysis" "LLVMAsmParser" "LLVMAsmPrinter" "LLVMBinaryFormat" 
+libs "LLVMBitReader" "LLVMBitWriter" "LLVMBitstreamReader" "LLVMCFGuard" "LLVMCGData"
+libs "LLVMCodeGen" "LLVMCodeGenTypes" "LLVMCore" "LLVMCoroutines" "LLVMCoverage"
+libs "LLVMDWARFCFIChecker" "LLVMDWARFLinker" "LLVMDWARFLinkerClassic" "LLVMDWARFLinkerParallel" "LLVMDWP"
+libs "LLVMDebugInfoBTF" "LLVMDebugInfoCodeView" "LLVMDebugInfoDWARF" "LLVMDebugInfoDWARFLowLevel" "LLVMDebugInfoGSYM"
+libs "LLVMDebugInfoLogicalView" "LLVMDebugInfoMSF" "LLVMDebugInfoPDB" "LLVMDemangle" "LLVMDlltoolDriver"
+libs "LLVMExecutionEngine" "LLVMExtensions" "LLVMFileCheck" "LLVMFrontendAtomic" "LLVMFrontendDirective"
+libs "LLVMFrontendDriver" "LLVMFrontendHLSL" "LLVMFrontendOffloading" "LLVMFrontendOpenACC" "LLVMFrontendOpenMP"
+libs "LLVMFuzzMutate" "LLVMFuzzerCLI" "LLVMGlobalISel" "LLVMHipStdPar" "LLVMIRPrinter"
+libs "LLVMIRReader" "LLVMInstCombine" "LLVMInstrumentation" "LLVMInterfaceStub" "LLVMInterpreter"
+libs "LLVMJITLink" "LLVMLTO" "LLVMLibDriver" "LLVMLineEditor" "LLVMLinker"
+libs "LLVMMC" "LLVMMCA" "LLVMMCDisassembler" "LLVMMCJIT" "LLVMMCParser"
+libs "LLVMMIRParser" "LLVMObjCARCOpts" "LLVMObjCopy" "LLVMObject" "LLVMObjectYAML"
+libs "LLVMOption" "LLVMOrcDebugging" "LLVMOrcJIT" "LLVMOrcShared" "LLVMOrcTargetProcess"
+libs "LLVMPasses" "LLVMProfileData" "LLVMRemarks" "LLVMRuntimeDyld" "LLVMSandboxIR"
+libs "LLVMScalarOpts" "LLVMSelectionDAG" "LLVMSupport" "LLVMSymbolize" "LLVMTableGen"
+libs "LLVMTarget" "LLVMTargetParser" "LLVMTelemetry" "LLVMTextAPI" "LLVMTextAPIBinaryReader"
+libs "LLVMTransformUtils" "LLVMVectorize" "LLVMWindowsDriver" "LLVMWindowsManifest" "LLVMX86AsmParser"
+libs "LLVMX86CodeGen" "LLVMX86Desc" "LLVMX86Disassembler" "LLVMX86Info" "LLVMX86TargetMCA"
+libs "LLVMXRay" "LLVMipo"
+
+# Required for RtlGetLastNtStatus in lib/Support/ErrorHandling.cpp.
+libs "ntdll"

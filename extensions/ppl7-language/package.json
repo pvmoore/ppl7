@@ -1,0 +1,44 @@
+{
+    "name": "ppl7-lang",
+    "displayName": "Stagecoach",
+    "description": "Stagecoach language syntax highlighting support",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.100.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "ppl7",
+                "aliases": [
+                    "ppl7"
+                ],
+                "extensions": [
+                    ".p7"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "ppl7",
+                "scopeName": "source.stage",
+                "path": "./syntaxes/ppl7.tmLanguage.json"
+            }
+        ]
+    },
+    "scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"lint": "eslint",
+		"watch": "tsc -watch -p ./"
+	},
+	"devDependencies": {
+		"@types/node": "^22",
+		"@types/vscode": "^1.100.0",
+		"typescript": "^5.8.2"
+	}
+}
