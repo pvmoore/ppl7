@@ -24,7 +24,7 @@ public:
     Variable[] externalVariables;               // List of external Module Variables referenced by this Module
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.MODULE; }
+    override ENode enode() { return ENode.MODULE; }
     override bool isResolved() { return true; }
 
     Module[] allImportedModules() {

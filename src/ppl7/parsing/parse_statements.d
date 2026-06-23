@@ -45,7 +45,7 @@ void parseStatementAtModuleScope(ParseState state) {
     // Variable
     if(isType(state) || "const" == state.text()) {
         parseVariable(mod, state, isPublic);
-    } else switch(state.tokenKind()) {
+    } else switch(state.etoken()) {
         case EToken.IDENTIFIER:
             switch(state.text()) {
                 case "extern":
@@ -88,7 +88,7 @@ void parseStatementAtFunctionScope(Statement parent, ParseState state) {
 
     state.attributes.parse(state);
 
-    if(state.tokenKind() == EToken.RBRACE) return;
+    if(state.etoken() == EToken.RBRACE) return;
 
     // Variable
     if(isType(state) || "const" == state.text()) {
@@ -96,7 +96,7 @@ void parseStatementAtFunctionScope(Statement parent, ParseState state) {
         return;
     }
 
-    switch(state.tokenKind()) {
+    switch(state.etoken()) {
         case EToken.IDENTIFIER:
             if("return" == state.text()) {
                 parseReturn(parent, state);
@@ -135,7 +135,7 @@ bool parseVisibility(ParseState state, bool atModuleScope, bool modifiersHereAre
             check();
             state.next();
 
-            if(state.tokenKind() == EToken.COLON) {
+            if(state.etoken() == EToken.COLON) {
                 state.next();
                 if(atModuleScope) state.insidePublicScopeModule = true;
                 else state.insidePublicScopeStruct = true;
@@ -146,7 +146,7 @@ bool parseVisibility(ParseState state, bool atModuleScope, bool modifiersHereAre
             check();
             state.next();
 
-            if(state.tokenKind() == EToken.COLON) {
+            if(state.etoken() == EToken.COLON) {
                 state.next();
                 if(atModuleScope) state.insidePublicScopeModule = false;
                 else state.insidePublicScopeStruct = false;
@@ -207,18 +207,18 @@ void parseEnum(Node parent, ParseState state, bool isPublic) {
 
     e.name = state.text(); state.next();
 
-    if(state.tokenKind() == EToken.COLON) {
+    if(state.etoken() == EToken.COLON) {
         state.skip(EToken.COLON);
         parseType(e, state);
     } else {
-        e.add(makeSimpleType(TypeKind.INT));
+        e.add(makeSimpleType(EType.INT));
     }
 
     state.skip(EToken.LBRACE);
 
-    while(state.tokenKind() != EToken.RBRACE) {
+    while(state.etoken() != EToken.RBRACE) {
 
-        if(state.tokenKind() != EToken.IDENTIFIER) {
+        if(state.etoken() != EToken.IDENTIFIER) {
             syntaxError(state, "Expected identifier");
         }
 
@@ -227,12 +227,12 @@ void parseEnum(Node parent, ParseState state, bool isPublic) {
 
         em.name = state.text(); state.next();
 
-        if(state.tokenKind() == EToken.EQUAL) {
+        if(state.etoken() == EToken.EQUAL) {
             state.skip(EToken.EQUAL);
             parseExpression(em, state);
         }
 
-        if(state.tokenKind().isOneOf(EToken.SEMICOLON, EToken.COMMA)) {
+        if(state.etoken().isOneOf(EToken.SEMICOLON, EToken.COMMA)) {
             state.next();
         }
     }
@@ -274,28 +274,28 @@ void parseFunction(Module mod, ParseState state, bool isPublic) {
 
     // Parameters
     state.skip(EToken.LPAREN);
-    while(state.tokenKind() != EToken.RPAREN) {
+    while(state.etoken() != EToken.RPAREN) {
         parseParameter(f, state);
         f.numParams++;
 
         // ,
-        if(state.tokenKind() == EToken.COMMA) {
+        if(state.etoken() == EToken.COMMA) {
             state.skip(EToken.COMMA);
         }
     }
     state.skip(EToken.RPAREN);
 
     // Return type
-    if(state.tokenKind() == EToken.RARROW) {
+    if(state.etoken() == EToken.RARROW) {
         state.skip(EToken.RARROW);
         
         parseType(f, state);
     } else {
         if(f.isMain) {
-            f.add(makeSimpleType(TypeKind.INT));
+            f.add(makeSimpleType(EType.INT));
         } else {
             // Assume return void
-            f.add(makeSimpleType(TypeKind.VOID));
+            f.add(makeSimpleType(EType.VOID));
         }
     }
 
@@ -306,9 +306,9 @@ void parseFunction(Module mod, ParseState state, bool isPublic) {
     }
 
     // Body (optional if this is an extern function)
-    if(state.tokenKind() == EToken.LBRACE) {
+    if(state.etoken() == EToken.LBRACE) {
         state.skip(EToken.LBRACE);
-        while(state.tokenKind() != EToken.RBRACE) {
+        while(state.etoken() != EToken.RBRACE) {
             parseStatementAtFunctionScope(f, state);
         }
         state.skip(EToken.RBRACE);
@@ -347,12 +347,12 @@ void parseParameter(Function parent, ParseState state) {
     parseType(v, state);
 
     Type type = v.last().as!Statement.getType();
-    if(type.typeKind() == TypeKind.C_VARARGS) {
+    if(type.etype() == EType.C_VARARGS) {
         parent.hasVarargParam = true;
     }
 
     // name
-    if(state.tokenKind() != EToken.COMMA && state.tokenKind() != EToken.RPAREN) {
+    if(state.etoken() != EToken.COMMA && state.etoken() != EToken.RPAREN) {
         v.name = state.token().text; state.next();
     }
 }
@@ -373,7 +373,7 @@ void parseVariable(Node parent, ParseState state, bool isPublic) {
         if(Struct st = parent.as!Struct) {
             if(!st.isNamed()) {
                 // Anon structs cannot have const members
-                semanticError(state.project, state.mod, v, ErrorKind.VARIABLE_ANON_STRUCT_CONST);
+                semanticError(state.project, state.mod, v, EError.VARIABLE_ANON_STRUCT_CONST);
             }
         }
     }
@@ -392,7 +392,7 @@ void parseVariable(Node parent, ParseState state, bool isPublic) {
         v.getType().extract!Function.callingConvention = abi;
     }
 
-    if(state.tokenKind() == EToken.IDENTIFIER && !isType(state)) {
+    if(state.etoken() == EToken.IDENTIFIER && !isType(state)) {
         v.name = state.token().text; state.next();
     }
 
@@ -405,7 +405,7 @@ void parseVariable(Node parent, ParseState state, bool isPublic) {
     }
 
     // Initialiser
-    if(state.tokenKind() == EToken.EQUAL) {
+    if(state.etoken() == EToken.EQUAL) {
         state.skip(EToken.EQUAL);
         parseExpression(v, state);
     } else if(v.isConst) {
@@ -453,7 +453,7 @@ void parseStruct(Node parent, ParseState state, bool isPublic) {
 
     state.skip(EToken.LBRACE);
 
-    while(state.tokenKind() != EToken.RBRACE) {
+    while(state.etoken() != EToken.RBRACE) {
 
         // Consume public, private
         bool isPublicMember = parseVisibility(state, false, s.isNamed());
@@ -465,7 +465,7 @@ void parseStruct(Node parent, ParseState state, bool isPublic) {
 
         parseVariable(s, state, isPublicMember);
 
-        if(state.tokenKind().isOneOf(EToken.SEMICOLON, EToken.COMMA)) {
+        if(state.etoken().isOneOf(EToken.SEMICOLON, EToken.COMMA)) {
             state.next();
         }
     }
@@ -484,20 +484,20 @@ void parseImport(Node parent, ParseState state, bool isPublic) {
     state.skip("import");
 
     // Alias
-    if(state.peek(1).kind == EToken.EQUAL) {
+    if(state.peek(1).etoken == EToken.EQUAL) {
         string name = state.text(); state.next();
         state.skip(EToken.EQUAL);
     }
 
     // Library
-    if(state.peek(1).kind == EToken.COLON) {
+    if(state.peek(1).etoken == EToken.COLON) {
         string libName = state.text(); state.next();
         state.skip(EToken.COLON);
     }
 
     string moduleName = state.text(); state.next();
 
-    while(state.tokenKind() == EToken.SLASH) {
+    while(state.etoken() == EToken.SLASH) {
         state.skip(EToken.SLASH);
         moduleName ~= "/";
         moduleName ~= state.text(); state.next();

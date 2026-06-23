@@ -118,12 +118,12 @@ void resolveInteger(Number n, string s) {
     }
     //log("number %s (%s, %s) size = %s", s, s.to!long, s.to!long.as!ulong, size);
 
-    TypeKind tk;
+    EType tk;
     switch(size) {
-        case 1: n.value.byteValue = s.to!long.as!byte; tk = TypeKind.BYTE; break;
-        case 2: n.value.shortValue = s.to!long.as!short; tk = TypeKind.SHORT; break;
-        case 4: n.value.intValue = s.to!long.as!int; tk = TypeKind.INT; break;
-        case 8: n.value.longValue = s.to!long; tk = TypeKind.LONG; break;
+        case 1: n.value.byteValue = s.to!long.as!byte; tk = EType.BYTE; break;
+        case 2: n.value.shortValue = s.to!long.as!short; tk = EType.SHORT; break;
+        case 4: n.value.intValue = s.to!long.as!int; tk = EType.INT; break;
+        case 8: n.value.longValue = s.to!long; tk = EType.LONG; break;
         default: assert(false);
     }
     n.setType(makeSimpleType(tk));

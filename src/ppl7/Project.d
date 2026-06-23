@@ -71,7 +71,7 @@ public:
         errors ~= e;
 
         // Bail out if this is a SyntaxError
-        if(e.kind() == ErrorKind.SYNTAX) { throw new Exception(e.getSummary()); }
+        if(e.eerror() == EError.SYNTAX) { throw new Exception(e.getSummary()); }
     }
     void addModule(Module mod) {
         allModules ~= mod;

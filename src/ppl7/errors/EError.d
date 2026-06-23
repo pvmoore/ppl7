@@ -1,8 +1,8 @@
-module ppl7.errors.ErrorKind;
+module ppl7.errors.EError;
 
 import ppl7.all;
 
-enum ErrorKind {
+enum EError {
     SYNTAX,
 
     ADDRESS_OF_CONSTANT,

@@ -24,7 +24,7 @@ public:
     }
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.NUMBER; }
+    override ENode enode() { return ENode.NUMBER; }
     override bool isResolved() { return _type.isResolved(); }
 
     // Statement
@@ -34,13 +34,13 @@ public:
     override int precedence() { return Precedence.LOWEST; }
 
     bool isZero() {
-        switch(_type.typeKind()) {
-            case TypeKind.BYTE:   return value.byteValue == 0;
-            case TypeKind.SHORT:  return value.shortValue == 0;
-            case TypeKind.INT:    return value.intValue == 0;
-            case TypeKind.LONG:   return value.longValue == 0;
-            case TypeKind.FLOAT:  return value.floatValue == 0.0;
-            case TypeKind.DOUBLE: return value.doubleValue == 0.0;
+        switch(_type.etype()) {
+            case EType.BYTE:   return value.byteValue == 0;
+            case EType.SHORT:  return value.shortValue == 0;
+            case EType.INT:    return value.intValue == 0;
+            case EType.LONG:   return value.longValue == 0;
+            case EType.FLOAT:  return value.floatValue == 0.0;
+            case EType.DOUBLE: return value.doubleValue == 0.0;
             default: assert(false);
         }
         assert(false);  
@@ -55,47 +55,47 @@ public:
     }
 
     bool getValueAsBool() {
-        switch(_type.typeKind()) {
-            case TypeKind.BYTE:   return value.byteValue != 0;
-            case TypeKind.SHORT:  return value.shortValue != 0;
-            case TypeKind.INT:    return value.intValue != 0;
-            case TypeKind.LONG:   return value.longValue != 0;
-            case TypeKind.FLOAT:  return value.floatValue != 0.0;
-            case TypeKind.DOUBLE: return value.doubleValue != 0.0;
+        switch(_type.etype()) {
+            case EType.BYTE:   return value.byteValue != 0;
+            case EType.SHORT:  return value.shortValue != 0;
+            case EType.INT:    return value.intValue != 0;
+            case EType.LONG:   return value.longValue != 0;
+            case EType.FLOAT:  return value.floatValue != 0.0;
+            case EType.DOUBLE: return value.doubleValue != 0.0;
             default: assert(false);
         }
     }
     int getValueAsInt() {
-        switch(_type.typeKind()) {
-            case TypeKind.BYTE:   return value.byteValue;
-            case TypeKind.SHORT:  return value.shortValue;
-            case TypeKind.INT:    return value.intValue;
-            case TypeKind.LONG:   return value.longValue.as!int;
-            case TypeKind.FLOAT:  return value.floatValue.as!int;
-            case TypeKind.DOUBLE: return value.doubleValue.as!int;
+        switch(_type.etype()) {
+            case EType.BYTE:   return value.byteValue;
+            case EType.SHORT:  return value.shortValue;
+            case EType.INT:    return value.intValue;
+            case EType.LONG:   return value.longValue.as!int;
+            case EType.FLOAT:  return value.floatValue.as!int;
+            case EType.DOUBLE: return value.doubleValue.as!int;
             default: assert(false);
         }
     }
     double getValueAsDouble() {
-        switch(_type.typeKind()) {
-            case TypeKind.BYTE:   return value.byteValue;
-            case TypeKind.SHORT:  return value.shortValue;
-            case TypeKind.INT:    return value.intValue;
-            case TypeKind.LONG:   return value.longValue;
-            case TypeKind.FLOAT:  return value.floatValue;
-            case TypeKind.DOUBLE: return value.doubleValue;
+        switch(_type.etype()) {
+            case EType.BYTE:   return value.byteValue;
+            case EType.SHORT:  return value.shortValue;
+            case EType.INT:    return value.intValue;
+            case EType.LONG:   return value.longValue;
+            case EType.FLOAT:  return value.floatValue;
+            case EType.DOUBLE: return value.doubleValue;
             default: assert(false);
         }
     }
     void setValue(int v) {
         stringValue = "%s".format(v);
-        switch(_type.typeKind()) {
-            case TypeKind.BYTE:   value.byteValue = v.as!byte; break;
-            case TypeKind.SHORT:  value.shortValue = v.as!short; break;
-            case TypeKind.INT:    value.intValue = v; break;
-            case TypeKind.LONG:   value.longValue = v.as!long; break;
-            case TypeKind.FLOAT:  value.floatValue = v.as!float; break;
-            case TypeKind.DOUBLE: value.doubleValue = v.as!double; break;
+        switch(_type.etype()) {
+            case EType.BYTE:   value.byteValue = v.as!byte; break;
+            case EType.SHORT:  value.shortValue = v.as!short; break;
+            case EType.INT:    value.intValue = v; break;
+            case EType.LONG:   value.longValue = v.as!long; break;
+            case EType.FLOAT:  value.floatValue = v.as!float; break;
+            case EType.DOUBLE: value.doubleValue = v.as!double; break;
             default: assert(false);
         }   
     }

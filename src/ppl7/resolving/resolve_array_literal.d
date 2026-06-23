@@ -13,7 +13,7 @@ void resolveArrayLiteral(ArrayLiteral n, ResolveState state) {
     }
 
     // Special case if we think the parent will never produce a type
-    if(n.parent.nodeKind() == NodeKind.BUILTIN) {
+    if(n.parent.enode() == ENode.BUILTIN) {
         n.setType(getTypeFromElements(n, state));
     }
 }

@@ -32,8 +32,8 @@ public:
     Token token(int offset = 0) {
         return peek(offset);
     }
-    EToken tokenKind(int offset = 0) {
-        return token(offset).kind;
+    EToken etoken(int offset = 0) {
+        return token(offset).etoken;
     }
     string text(int offset = 0) {
         return token(offset).text;
@@ -55,15 +55,15 @@ public:
         return next();
     }
     auto skip(EToken tk) {
-        if(token().kind != tk) {
-            string found = token().kind.stringOf();
+        if(token().etoken != tk) {
+            string found = token().etoken.stringOf();
             if(found.length == 0) found = text();
             syntaxError(mod, token(), "Expected %s but found %s".format(tk.stringOf(), found));
         }
         return next();
     }
     void skipSemicolons() {
-        while(tokenKind() == EToken.SEMICOLON) {
+        while(etoken() == EToken.SEMICOLON) {
             skip(EToken.SEMICOLON);
         }
     }
@@ -72,7 +72,7 @@ public:
     }
     bool matches(int offset, EToken[] tk...) {
         foreach(t; tk) {
-            if(tokenKind(offset++) != t) return false;
+            if(etoken(offset++) != t) return false;
         }
         return true;
     }
@@ -81,15 +81,15 @@ public:
      * If the opening bracket is not found then returns -1.
      */
     int findOffsetOfClosing(int startOffset, EToken open, EToken close) 
-        in(token(startOffset).kind == open)
-        out(r; r == -1 || peek(r).kind == close)
+        in(token(startOffset).etoken == open)
+        out(r; r == -1 || peek(r).etoken == close)
     {
         int p = this.pos + startOffset;
         int depth = 0;
         while(p < tokens.length) {
-            if(tokens[p].kind == open) {
+            if(tokens[p].etoken == open) {
                 depth++;
-            } else if(tokens[p].kind == close) {
+            } else if(tokens[p].etoken == close) {
                 depth--;
                 if(depth == 0) return p-pos;
             }

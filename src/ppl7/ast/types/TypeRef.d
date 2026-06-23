@@ -18,11 +18,11 @@ public:
     }
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.TYPE_REF; }
+    override ENode enode() { return ENode.TYPE_REF; }
     override bool isResolved() { return type.isResolved(); }
 
     // Type
-    override TypeKind typeKind() { return type.typeKind(); }
+    override EType etype() { return type.etype(); }
 
     override bool exactlyMatches(Type other) {
         return type.exactlyMatches(other);

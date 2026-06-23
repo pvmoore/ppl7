@@ -17,7 +17,7 @@ public:
     }
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.BINARY; }
+    override ENode enode() { return ENode.BINARY; }
     override bool isResolved() { assert(type, "type is null"); return type.isResolved(); }
 
     // Statement

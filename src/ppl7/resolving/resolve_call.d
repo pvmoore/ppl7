@@ -59,7 +59,7 @@ void resolveCall(Call n, ResolveState state) {
     }
     // If we have multiple exact matches then this is an error
     if(n.resolveHistory.exactTypeCandidates.length > 1) {
-        resolutionError(n, ErrorKind.CALL_AMBIGUOUS_FUNCTION);
+        resolutionError(n, EError.CALL_AMBIGUOUS_FUNCTION);
         return;
     }
     // We don't have any exact matches
@@ -84,7 +84,7 @@ void resolveCall(Call n, ResolveState state) {
         return match(n, toc);
     }
 
-    resolutionError(n, ErrorKind.CALL_AMBIGUOUS_FUNCTION);
+    resolutionError(n, EError.CALL_AMBIGUOUS_FUNCTION);
 }
 
 struct CallResolveHistory {

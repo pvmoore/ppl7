@@ -12,7 +12,7 @@ public:
     }
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.NULL; }
+    override ENode enode() { return ENode.NULL; }
     override bool isResolved() { return _type.isResolved(); }
 
     // Statement

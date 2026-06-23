@@ -43,8 +43,8 @@ import ppl7.ast.ValueOf;
 import ppl7.ast.module_.Module;
 import ppl7.ast.module_.ModuleRef;
 
+import ppl7.ast.node.ENode;
 import ppl7.ast.node.Node;
-import ppl7.ast.node.NodeKind;
 import ppl7.ast.node.NodeRef;
 
 import ppl7.ast.stmts.Assert;
@@ -55,12 +55,12 @@ import ppl7.ast.stmts.Variable;
 import ppl7.ast.types.Alias;
 import ppl7.ast.types.ArrayType;
 import ppl7.ast.types.Enum;
+import ppl7.ast.types.EType;
 import ppl7.ast.types.SimpleType;
 import ppl7.ast.types.Function;
 import ppl7.ast.types.PointerType;
 import ppl7.ast.types.Struct;
 import ppl7.ast.types.Type;
-import ppl7.ast.types.TypeKind;
 import ppl7.ast.types.TypeOf;
 import ppl7.ast.types.TypeRef;
 
@@ -70,7 +70,7 @@ import ppl7.checking.check_identifier;
 import ppl7.checking.check_variable;
 
 import ppl7.errors.CompilationError;
-import ppl7.errors.ErrorKind;
+import ppl7.errors.EError;
 
 import ppl7.generating.generate;
 import ppl7.generating.generate_array;

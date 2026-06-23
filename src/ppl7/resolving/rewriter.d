@@ -77,10 +77,10 @@ void rewriteToMemcmp(ResolveState state, Node n, Expression left, Expression rig
     n.replaceWith(b);
 
     if(!state.mod.hasFunction("memcmp")) {
-        auto memcmp = makeExternFunctionDeclaration("memcmp", makeSimpleType(TypeKind.INT), [
+        auto memcmp = makeExternFunctionDeclaration("memcmp", makeSimpleType(EType.INT), [
             makeVariable("ptr1", makeBytePointerType(), VariableKind.PARAMETER),
             makeVariable("ptr2", makeBytePointerType(), VariableKind.PARAMETER),
-            makeVariable("num", makeSimpleType(TypeKind.LONG), VariableKind.PARAMETER)
+            makeVariable("num", makeSimpleType(EType.LONG), VariableKind.PARAMETER)
         ]);
         state.mod.add(memcmp);
     }

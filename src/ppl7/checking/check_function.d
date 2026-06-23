@@ -14,13 +14,13 @@ void checkFunction(Function f) {
         Node last = f.last();
 
         if(last is null) {
-            semanticError(f, ErrorKind.FUNCTION_MISSING_RETURN);
+            semanticError(f, EError.FUNCTION_MISSING_RETURN);
         }
     }
 
     if(f.isMain) {
         if(!f.isPublic) {
-            semanticError(f, ErrorKind.FUNCTION_MAIN_NOT_PUBLIC);
+            semanticError(f, EError.FUNCTION_MAIN_NOT_PUBLIC);
         }
     }
 }

@@ -56,7 +56,7 @@ void log(Module mod, string str) {
 void log(Module mod, Token[] tokens) {
     log(mod, "Tokens: (%s) [", tokens.length);
     foreach(t; tokens) {
-        log(mod, "  [%s:%s] %s '%s'", t.line+1, t.column, t.kind, t.text);
+        log(mod, "  [%s:%s] %s '%s'", t.line+1, t.column, t.etoken, t.text);
     }
     log(mod, "]");
 }

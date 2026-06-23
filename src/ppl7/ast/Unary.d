@@ -11,7 +11,7 @@ public:
     Operator op;
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.UNARY; }
+    override ENode enode() { return ENode.UNARY; }
     override bool isResolved() { return getType().isResolved(); }
 
     // Statement

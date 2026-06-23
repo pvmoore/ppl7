@@ -33,14 +33,14 @@ void checkExplicitCast(As n, Type lt, Type rt) {
     if(lt.isPointer() && rt.isValue()) {
         // Thie is ok if the right type is integer
         if(!rt.isInteger()) {
-            semanticError(n, ErrorKind.CAST_INVALID);
+            semanticError(n, EError.CAST_INVALID);
             return;
         }
     }
     if(lt.isValue() && rt.isPointer()) {
         // This is ok if left type is an integer
         if(!lt.isInteger()) {
-            semanticError(n, ErrorKind.CAST_INVALID);
+            semanticError(n, EError.CAST_INVALID);
             return;
         }
     }
@@ -54,7 +54,7 @@ void checkExplicitCast(As n, Type lt, Type rt) {
         //  - The members can be implicitly cast
         // but for now we will disallow this since it is unlikely to be useful and is not very efficient.
 
-        semanticError(n, ErrorKind.CAST_INVALID);
+        semanticError(n, EError.CAST_INVALID);
         return;
     }
 

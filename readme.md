@@ -4,7 +4,7 @@ A prototype programming language.
 
 ![Logo](/resources/images/logo.png)
 
-It utilizes the D programming language for implementation and LLVM 22 for code generation. 
+Utilizes the D programming language for implementation and LLVM 22 for code generation. 
 
 ## Requirements
 

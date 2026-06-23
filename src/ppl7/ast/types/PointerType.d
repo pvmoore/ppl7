@@ -9,13 +9,13 @@ import ppl7.all;
 final class PointerType : Type {
 public:
     // Node
-    override NodeKind nodeKind() { return NodeKind.POINTER_TYPE; }
+    override ENode enode() { return ENode.POINTER_TYPE; }
     override bool isResolved() { return valueExpr().isResolved(); }
 
     // Statement
 
     // Type
-    override TypeKind typeKind() { return TypeKind.POINTER; }
+    override EType etype() { return EType.POINTER; }
 
     override bool exactlyMatches(Type other) {
         if(PointerType o = other.extract!PointerType) {

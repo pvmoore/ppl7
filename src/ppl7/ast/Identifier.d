@@ -11,7 +11,7 @@ public:
     TargetOfIdentifier target;
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.IDENTIFIER; }
+    override ENode enode() { return ENode.IDENTIFIER; }
     override bool isResolved() { return resolveEvaluated && target.isResolved(); }
 
     // Statement

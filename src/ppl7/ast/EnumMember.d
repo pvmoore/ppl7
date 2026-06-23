@@ -10,7 +10,7 @@ final class EnumMember : Expression {
     string name;
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.ENUM_MEMBER; }
+    override ENode enode() { return ENode.ENUM_MEMBER; }
     override bool isResolved() { return hasInitialiser() && value().isResolved(); }
 
     // Statement

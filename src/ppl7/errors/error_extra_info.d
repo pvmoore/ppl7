@@ -7,12 +7,12 @@ string getExtraInfoMessage(CompilationError error) {
     Statement stmt = error.stmt;
     string extraInfo;
 
-    switch(error.kind()) {
-        case ErrorKind.CALL_AMBIGUOUS_FUNCTION: {
+    switch(error.eerror()) {
+        case EError.CALL_AMBIGUOUS_FUNCTION: {
             extraInfo = formatAmbiguousFunction(stmt.as!Call());
             break;
         }
-        case ErrorKind.CALL_ARGUMENT_TYPE_MISMATCH: {
+        case EError.CALL_ARGUMENT_TYPE_MISMATCH: {
 
             Expression arg = stmt.as!Expression; assert(arg);
             Call call = arg.parent.as!Call; assert(call);
@@ -33,7 +33,7 @@ string getExtraInfoMessage(CompilationError error) {
             extraInfo ~= "  %s".format(ansiWrap(getLocationString(call.target.func), Ansi.CYAN));
             break;
         }
-        case ErrorKind.VARIABLE_SHADOWING: {
+        case EError.VARIABLE_SHADOWING: {
             Variable v = stmt.as!Variable; assert(v);
             VariableErrorExtraInfo extra = error.extraInfo.as!VariableErrorExtraInfo; assert(extra);
             extraInfo ~= "Shadowed variables:\n";

@@ -36,7 +36,7 @@ public:
 
     string name;
 
-    override NodeKind nodeKind() { return NodeKind.BUILTIN; }
+    override ENode enode() { return ENode.BUILTIN; }
     override bool isResolved() { return false; }
 
     // Statement

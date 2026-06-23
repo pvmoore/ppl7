@@ -34,7 +34,7 @@ void resolveIs(Is n, ResolveState state) {
     // Type is Expression
     // Expression is Type
     if(left.isA!Type != right.isA!Type) {
-        semanticError(n, ErrorKind.IS_TYPE_MISMATCH);
+        semanticError(n, EError.IS_TYPE_MISMATCH);
         return;
     }
 

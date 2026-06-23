@@ -22,7 +22,7 @@ public:
     LLVMValueRef[string] llvmValueByModule; // populated during the generation phase
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.VARIABLE; }
+    override ENode enode() { return ENode.VARIABLE; }
     override bool isResolved() { return getType().isResolved(); }
 
     // Statement

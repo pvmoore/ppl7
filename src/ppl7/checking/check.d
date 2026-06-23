@@ -24,7 +24,7 @@ void checkModule(Module mod) {
             bool hasWinMain = mod.hasFunction("WinMain");
 
             if(!hasMain && !hasWinMain) {
-                semanticError(mod, ErrorKind.MODULE_MAIN_MISSING);
+                semanticError(mod, EError.MODULE_MAIN_MISSING);
             }
         }
     }
@@ -38,16 +38,16 @@ void checkChildren(Node parent) {
             checkChildren(n);
         }
 
-        switch(n.nodeKind()) {
-            case NodeKind.ARRAY_LITERAL: checkArrayLiteral(n.as!ArrayLiteral); break;
-            case NodeKind.AS: checkAs(n.as!As); break;
-            case NodeKind.BINARY: checkBinary(n.as!Binary); break;
-            case NodeKind.CALL: checkCall(n.as!Call); break;
-            case NodeKind.FUNCTION: checkFunction(n.as!Function); break;
-            case NodeKind.IDENTIFIER: checkIdentifier(n.as!Identifier); break;
-            case NodeKind.STRUCT: checkStruct(n.as!Struct); break;
-            case NodeKind.STRUCT_LITERAL: checkStructLiteral(n.as!StructLiteral); break;
-            case NodeKind.VARIABLE: checkVariable(n.as!Variable); break;
+        switch(n.enode()) {
+            case ENode.ARRAY_LITERAL: checkArrayLiteral(n.as!ArrayLiteral); break;
+            case ENode.AS: checkAs(n.as!As); break;
+            case ENode.BINARY: checkBinary(n.as!Binary); break;
+            case ENode.CALL: checkCall(n.as!Call); break;
+            case ENode.FUNCTION: checkFunction(n.as!Function); break;
+            case ENode.IDENTIFIER: checkIdentifier(n.as!Identifier); break;
+            case ENode.STRUCT: checkStruct(n.as!Struct); break;
+            case ENode.STRUCT_LITERAL: checkStructLiteral(n.as!StructLiteral); break;
+            case ENode.VARIABLE: checkVariable(n.as!Variable); break;
             default: break;
         }
     }
@@ -61,14 +61,14 @@ void checkArrayLiteral(ArrayLiteral n) {
 
     // Check that we have the correct number of elements
     if(n.elements().length != at.numElements()) {
-        semanticError(n, ErrorKind.ARRAY_LITERAL_NUM_ELEMENTS);
+        semanticError(n, EError.ARRAY_LITERAL_NUM_ELEMENTS);
     }
 
     // Check that the elements can be cast to the array element type
     Type elementType = n.elementType();
     foreach(e; n.elements()) {
         if(!e.getType().canImplicitlyCastTo(elementType)) {
-            semanticError(e, ErrorKind.ARRAY_LITERAL_ELEMENT_TYPE_MISMATCH);
+            semanticError(e, EError.ARRAY_LITERAL_ELEMENT_TYPE_MISMATCH);
             break;
         }
     }
@@ -77,7 +77,7 @@ void checkArrayLiteral(ArrayLiteral n) {
 void checkBinary(Binary n) {
     if(n.op.isUnsigned()) {
         if(!n.leftType().isInteger() || !n.rightType().isInteger()) {
-            semanticError(n, ErrorKind.BINARY_UNSIGNED_WITH_REAL);
+            semanticError(n, EError.BINARY_UNSIGNED_WITH_REAL);
         }
     }
     if(n.op.isAssign()) {
@@ -85,7 +85,7 @@ void checkBinary(Binary n) {
         // Check that the right hand side can be cast to the left hand side
         if(!n.rightType().canImplicitlyCastTo(n.leftType())) {
             log(n.getModule(), "Binary: Cannot cast %s to %s", n.rightType(), n.leftType());
-            semanticError(n, ErrorKind.BINARY_ASSIGNMENT_TYPE_MISMATCH);
+            semanticError(n, EError.BINARY_ASSIGNMENT_TYPE_MISMATCH);
         }
     }
 }
@@ -108,7 +108,7 @@ void checkCall(Call n) {
         if(paramType.isVararg()) break;
 
         if(!argType.canImplicitlyCastTo(paramType)) {
-            semanticError(arg, ErrorKind.CALL_ARGUMENT_TYPE_MISMATCH);
+            semanticError(arg, EError.CALL_ARGUMENT_TYPE_MISMATCH);
         }
     }
 }
@@ -123,7 +123,7 @@ void checkStruct(Struct n) {
             // This struct must have named Variables
             foreach(v; n.members()) {
                 if(!v.name) {
-                    semanticError(v, ErrorKind.STRUCT_MEMBER_UNNAMED);
+                    semanticError(v, EError.STRUCT_MEMBER_UNNAMED);
                 }
             }
         }
@@ -138,7 +138,7 @@ void checkStructLiteral(StructLiteral n) {
 
     // Mixing named and unnamed arguments
     if(n.hasNamedArguments() && n.hasUnnamedArguments()) {
-        semanticError(n, ErrorKind.STRUCT_LITERAL_MIXED_ARGUMENTS);
+        semanticError(n, EError.STRUCT_LITERAL_MIXED_ARGUMENTS);
         return;
     }
 
@@ -150,13 +150,13 @@ void checkStructLiteral(StructLiteral n) {
 
     // If number of arguments is greater than the number of (non-const) struct members then this is an error
     if(expressions.length > numNonConstMembers) {
-        semanticError(n, ErrorKind.STRUCT_LITERAL_TOO_MANY_ARGUMENTS);
+        semanticError(n, EError.STRUCT_LITERAL_TOO_MANY_ARGUMENTS);
         return;
     }
 
     void checkConversion(Type vType, Expression e) {
         if(!e.getType().canImplicitlyCastTo(vType)) {
-            semanticError(e, ErrorKind.STRUCT_LITERAL_MEMBER_TYPE_MISMATCH);
+            semanticError(e, EError.STRUCT_LITERAL_MEMBER_TYPE_MISMATCH);
         }
     }
 
@@ -168,7 +168,7 @@ void checkStructLiteral(StructLiteral n) {
             int index = st.getMemberIndex(name);
             // Check that the member name exists in the Struct
             if(index == -1) {
-                semanticError(n.members()[i], ErrorKind.STRUCT_LITERAL_ARGUMENT_NOT_FOUND);
+                semanticError(n.members()[i], EError.STRUCT_LITERAL_ARGUMENT_NOT_FOUND);
             } else {
                 // Check that the argument can be cast to the struct member type
                 Variable v = st.getMemberByIndex(index);
@@ -177,7 +177,7 @@ void checkStructLiteral(StructLiteral n) {
                 checkConversion(v.getType(), e);
 
                 if(!v.isPublic && v.getModule() !is n.getModule()) {
-                    semanticError(e, -2, ErrorKind.STRUCT_LITERAL_ARGUMENT_NOT_VISIBLE);
+                    semanticError(e, -2, EError.STRUCT_LITERAL_ARGUMENT_NOT_VISIBLE);
                 }
             }
         } 
@@ -186,7 +186,7 @@ void checkStructLiteral(StructLiteral n) {
 
         if(st.isNamed()) {
             // Named structs must have named arguments
-            semanticError(n, ErrorKind.STRUCT_LITERAL_UNNAMED_ARGUMENT);
+            semanticError(n, EError.STRUCT_LITERAL_UNNAMED_ARGUMENT);
             return;
         }
 
@@ -214,6 +214,6 @@ void checkAs(As n) {
         return;
     }
     if(lt.isPointer() != rt.isPointer()) {
-        semanticError(n, ErrorKind.CAST_INVALID);
+        semanticError(n, EError.CAST_INVALID);
     }
 }

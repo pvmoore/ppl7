@@ -27,13 +27,13 @@ public:
     LLVMValueRef[string] llvmValueByModule; // key = mod.name
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.FUNCTION; }
+    override ENode enode() { return ENode.FUNCTION; }
     override bool isResolved() { assert(returnType()); return returnType().isResolved() && paramTypes().areResolved(); }
     
     // Statement
 
     // Type
-    override TypeKind typeKind() { return TypeKind.FUNCTION; }
+    override EType etype() { return EType.FUNCTION; }
     override bool exactlyMatches(Type other) { 
         if(Function o = other.as!Function) {
             // Ignore the name here
@@ -88,7 +88,7 @@ Function makeExternFunctionDeclaration(string name, Type returnType, Variable[] 
     auto f = makeNode!Function(0);
     f.isExtern = true;
     f.name = name;
-    f.hasVarargParam = params.any!(v=>v.getType().typeKind() == TypeKind.C_VARARGS);
+    f.hasVarargParam = params.any!(v=>v.getType().etype() == EType.C_VARARGS);
     f.numParams = params.length.as!uint;
     f.callingConvention = callingConv;
 

@@ -13,7 +13,7 @@ public:
     }
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.RETURN; }
+    override ENode enode() { return ENode.RETURN; }
     override bool isResolved() { return true; }
 
     // Statement

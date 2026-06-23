@@ -17,7 +17,7 @@ public:
     LLVMTypeRef llvmType;   // Populated during the generation phase
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.STRUCT; }
+    override ENode enode() { return ENode.STRUCT; }
     override bool isResolved() { 
         if(!resolved) {
             resolved = members().areResolved(); 
@@ -27,7 +27,7 @@ public:
     }
 
     // Type
-    override TypeKind typeKind() { return TypeKind.STRUCT; }
+    override EType etype() { return EType.STRUCT; }
 
     override bool exactlyMatches(Type other) {
         if(Struct o = other.extract!Struct) {

@@ -33,15 +33,15 @@ public:
     Node[] children;
 
     // ---------------------------------------------------------------------- Abstract functions
-    abstract NodeKind nodeKind();
+    abstract ENode enode();
     abstract bool isResolved();
 
     // ---------------------------------------------------------------------- Properties
     final bool hasChildren() { return children && children.length > 0; }
     final int numChildren() { return children.length.as!int; }
     final int index() { assert(parent !is null); return parent.children.indexOf(this); }
-    final bool hasAncestor(NodeKind nk) {
-        if(this.nodeKind() == nk) return true;
+    final bool hasAncestor(ENode nk) {
+        if(this.enode() == nk) return true;
         if(parent !is null) return parent.hasAncestor(nk);
         return false;
     }

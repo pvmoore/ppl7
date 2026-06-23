@@ -101,36 +101,36 @@ public:
 
     void generate(Node n) {
 
-        //this.log("Generating %s %s", n.nodeKind(), n);
+        //this.log("Generating %s %s", n.enode(), n);
 
-        switch(n.nodeKind()) {
-            case NodeKind.ADDRESS_OF: generateAddressOf(n.as!AddressOf, this); break;
-            case NodeKind.ARRAY_LITERAL: generateArrayLiteral(n.as!ArrayLiteral, this); break;
-            case NodeKind.AS: generateAs(n.as!As, this); break;
-            case NodeKind.BINARY: generateBinary(n.as!Binary, this); break;
-            case NodeKind.CALL: generateCall(n.as!Call, this); break;
-            case NodeKind.DOT: generateDot(n.as!Dot, this); break;
-            case NodeKind.ENUM_MEMBER: generateEnumMember(n.as!EnumMember, this); break;
-            case NodeKind.FUNCTION: generateFunctionBody(n.as!Function, this); break;
-            case NodeKind.IDENTIFIER: generateIdentifier(n.as!Identifier, this); break;
-            case NodeKind.IF: generateIf(n.as!If, this); break;
-            case NodeKind.INDEX: generateIndex(n.as!Index, this); break;
-            case NodeKind.NODE_REF: generateNodeRef(n.as!NodeRef, this); break;
-            case NodeKind.NULL: generateNull(n.as!Null, this); break;
-            case NodeKind.MODULE_REF: break;
-            case NodeKind.NUMBER: generateNumber(n.as!Number, this); break;
-            case NodeKind.PARENS: generateParens(n.as!Parens, this); break;
-            case NodeKind.RETURN: generateReturn(n.as!Return, this); break;
-            case NodeKind.STRING_LITERAL: generateStringLiteral(n.as!StringLiteral, this); break;
-            case NodeKind.STRUCT_LITERAL: generateStructLiteral(n.as!StructLiteral, this); break;
-            case NodeKind.TYPE_REF: break;
-            case NodeKind.UNARY: generateUnary(n.as!Unary, this); break;
-            case NodeKind.VALUE_OF: generateValueOf(n.as!ValueOf, this); break;
-            case NodeKind.VARIABLE: generateVariable(n.as!Variable, this); break;
-            default: throwIf(true, "Handle generate %s", n.nodeKind()); 
+        switch(n.enode()) {
+            case ENode.ADDRESS_OF: generateAddressOf(n.as!AddressOf, this); break;
+            case ENode.ARRAY_LITERAL: generateArrayLiteral(n.as!ArrayLiteral, this); break;
+            case ENode.AS: generateAs(n.as!As, this); break;
+            case ENode.BINARY: generateBinary(n.as!Binary, this); break;
+            case ENode.CALL: generateCall(n.as!Call, this); break;
+            case ENode.DOT: generateDot(n.as!Dot, this); break;
+            case ENode.ENUM_MEMBER: generateEnumMember(n.as!EnumMember, this); break;
+            case ENode.FUNCTION: generateFunctionBody(n.as!Function, this); break;
+            case ENode.IDENTIFIER: generateIdentifier(n.as!Identifier, this); break;
+            case ENode.IF: generateIf(n.as!If, this); break;
+            case ENode.INDEX: generateIndex(n.as!Index, this); break;
+            case ENode.NODE_REF: generateNodeRef(n.as!NodeRef, this); break;
+            case ENode.NULL: generateNull(n.as!Null, this); break;
+            case ENode.MODULE_REF: break;
+            case ENode.NUMBER: generateNumber(n.as!Number, this); break;
+            case ENode.PARENS: generateParens(n.as!Parens, this); break;
+            case ENode.RETURN: generateReturn(n.as!Return, this); break;
+            case ENode.STRING_LITERAL: generateStringLiteral(n.as!StringLiteral, this); break;
+            case ENode.STRUCT_LITERAL: generateStructLiteral(n.as!StructLiteral, this); break;
+            case ENode.TYPE_REF: break;
+            case ENode.UNARY: generateUnary(n.as!Unary, this); break;
+            case ENode.VALUE_OF: generateValueOf(n.as!ValueOf, this); break;
+            case ENode.VARIABLE: generateVariable(n.as!Variable, this); break;
+            default: throwIf(true, "Handle generate %s", n.enode()); 
         }
 
-        //this.log(" Generated %s", n.nodeKind());
+        //this.log(" Generated %s", n.enode());
     }
 
     /**
@@ -169,7 +169,7 @@ public:
         if(f.llvmType) return f.llvmType;
 
         LLVMTypeRef returnType = getLLVMType(f.returnType);
-        LLVMTypeRef[] paramTypes = f.paramTypes().filter!(it=>it.typeKind() != TypeKind.C_VARARGS)
+        LLVMTypeRef[] paramTypes = f.paramTypes().filter!(it=>it.etype() != EType.C_VARARGS)
                                                  .map!(it => getLLVMType(it))
                                                  .array;
         
@@ -206,37 +206,37 @@ public:
         if(t.isEnum()) {
             return getLLVMType(t.extract!Enum.elementType());
         }
-        return getLLVMType(t.typeKind());
+        return getLLVMType(t.etype());
     }
-    LLVMTypeRef getLLVMType(TypeKind tk) {
+    LLVMTypeRef getLLVMType(EType tk) {
         final switch(tk) {
-            case TypeKind.VOID: return VOID_TYPE;
-            case TypeKind.BOOL: // Bool is also a byte 
-            case TypeKind.BYTE: 
+            case EType.VOID: return VOID_TYPE;
+            case EType.BOOL: // Bool is also a byte 
+            case EType.BYTE: 
                 return INT8_TYPE;
-            case TypeKind.SHORT: return INT16_TYPE;
-            case TypeKind.INT: return INT32_TYPE;
-            case TypeKind.LONG: return INT64_TYPE;
-            case TypeKind.FLOAT: return FLOAT_TYPE;
-            case TypeKind.DOUBLE: return DOUBLE_TYPE;
-            case TypeKind.POINTER: 
-                throwIf(true, "getLLVMType(TypeKind.POINTER) -> call getLLVMType(Type) for Pointers");
+            case EType.SHORT: return INT16_TYPE;
+            case EType.INT: return INT32_TYPE;
+            case EType.LONG: return INT64_TYPE;
+            case EType.FLOAT: return FLOAT_TYPE;
+            case EType.DOUBLE: return DOUBLE_TYPE;
+            case EType.POINTER: 
+                throwIf(true, "getLLVMType(EType.POINTER) -> call getLLVMType(Type) for Pointers");
                 break;
-            case TypeKind.FUNCTION:
-                throwIf(true, "getLLVMType(TypeKind.FUNCTION) -> call getLLVMType(Type) for Functions");
+            case EType.FUNCTION:
+                throwIf(true, "getLLVMType(EType.FUNCTION) -> call getLLVMType(Type) for Functions");
                 break;
-            case TypeKind.ARRAY:
-                throwIf(true, "getLLVMType(TypeKind.ARRAY) -> call getLLVMType(Type) for ArrayTypes");
+            case EType.ARRAY:
+                throwIf(true, "getLLVMType(EType.ARRAY) -> call getLLVMType(Type) for ArrayTypes");
                 break;
-            case TypeKind.STRUCT:
-                throwIf(true, "getLLVMType(TypeKind.STRUCT) -> call getLLVMType(Type) for Structs");
+            case EType.STRUCT:
+                throwIf(true, "getLLVMType(EType.STRUCT) -> call getLLVMType(Type) for Structs");
                 break;
-            case TypeKind.ENUM:
-                throwIf(true, "getLLVMType(TypeKind.ENUM) -> call getLLVMType(Type) for Enums");
+            case EType.ENUM:
+                throwIf(true, "getLLVMType(EType.ENUM) -> call getLLVMType(Type) for Enums");
                 break;    
-            case TypeKind.UNKNOWN:
-            case TypeKind.C_VARARGS:
-                throwIf(true, "getLLVMType() Unexpected TypeKind %s", tk);
+            case EType.UNKNOWN:
+            case EType.C_VARARGS:
+                throwIf(true, "getLLVMType() Unexpected EType %s", tk);
                 break;
         }
         assert(false);

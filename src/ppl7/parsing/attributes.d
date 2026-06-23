@@ -28,8 +28,8 @@ public:
         state.skipSemicolons();
 
         // Consume Attributes
-        while(state.tokenKind() == EToken.HASH) {
-            if(state.tokenKind(1) == EToken.IDENTIFIER && state.text(1) == "end") {
+        while(state.etoken() == EToken.HASH) {
+            if(state.etoken(1) == EToken.IDENTIFIER && state.text(1) == "end") {
                 state.skip(EToken.HASH); 
                 state.skip("end");
 
@@ -73,7 +73,7 @@ private:
  */
 Attribute parseAttribute(ParseState state) {
 
-    if(state.tokenKind() == EToken.HASH) {
+    if(state.etoken() == EToken.HASH) {
 
         Attribute attr;
 
@@ -100,7 +100,7 @@ Attribute parseAttribute(ParseState state) {
             syntaxError(state, "Unrecognised attribute %s".format(attr.name));
         }
 
-        if(state.tokenKind() == EToken.EQUAL) {
+        if(state.etoken() == EToken.EQUAL) {
             state.skip(EToken.EQUAL);
             attr.value = state.text(); state.next();
 

@@ -12,7 +12,7 @@ public:
     LLVMTypeRef llvmType;
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.ARRAY_TYPE; }
+    override ENode enode() { return ENode.ARRAY_TYPE; }
     override bool isResolved() { 
         return elementType.isResolved() && 
                numElementsExpr().isResolved() &&
@@ -22,7 +22,7 @@ public:
     // Statement
 
     // Type
-    override TypeKind typeKind() { return TypeKind.ARRAY; }
+    override EType etype() { return EType.ARRAY; }
 
     override bool exactlyMatches(Type other) {
         assert(isResolved() && other.isResolved());

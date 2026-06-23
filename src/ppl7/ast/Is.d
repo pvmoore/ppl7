@@ -20,7 +20,7 @@ public:
     }
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.IS; }
+    override ENode enode() { return ENode.IS; }
     override bool isResolved() { return resolveEvaluated && left().isResolved() && right().isResolved(); }
 
     // Statement

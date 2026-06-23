@@ -37,22 +37,22 @@ public:
         return s;
     }
     void convertUnresolvedNodesToErrors() {
-        ErrorKind ek;
+        EError ek;
         foreach(n; unresolvedNodes) {
-            switch(n.nodeKind()) {
-                case NodeKind.IDENTIFIER:
-                    ek = ErrorKind.IDENTIFIER_NOT_FOUND;
+            switch(n.enode()) {
+                case ENode.IDENTIFIER:
+                    ek = EError.IDENTIFIER_NOT_FOUND;
                     break;
-                case NodeKind.CALL:
-                    ek = ErrorKind.FUNCTION_NOT_FOUND;
+                case ENode.CALL:
+                    ek = EError.FUNCTION_NOT_FOUND;
                     break;
-                case NodeKind.BINARY:
-                case NodeKind.BUILTIN:
-                case NodeKind.DOT:
-                case NodeKind.IS:
+                case ENode.BINARY:
+                case ENode.BUILTIN:
+                case ENode.DOT:
+                case ENode.IS:
                     // Ignore these. Assume there will be something else that is also unresolved
                     continue;
-                default: throwIf(true, "convertUnresolvedNodesToErrors: %s", n.nodeKind());
+                default: throwIf(true, "convertUnresolvedNodesToErrors: %s", n.enode());
             }
             resolutionError(n.as!Statement, ek);
         }
@@ -64,33 +64,33 @@ public:
         auto parent = n.parent;
         assert(parent !is null);
 
-        switch(parent.nodeKind()) {
-            case NodeKind.ARRAY_LITERAL: {
+        switch(parent.enode()) {
+            case ENode.ARRAY_LITERAL: {
                 ArrayLiteral al = parent.as!ArrayLiteral;
                 if(al.isResolved()) {
                     return al.elementType();
                 }
                 break;
             }
-            case NodeKind.BINARY: {
+            case ENode.BINARY: {
                 Binary b = parent.as!Binary;
                 if(b.getType().isResolved()) return b.getType();
                 return b.oppositeSideType(n);
             }
-            case NodeKind.BUILTIN:
+            case ENode.BUILTIN:
                 // No information available
                 break;
-            case NodeKind.IS:
+            case ENode.IS:
                 return parent.as!Is.oppositeSideType(n);   
-            case NodeKind.UNARY: {
+            case ENode.UNARY: {
                 Unary u = parent.as!Unary;
                 Type t = u.getType();
                 if(t.isResolved()) return t;
                 return resolveTypeFromParent(u);
             }
-            case NodeKind.VARIABLE:
+            case ENode.VARIABLE:
                 return parent.as!Variable.getType();
-            case NodeKind.STRUCT_LITERAL: {
+            case ENode.STRUCT_LITERAL: {
                 StructLiteral sl = parent.as!StructLiteral;
                 if(sl.getType().isResolved()) {
                     if(Struct st = sl.getStruct()) {
@@ -105,7 +105,7 @@ public:
                 }
                 break;
             }
-            case NodeKind.CALL: {
+            case ENode.CALL: {
                 Call call = parent.as!Call;
                 auto argIndex = n.index();
                 if(call.target.isResolved()) {
@@ -115,11 +115,11 @@ public:
                 }
                 break;
             }
-            case NodeKind.ENUM_MEMBER:
+            case ENode.ENUM_MEMBER:
                 return parent.as!EnumMember.getEnum().elementType();
-            case NodeKind.RETURN:
+            case ENode.RETURN:
                 return parent.as!Return.func().returnType();
-            default: throwIf(true, "getTypeFromParent: %s", parent.nodeKind());
+            default: throwIf(true, "getTypeFromParent: %s", parent.enode());
         }
         return makeUnknownType();
     }

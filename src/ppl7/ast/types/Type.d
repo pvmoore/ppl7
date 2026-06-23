@@ -11,7 +11,7 @@ public:
     override int precedence() { return Precedence.LOWEST; }
     
     // Type
-    abstract TypeKind typeKind();
+    abstract EType etype();
     abstract bool exactlyMatches(Type);
     abstract bool canImplicitlyCastTo(Type);
 
@@ -29,19 +29,19 @@ T extract(T)(Type t) if(is(T : Type)) {
     return null;
 }
 
-bool isVoidValue(Type t) { return t.typeKind() == TypeKind.VOID && !t.isPointer(); }
-bool isInteger(Type t)   { return t.typeKind() >= TypeKind.BYTE && t.typeKind() <= TypeKind.LONG; }
-bool isReal(Type t)      { return t.typeKind() == TypeKind.FLOAT || t.typeKind() == TypeKind.DOUBLE; }
-bool isBool(Type t)      { return t.typeKind() == TypeKind.BOOL; }
-bool isPointer(Type t)   { return t.typeKind() == TypeKind.POINTER || t.typeKind() == TypeKind.FUNCTION; }
+bool isVoidValue(Type t) { return t.etype() == EType.VOID && !t.isPointer(); }
+bool isInteger(Type t)   { return t.etype() >= EType.BYTE && t.etype() <= EType.LONG; }
+bool isReal(Type t)      { return t.etype() == EType.FLOAT || t.etype() == EType.DOUBLE; }
+bool isBool(Type t)      { return t.etype() == EType.BOOL; }
+bool isPointer(Type t)   { return t.etype() == EType.POINTER || t.etype() == EType.FUNCTION; }
 bool isValue(Type t)     { return !isPointer(t); }
-bool isVararg(Type t)    { return t.typeKind() == TypeKind.C_VARARGS; }
+bool isVararg(Type t)    { return t.etype() == EType.C_VARARGS; }
 
 bool isFunction(Type t) { 
-    return t.typeKind() == TypeKind.FUNCTION; 
+    return t.etype() == EType.FUNCTION; 
 }
 bool isArrayType(Type t) { 
-    return t.typeKind() == TypeKind.ARRAY; 
+    return t.etype() == EType.ARRAY; 
 }
 bool isStruct(Type t) { 
     return t.extract!Struct !is null; 
@@ -62,36 +62,36 @@ bool isPublic(Type t) {
 }
 
 uint size(Type t) {
-    final switch(t.typeKind()) {
-        case TypeKind.ARRAY: {
+    final switch(t.etype()) {
+        case EType.ARRAY: {
             // todo - account for alignment here
             ArrayType at = t.extract!ArrayType;
             return at.numElements() * size(at.elementType());
         }
-        case TypeKind.FUNCTION: 
+        case EType.FUNCTION: 
             // todo - this is 8 if this is a function pointer, otherwise this might be an error
             return 8;
-        case TypeKind.STRUCT:
+        case EType.STRUCT:
             return t.extract!Struct.getSize();    
-        case TypeKind.POINTER:
+        case EType.POINTER:
             return 8;
-        case TypeKind.BOOL: 
-        case TypeKind.BYTE: 
+        case EType.BOOL: 
+        case EType.BYTE: 
             return 1;
-        case TypeKind.SHORT: 
+        case EType.SHORT: 
             return 2;
-        case TypeKind.INT: 
-        case TypeKind.FLOAT: 
+        case EType.INT: 
+        case EType.FLOAT: 
             return 4;
-        case TypeKind.LONG: 
-        case TypeKind.DOUBLE: 
+        case EType.LONG: 
+        case EType.DOUBLE: 
             return 8;
-        case TypeKind.ENUM:
+        case EType.ENUM:
             return size(t.extract!Enum.elementType());
-        case TypeKind.VOID: 
-        case TypeKind.UNKNOWN: 
-        case TypeKind.C_VARARGS:
-            throwIf(true, "size(%s) not supported", t.typeKind()); 
+        case EType.VOID: 
+        case EType.UNKNOWN: 
+        case EType.C_VARARGS:
+            throwIf(true, "size(%s) not supported", t.etype()); 
             assert(false);
     }
     assert(false);
@@ -99,26 +99,26 @@ uint size(Type t) {
 
 uint alignment(Type t) {
     if(t.isPointer()) return 8;
-    switch(t.typeKind()) {
-        case TypeKind.BOOL: 
-        case TypeKind.BYTE: 
+    switch(t.etype()) {
+        case EType.BOOL: 
+        case EType.BYTE: 
             return 1;
-        case TypeKind.SHORT: 
+        case EType.SHORT: 
             return 2;
-        case TypeKind.INT: 
-        case TypeKind.FLOAT: 
+        case EType.INT: 
+        case EType.FLOAT: 
             return 4;
-        case TypeKind.LONG: 
-        case TypeKind.DOUBLE: 
+        case EType.LONG: 
+        case EType.DOUBLE: 
             return 8;
-        case TypeKind.ARRAY:
+        case EType.ARRAY:
             return alignment(t.extract!ArrayType.elementType());
-        case TypeKind.STRUCT:
+        case EType.STRUCT:
             return t.extract!Struct.getAlignment();
-        case TypeKind.ENUM:
+        case EType.ENUM:
             return alignment(t.extract!Enum.elementType());
         default:
-            throwIf(true, "alignment(%s) not supported", t.typeKind()); 
+            throwIf(true, "alignment(%s) not supported", t.etype()); 
             assert(false);
     }
     assert(false);
@@ -152,7 +152,7 @@ Type selectCommonType(Type a, Type b) {
     }
 
     if(a.isReal() == b.isReal()) {
-        return a.typeKind() > b.typeKind() ? a : b;
+        return a.etype() > b.etype() ? a : b;
     }
     if(a.isReal()) return a;
     if(b.isReal()) return b;

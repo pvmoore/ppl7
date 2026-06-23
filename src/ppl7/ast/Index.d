@@ -10,7 +10,7 @@ import ppl7.all;
 final class Index : Expression {
 public:
     // Node
-    override NodeKind nodeKind() { return NodeKind.INDEX; }
+    override ENode enode() { return ENode.INDEX; }
     override bool isResolved() { return expr().isResolved() && index().isResolved(); }
 
     // Statement

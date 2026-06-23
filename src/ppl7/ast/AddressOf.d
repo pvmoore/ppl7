@@ -9,7 +9,7 @@ import ppl7.all;
 final class AddressOf : Expression {
 public:
     // Node
-    override NodeKind nodeKind() { return NodeKind.ADDRESS_OF; }
+    override ENode enode() { return ENode.ADDRESS_OF; }
     override bool isResolved() { return resolveEvaluated && expr().isResolved(); }
 
     // Statement

@@ -23,10 +23,10 @@ void resolveIf(If n, ResolveState state) {
         auto elseExpr = n.lastElseStatement();
 
         if(thenExpr is null || !thenExpr.isA!Expression) {
-            semanticError(n, ErrorKind.IF_MISSING_THEN_EXPRESSION);
+            semanticError(n, EError.IF_MISSING_THEN_EXPRESSION);
         }
         if(elseExpr is null || !elseExpr.isA!Expression) {
-            semanticError(n, ErrorKind.IF_MISSING_ELSE_EXPRESSION);
+            semanticError(n, EError.IF_MISSING_ELSE_EXPRESSION);
         }
         if(thenExpr is null || elseExpr is null) return;
 
@@ -34,7 +34,7 @@ void resolveIf(If n, ResolveState state) {
 
         Type type = selectCommonType(n.thenType(), n.elseType());
         if(type is null) {
-            semanticError(n, ErrorKind.IF_EXPRESSION_TYPE_MISMATCH);
+            semanticError(n, EError.IF_EXPRESSION_TYPE_MISMATCH);
             return;
         }
 

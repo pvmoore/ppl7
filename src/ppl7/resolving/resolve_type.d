@@ -14,7 +14,7 @@ void resolveEnum(Enum n, ResolveState state) {
 
             // If there are any missing initialisers this is an error
             if(!n.allMembersHaveInitialisers()) {
-                semanticError(n, ErrorKind.ENUM_MISSING_INITIALISERS);
+                semanticError(n, EError.ENUM_MISSING_INITIALISERS);
             }
             n.resolveEvaluated = true;
             return;

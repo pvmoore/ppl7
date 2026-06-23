@@ -54,15 +54,15 @@ void generateNumber(Number n, GenerateState state) {
     //log("generate Number %s", n.stringValue);
     LLVMTypeRef numType = state.getLLVMType(n.getType());
     LLVMValueRef value;
-    switch(n.getType().typeKind()) {
-        case TypeKind.BOOL:   
-        case TypeKind.BYTE:   value = LLVMConstInt(numType, n.value.byteValue, 1); break;
-        case TypeKind.SHORT:  value = LLVMConstInt(numType, n.value.shortValue, 1); break;
-        case TypeKind.INT:    value = LLVMConstInt(numType, n.value.intValue, 1); break;
-        case TypeKind.LONG:   value = LLVMConstInt(numType, n.value.longValue, 1); break;
-        case TypeKind.FLOAT:  value = LLVMConstReal(numType, n.value.floatValue); break;
-        case TypeKind.DOUBLE: value = LLVMConstReal(numType, n.value.doubleValue); break;
-        default: throwIf(true, "We shouldn't get here. type is %s", n.getType().typeKind());
+    switch(n.getType().etype()) {
+        case EType.BOOL:   
+        case EType.BYTE:   value = LLVMConstInt(numType, n.value.byteValue, 1); break;
+        case EType.SHORT:  value = LLVMConstInt(numType, n.value.shortValue, 1); break;
+        case EType.INT:    value = LLVMConstInt(numType, n.value.intValue, 1); break;
+        case EType.LONG:   value = LLVMConstInt(numType, n.value.longValue, 1); break;
+        case EType.FLOAT:  value = LLVMConstReal(numType, n.value.floatValue); break;
+        case EType.DOUBLE: value = LLVMConstReal(numType, n.value.doubleValue); break;
+        default: throwIf(true, "We shouldn't get here. type is %s", n.getType().etype());
     }
     state.rhs = value;
 }

@@ -12,11 +12,11 @@ public:
     bool isPublic;
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.ALIAS; }
+    override ENode enode() { return ENode.ALIAS; }
     override bool isResolved() { return aliasedType().isResolved(); }
 
     // Type
-    override TypeKind typeKind() { return aliasedType().typeKind(); }
+    override EType etype() { return aliasedType().etype(); }
 
     override bool exactlyMatches(Type other) {
         return aliasedType.exactlyMatches(other);

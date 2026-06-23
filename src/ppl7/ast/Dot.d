@@ -10,7 +10,7 @@ import ppl7.all;
 final class Dot : Expression {
 public:
     // Node
-    override NodeKind nodeKind() { return NodeKind.DOT; }
+    override ENode enode() { return ENode.DOT; }
     override bool isResolved() { return container().isResolved() && member().isResolved(); }
 
     // Statement

@@ -10,7 +10,7 @@ import ppl7.all;
 final class As : Expression {
 public:
     // Node
-    override NodeKind nodeKind() { return NodeKind.AS; }
+    override ENode enode() { return ENode.AS; }
     override bool isResolved() { return resolveEvaluated && expr().isResolved() && toType().isResolved(); }
 
     // Statement

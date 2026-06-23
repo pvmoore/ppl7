@@ -7,7 +7,7 @@ void checkIdentifier(Identifier n) {
     // Check for modifying a const
     if(Binary b = n.getAncestor!Binary) {
         if(b.op.isAssign() && b.isOnLeft(n) && n.target.isConst()) {
-            semanticError(n, ErrorKind.BINARY_MODIFYING_CONSTANT);
+            semanticError(n, EError.BINARY_MODIFYING_CONSTANT);
         }
     }
 
@@ -17,7 +17,7 @@ void checkIdentifier(Identifier n) {
         // This is ok if the target is in the same module
         if(n.target.isRemote()) {
             
-            semanticError(n, ErrorKind.IDENTIFIER_NOT_VISIBLE);
+            semanticError(n, EError.IDENTIFIER_NOT_VISIBLE);
         }
     }
 }

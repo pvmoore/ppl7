@@ -27,23 +27,23 @@ private:
  * - The function must be extern
  */
 void varargsChecks(Variable v, Type type) {
-    if(type.typeKind() == TypeKind.C_VARARGS) {
+    if(type.etype() == EType.C_VARARGS) {
 
         // Must only be used as a parameter
         if(v.vkind != VariableKind.PARAMETER) {
-            semanticError(v, ErrorKind.VARIABLE_C_VARARGS_NOT_PARAMETER);
+            semanticError(v, EError.VARIABLE_C_VARARGS_NOT_PARAMETER);
         } else {
             // This C_VARARGS is a parameter
 
             // Check that it is the last parameter
             Function f = v.parent.as!Function;
             if(f.params()[$-1] !is v) {
-                semanticError(v, ErrorKind.VARIABLE_C_VARARGS_NOT_LAST);
+                semanticError(v, EError.VARIABLE_C_VARARGS_NOT_LAST);
             }
 
             // Check that the function is extern
             if(!f.isExtern) {
-                semanticError(v, ErrorKind.VARIABLE_C_VARARGS_NOT_EXTERN);
+                semanticError(v, EError.VARIABLE_C_VARARGS_NOT_EXTERN);
             }
         }
     }
@@ -61,7 +61,7 @@ void initialiserChecks(Variable v, Type type) {
         
         if(v.isParameter()) {
             // Don't allow default parameters 
-            semanticError(init, ErrorKind.VARIABLE_PARAMETER_INITIALISER);
+            semanticError(init, EError.VARIABLE_PARAMETER_INITIALISER);
             return;
         }
 
@@ -69,7 +69,7 @@ void initialiserChecks(Variable v, Type type) {
 
             if(initType.isFunction()) {
                 log(mod, "init is a Function: %s", initType);
-                log(mod, "endOfChain = %s", init.getEndOfChain().nodeKind());
+                log(mod, "endOfChain = %s", init.getEndOfChain().enode());
             }
 
 
@@ -78,7 +78,7 @@ void initialiserChecks(Variable v, Type type) {
             }
 
             log(mod, "Variable: Cannot cast %s to %s", initType, type);
-            semanticError(init, ErrorKind.VARIABLE_INITIALISER_TYPE_MISMATCH);
+            semanticError(init, EError.VARIABLE_INITIALISER_TYPE_MISMATCH);
         }
     } else {
         if(v.isParameter()) {
@@ -89,13 +89,13 @@ void initialiserChecks(Variable v, Type type) {
             //     // This variable is a struct member. Don't complain here
             //     return;
             // }
-            semanticError(v, ErrorKind.VARIABLE_UNINITIALISED_CONST);
+            semanticError(v, EError.VARIABLE_UNINITIALISED_CONST);
         } else {
             // If the type is a struct then error if any of the members are const
             // if(Struct st = type.extract!Struct) {
             //     foreach(m; st.members()) {
             //         if(m.isConst) {
-            //             semanticError(m, ErrorKind.VARIABLE_UNINITIALISED_CONST);
+            //             semanticError(m, EError.VARIABLE_UNINITIALISED_CONST);
             //             break;
             //         }
             //     }
@@ -139,6 +139,6 @@ void shadowingChecks(Variable v) {
     }
 
     if(dupes.length > 0) {
-        semanticError(v, ErrorKind.VARIABLE_SHADOWING, new VariableErrorExtraInfo(dupes));
+        semanticError(v, EError.VARIABLE_SHADOWING, new VariableErrorExtraInfo(dupes));
     }
 }

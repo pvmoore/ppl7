@@ -5,16 +5,16 @@ import ppl7.all;
 final class SimpleType : Type {
 public:
     // Node
-    override NodeKind nodeKind() { return NodeKind.BASIC_TYPE; }
-    override bool isResolved() { return tkind != TypeKind.UNKNOWN; }
+    override ENode enode() { return ENode.BASIC_TYPE; }
+    override bool isResolved() { return _etype != EType.UNKNOWN; }
 
     // Type
-    override TypeKind typeKind() { return tkind; }
+    override EType etype() { return _etype; }
 
     override bool exactlyMatches(Type other) {
         if(other.isPointer()) return false;
         if(SimpleType o = other.extract!SimpleType()) {
-            return tkind == o.tkind;
+            return _etype == o._etype;
         }
         return false;
     }
@@ -26,12 +26,12 @@ public:
             if(other.isBool()) return true;
 
             if(this.isReal()) {
-                if(other.isReal()) return other.typeKind() >= this.typeKind();
+                if(other.isReal()) return other.etype() >= this.etype();
             } else if(this.isInteger()) {
                 if(other.isReal()) return true;
                 if(other.isInteger()) return other.size() >= this.size();
             } else {
-                return tkind == o.tkind;
+                return _etype == o._etype;
             }
         }
         return false;
@@ -39,55 +39,55 @@ public:
     override string shortName() { return this.toString(); }
 
     override string mangledName() {
-        switch(tkind) {
-            case TypeKind.BOOL: return "B";
-            case TypeKind.BYTE: return "b";
-            case TypeKind.SHORT: return "s";
-            case TypeKind.INT: return "i";
-            case TypeKind.LONG: return "l";
-            case TypeKind.FLOAT: return "f";
-            case TypeKind.DOUBLE: return "d";
-            case TypeKind.VOID: return "v";
-            case TypeKind.C_VARARGS: return "V";
+        switch(_etype) {
+            case EType.BOOL: return "B";
+            case EType.BYTE: return "b";
+            case EType.SHORT: return "s";
+            case EType.INT: return "i";
+            case EType.LONG: return "l";
+            case EType.FLOAT: return "f";
+            case EType.DOUBLE: return "d";
+            case EType.VOID: return "v";
+            case EType.C_VARARGS: return "V";
             default: assert(false); 
         }
     }
 
-    void setTypeKind(TypeKind tk) { tkind = tk; } 
+    void setEType(EType tk) { _etype = tk; } 
 
     override string toString() {
         string s;
-        switch(tkind) {
-            case TypeKind.UNKNOWN: s = "unknown"; break;
-            case TypeKind.VOID: s = "void"; break;
-            case TypeKind.BOOL: s = "bool"; break;
-            case TypeKind.BYTE: s = "byte"; break;
-            case TypeKind.SHORT: s = "short"; break;
-            case TypeKind.INT: s = "int"; break;
-            case TypeKind.LONG: s = "long"; break;
-            case TypeKind.FLOAT: s = "float"; break;
-            case TypeKind.DOUBLE: s = "double"; break;
-            case TypeKind.C_VARARGS: s = "..."; break;
+        switch(_etype) {
+            case EType.UNKNOWN: s = "unknown"; break;
+            case EType.VOID: s = "void"; break;
+            case EType.BOOL: s = "bool"; break;
+            case EType.BYTE: s = "byte"; break;
+            case EType.SHORT: s = "short"; break;
+            case EType.INT: s = "int"; break;
+            case EType.LONG: s = "long"; break;
+            case EType.FLOAT: s = "float"; break;
+            case EType.DOUBLE: s = "double"; break;
+            case EType.C_VARARGS: s = "..."; break;
             default: assert(false); 
         } 
         return "%s".format(s);
     }
 private:
-    TypeKind tkind = TypeKind.UNKNOWN;
+    EType _etype = EType.UNKNOWN;
 }
 
-Type makeBoolType() { return makeSimpleType(TypeKind.BOOL); }
-Type makeByteType() { return makeSimpleType(TypeKind.BYTE); }
-Type makeShortType() { return makeSimpleType(TypeKind.SHORT); }
-Type makeIntType() { return makeSimpleType(TypeKind.INT); }
-Type makeLongType() { return makeSimpleType(TypeKind.LONG); }
-Type makeFloatType() { return makeSimpleType(TypeKind.FLOAT); }
-Type makeDoubleType() { return makeSimpleType(TypeKind.DOUBLE); }
-Type makeVoidType() { return makeSimpleType(TypeKind.VOID); }
-Type makeUnknownType() { return makeSimpleType(TypeKind.UNKNOWN); }
+Type makeBoolType() { return makeSimpleType(EType.BOOL); }
+Type makeByteType() { return makeSimpleType(EType.BYTE); }
+Type makeShortType() { return makeSimpleType(EType.SHORT); }
+Type makeIntType() { return makeSimpleType(EType.INT); }
+Type makeLongType() { return makeSimpleType(EType.LONG); }
+Type makeFloatType() { return makeSimpleType(EType.FLOAT); }
+Type makeDoubleType() { return makeSimpleType(EType.DOUBLE); }
+Type makeVoidType() { return makeSimpleType(EType.VOID); }
+Type makeUnknownType() { return makeSimpleType(EType.UNKNOWN); }
 
-Type makeSimpleType(TypeKind tk) { 
+Type makeSimpleType(EType tk) { 
     auto t = makeNode!SimpleType(0);
-    t.tkind = tk;
+    t._etype = tk;
     return t; 
 }

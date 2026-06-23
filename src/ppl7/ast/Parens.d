@@ -10,7 +10,7 @@ final class Parens : Expression {
 public:
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.PARENS; }
+    override ENode enode() { return ENode.PARENS; }
     override bool isResolved() { return expr().isResolved(); }
 
     // Statement

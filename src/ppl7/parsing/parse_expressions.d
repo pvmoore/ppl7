@@ -53,7 +53,7 @@ void parseSingle(Node parent, ParseState state) {
         return;
     }
 
-    switch(state.tokenKind()) {
+    switch(state.etoken()) {
         case EToken.IDENTIFIER:
             if("if" == state.text()) {
                 parseIf(parent, state);
@@ -76,7 +76,7 @@ void parseSingle(Node parent, ParseState state) {
                 return;
             }
             // Function call
-            if(state.peek(1).kind == EToken.LPAREN) {
+            if(state.peek(1).etoken == EToken.LPAREN) {
                 parseCall(parent, state);
                 return;
             }
@@ -135,7 +135,7 @@ void parseSingle(Node parent, ParseState state) {
  */
 void parseInfix(Node parent, ParseState state) {
     while(!state.eof()) {
-        switch(state.tokenKind()) {
+        switch(state.etoken()) {
             case EToken.NONE:
             case EToken.LBRACE:
             case EToken.RBRACE:
@@ -307,11 +307,11 @@ void parseArrayLiteral(Node parent, ParseState state) {
 
     state.skip(EToken.LSQUARE);
 
-    while(state.tokenKind() != EToken.RSQUARE) {
+    while(state.etoken() != EToken.RSQUARE) {
         parseExpression(a, state);
 
         // ,
-        if(state.tokenKind() == EToken.COMMA) {
+        if(state.etoken() == EToken.COMMA) {
             state.skip(EToken.COMMA);
         }
     }
@@ -374,11 +374,11 @@ void parseCall(Node parent, ParseState state) {
     // Arguments
     state.skip(EToken.LPAREN);
 
-    while(state.tokenKind() != EToken.RPAREN) {
+    while(state.etoken() != EToken.RPAREN) {
         parseExpressionWithUpperBound(c, state);
 
         // ,
-        if(state.tokenKind() == EToken.COMMA) {
+        if(state.etoken() == EToken.COMMA) {
             state.skip(EToken.COMMA);
         }
     }
@@ -416,11 +416,11 @@ void parseIf(Node parent, ParseState state) {
     state.skip(EToken.RPAREN);
 
     // 'then' branch (required)
-    if(state.tokenKind() == EToken.LBRACE) {
+    if(state.etoken() == EToken.LBRACE) {
         // Statement block
         state.skip(EToken.LBRACE);
 
-        while(state.tokenKind() != EToken.RBRACE) {
+        while(state.etoken() != EToken.RBRACE) {
             parseStatementAtFunctionScope(i, state);
         }
 
@@ -437,11 +437,11 @@ void parseIf(Node parent, ParseState state) {
         i.hasElse = true;
         state.skip("else");
 
-        if(state.tokenKind() == EToken.LBRACE) {
+        if(state.etoken() == EToken.LBRACE) {
             // Statement block
             state.skip(EToken.LBRACE);
 
-            while(state.tokenKind() != EToken.RBRACE) {
+            while(state.etoken() != EToken.RBRACE) {
                 parseStatementAtFunctionScope(i, state);
             }
             state.skip(EToken.RBRACE);
@@ -521,7 +521,7 @@ void parseStringLiteral(Node parent, ParseState state) {
 
         // This is a string struct string literal. 
         // Consume multiple string literals as long as they are not c-strings
-        while(state.tokenKind() == EToken.STRING) {
+        while(state.etoken() == EToken.STRING) {
             if(state.text().endsWith("z")) break;
 
             // Append the string literal
@@ -542,10 +542,10 @@ void parseStructLiteral(Node parent, ParseState state) {
 
     state.skip(EToken.LBRACE);
 
-    while(state.tokenKind() != EToken.RBRACE) {
+    while(state.etoken() != EToken.RBRACE) {
 
         // Named argument:
-        if(state.tokenKind() == EToken.IDENTIFIER && state.peek(1).kind == EToken.COLON) {
+        if(state.etoken() == EToken.IDENTIFIER && state.peek(1).etoken == EToken.COLON) {
             s.names ~= state.text(); state.next();
             state.skip(EToken.COLON);
         } else {
@@ -555,7 +555,7 @@ void parseStructLiteral(Node parent, ParseState state) {
         parseExpressionWithUpperBound(s, state);
 
         // ,
-        if(state.tokenKind() == EToken.COMMA) {
+        if(state.etoken() == EToken.COMMA) {
             state.skip(EToken.COMMA);
         }
     }
@@ -572,9 +572,9 @@ void parseUnary(Node parent, ParseState state) {
     parent.add(u);
 
     /// - ~
-    if(state.tokenKind()==EToken.TILDE) {
+    if(state.etoken()==EToken.TILDE) {
         u.op = Operator.BIT_NOT;
-    } else if(state.tokenKind()==EToken.MINUS) {
+    } else if(state.etoken()==EToken.MINUS) {
         u.op = Operator.NEG;
     } else assert(false, "How did we get here?");
 
@@ -638,7 +638,7 @@ Binary parseAndReturnBinary(ParseState state) {
 
     switch(text) {
         case "ushr":
-            if(state.peek(1).kind == EToken.EQUAL) {
+            if(state.peek(1).etoken == EToken.EQUAL) {
                 b.op = Operator.USHR_ASSIGN;
                 state.next();
             } else {
@@ -646,7 +646,7 @@ Binary parseAndReturnBinary(ParseState state) {
             } 
             break;
         case "udiv":
-            if(state.peek(1).kind == EToken.EQUAL) {
+            if(state.peek(1).etoken == EToken.EQUAL) {
                 b.op = Operator.UDIV_ASSIGN;
                 state.next();
             } else {
@@ -654,7 +654,7 @@ Binary parseAndReturnBinary(ParseState state) {
             } 
             break;
         case "umod":
-            if(state.peek(1).kind == EToken.EQUAL) {
+            if(state.peek(1).etoken == EToken.EQUAL) {
                 b.op = Operator.UMOD_ASSIGN;
                 state.next();
             } else {
@@ -667,7 +667,7 @@ Binary parseAndReturnBinary(ParseState state) {
         case "ugte": b.op = Operator.UGTE; break;
         case "and": b.op = Operator.BOOL_AND; break;
         case "or": b.op = Operator.BOOL_OR; break;
-        default: b.op = toOperator(state.tokenKind()); break;
+        default: b.op = toOperator(state.etoken()); break;
     }
 
     state.next();

@@ -1,8 +1,8 @@
-module ppl7.ast.node.NodeKind;
+module ppl7.ast.node.ENode;
 
 import ppl7.all;
 
-enum NodeKind {
+enum ENode {
     // Nodes
     ADDRESS_OF,
     ALIAS,

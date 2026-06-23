@@ -12,7 +12,7 @@ public:
     Expression node;
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.NODE_REF; }
+    override ENode enode() { return ENode.NODE_REF; }
     override bool isResolved() { return node.isResolved(); }
 
     // Statement
@@ -22,7 +22,7 @@ public:
     override int precedence() { return node.precedence(); }
 
     override string toString() {
-        return "NodeRef %s".format(node.nodeKind());
+        return "NodeRef %s".format(node.enode());
     }
 }   
 

@@ -163,54 +163,54 @@ private:
         {
             // Add _ui64toa extern function declaration
             auto ui64toaParams = [
-                makeVariable("value", makeSimpleType(TypeKind.LONG), VariableKind.PARAMETER),
-                makeVariable("str", makePointerType(makeSimpleType(TypeKind.BYTE)), VariableKind.PARAMETER),
-                makeVariable("radix", makeSimpleType(TypeKind.INT), VariableKind.PARAMETER)
+                makeVariable("value", makeSimpleType(EType.LONG), VariableKind.PARAMETER),
+                makeVariable("str", makePointerType(makeSimpleType(EType.BYTE)), VariableKind.PARAMETER),
+                makeVariable("radix", makeSimpleType(EType.INT), VariableKind.PARAMETER)
             ];
-            auto ui64toaFn = makeFunction("_ui64toa", makePointerType(makeSimpleType(TypeKind.BYTE)), ui64toaParams, true, false);
+            auto ui64toaFn = makeFunction("_ui64toa", makePointerType(makeSimpleType(EType.BYTE)), ui64toaParams, true, false);
             mod.add(ui64toaFn);
         }
         {
             // Add puts extern function declaration
             auto putsParams = [
-                makeVariable("str", makePointerType(makeSimpleType(TypeKind.BYTE)), VariableKind.PARAMETER)
+                makeVariable("str", makePointerType(makeSimpleType(EType.BYTE)), VariableKind.PARAMETER)
             ];
-            auto putsFn = makeFunction("puts", makeSimpleType(TypeKind.INT), putsParams, true, false);
+            auto putsFn = makeFunction("puts", makeSimpleType(EType.INT), putsParams, true, false);
             mod.add(putsFn);
         }
         static if(false) {
             // Add malloc extern function declaration
             auto mallocParams = [
-                makeVariable("size", makeSimpleType(TypeKind.LONG), VariableKind.PARAMETER)
+                makeVariable("size", makeSimpleType(EType.LONG), VariableKind.PARAMETER)
             ];
-            auto mallocFn = makeFunction("malloc", makePointerType(makeSimpleType(TypeKind.BYTE)), mallocParams, true, false);
+            auto mallocFn = makeFunction("malloc", makePointerType(makeSimpleType(EType.BYTE)), mallocParams, true, false);
             mod.add(mallocFn);
         }
         {
             // Add exit extern function declaration
             auto exitParams = [
-                makeVariable("code", makeSimpleType(TypeKind.INT), VariableKind.PARAMETER)
+                makeVariable("code", makeSimpleType(EType.INT), VariableKind.PARAMETER)
             ];
-            auto exitFn = makeFunction("exit", makeSimpleType(TypeKind.VOID), exitParams, true, false);
+            auto exitFn = makeFunction("exit", makeSimpleType(EType.VOID), exitParams, true, false);
             mod.add(exitFn);
         }
 
         // Add @assert function
         auto assertParams = [
-            makeVariable("condition", makeSimpleType(TypeKind.BOOL), VariableKind.PARAMETER),
-            makeVariable("moduleName", makePointerType(makeSimpleType(TypeKind.BYTE)), VariableKind.PARAMETER),
-            makeVariable("line", makeSimpleType(TypeKind.LONG), VariableKind.PARAMETER)
+            makeVariable("condition", makeSimpleType(EType.BOOL), VariableKind.PARAMETER),
+            makeVariable("moduleName", makePointerType(makeSimpleType(EType.BYTE)), VariableKind.PARAMETER),
+            makeVariable("line", makeSimpleType(EType.LONG), VariableKind.PARAMETER)
             // Possibly add messageVar as an optional parameter later
         ];
 
-        auto assertFn = makeFunction("@assert", makeSimpleType(TypeKind.VOID), assertParams, false, false);
+        auto assertFn = makeFunction("@assert", makeSimpleType(EType.VOID), assertParams, false, false);
         mod.add(assertFn);
 
         Binary b = makeBinary(Operator.EQUAL, makeIdentifier("condition"), makeBoolNumber(false), CONST_BOOL_TYPE);
         
         Statement[] thenStmts;
         {        
-            auto v = makeVariable("str2", makeArrayType(makeSimpleType(TypeKind.BYTE), 128), VariableKind.LOCAL);
+            auto v = makeVariable("str2", makeArrayType(makeSimpleType(EType.BYTE), 128), VariableKind.LOCAL);
             thenStmts ~= v;
         }
         {

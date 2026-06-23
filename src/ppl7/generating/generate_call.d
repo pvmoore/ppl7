@@ -39,7 +39,7 @@ void generateCall(Call n, GenerateState state) {
 
     // Get the FunctionType
     LLVMTypeRef returnTypeRef = state.getLLVMType(returnType);
-    LLVMTypeRef[] paramTypesRef = paramTypes.filter!(it=>it.typeKind() != TypeKind.C_VARARGS)
+    LLVMTypeRef[] paramTypesRef = paramTypes.filter!(it=>it.etype() != EType.C_VARARGS)
                                             .map!(it => state.getLLVMType(it))
                                             .array;
     LLVMTypeRef functionType = LLVMFunctionType(returnTypeRef, paramTypesRef.ptr, paramTypesRef.length.as!uint, hasVarargParam);

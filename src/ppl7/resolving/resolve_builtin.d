@@ -97,7 +97,7 @@ bool getIsConst(Builtin n, Node expr) {
     if(Index idx = expr.as!Index) return getIsConst(n, idx.expr());
     if(Dot d = expr.as!Dot) return getIsConst(n, d.member());
 
-    semanticError(n, ErrorKind.BUILTIN_ISCONST_NOT_IDENTIFIER);
+    semanticError(n, EError.BUILTIN_ISCONST_NOT_IDENTIFIER);
     return false;
 }
 
@@ -106,7 +106,7 @@ bool getIsPublic(Builtin n, Node expr) {
     if(Index idx = expr.as!Index) return getIsPublic(n, idx.expr());
     if(Dot d = expr.as!Dot) return getIsPublic(n, d.member());
 
-    //writefln("::isPublic expr = %s (%s)", expr, expr.nodeKind());
+    //writefln("::isPublic expr = %s (%s)", expr, expr.enode());
 
     // Is it a TypeRef?
     if(TypeRef tr = expr.as!TypeRef) {
@@ -119,7 +119,7 @@ bool getIsPublic(Builtin n, Node expr) {
         return false;
     }
 
-    semanticError(n, ErrorKind.BUILTIN_ISPUBLIC_NOT_IDENTIFIER_OR_TYPE);
+    semanticError(n, EError.BUILTIN_ISPUBLIC_NOT_IDENTIFIER_OR_TYPE);
     return false;
 }
 
@@ -127,7 +127,7 @@ void handleOffsetOf(ResolveState state, Builtin n, Expression arg0) {
     Dot dot = arg0.as!Dot;
 
     if(!dot) {
-        semanticError(arg0, ErrorKind.BUILTIN_OFFSET_OF_NOT_MEMBER);
+        semanticError(arg0, EError.BUILTIN_OFFSET_OF_NOT_MEMBER);
         return;
     }
 
@@ -144,14 +144,14 @@ void handleOffsetOf(ResolveState state, Builtin n, Expression arg0) {
                 rewriteToLong(state, n, offset);
                 return;
             } else {
-                semanticError(n, ErrorKind.BUILTIN_OFFSET_OF_NOT_MEMBER);
+                semanticError(n, EError.BUILTIN_OFFSET_OF_NOT_MEMBER);
             }
         }
 
     } else {
 
-        log(state.mod, "expr is %s", n.first().nodeKind());
+        log(state.mod, "expr is %s", n.first().enode());
 
-        semanticError(n, ErrorKind.BUILTIN_OFFSET_OF_NOT_IDENTIFIER);
+        semanticError(n, EError.BUILTIN_OFFSET_OF_NOT_IDENTIFIER);
     }
 }

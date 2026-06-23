@@ -16,7 +16,7 @@ public:
     }
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.STRING_LITERAL; }
+    override ENode enode() { return ENode.STRING_LITERAL; }
     override bool isResolved() { return resolveEvaluated; }
 
     // Statement

@@ -17,7 +17,7 @@ void resolveIdentifier(Identifier n, ResolveState state) {
 
         // This must be a Variable or Function within the same Module
 
-        if(n.hasAncestor(NodeKind.FUNCTION)) {
+        if(n.hasAncestor(ENode.FUNCTION)) {
             // Look for a local Variable with the same name (must occur earlier in the function)
             Node node = n;
             while(true) {
@@ -138,7 +138,7 @@ void resolveIdentifier(Identifier n, ResolveState state) {
         //         return;
         //     }
         } else {
-            todo("[%s] resolveIdentifier: prev is a %s", state.mod.name, prev.nodeKind());
+            todo("[%s] resolveIdentifier: prev is a %s", state.mod.name, prev.enode());
         }
     } 
 

@@ -9,7 +9,7 @@ import ppl7.all;
 final class ValueOf : Expression {
 public:
     // Node
-    override NodeKind nodeKind() { return NodeKind.VALUE_OF; }
+    override ENode enode() { return ENode.VALUE_OF; }
     override bool isResolved() { return expr().isResolved(); }
 
     // Statement

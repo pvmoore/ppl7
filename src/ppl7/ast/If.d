@@ -17,7 +17,7 @@ public:
     bool hasElse;
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.IF; }
+    override ENode enode() { return ENode.IF; }
     override bool isResolved() { return _type.isResolved(); }
 
     // Statement

@@ -16,7 +16,7 @@ final class Call : Expression {
     CallResolveHistory resolveHistory;    // Populated during the resolve phase 
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.CALL; }
+    override ENode enode() { return ENode.CALL; }
     override bool isResolved() { return target.isResolved(); }
 
     // Statement

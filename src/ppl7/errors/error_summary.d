@@ -5,7 +5,7 @@ import ppl7.all;
 string getSummaryMessage(CompilationError error) {
     Statement stmt = error.stmt;
 
-    switch(error.kind()) with(ErrorKind) {
+    switch(error.eerror()) with(EError) {
         case ADDRESS_OF_CONSTANT:
             return "Cannot take the address of a constant";
 
@@ -115,7 +115,7 @@ string getSummaryMessage(CompilationError error) {
         }
         case STRUCT_LITERAL_ARGUMENT_NOT_VISIBLE: {
             Token nameTok = error.mod.getToken(error.stmt.tokenIndex - 2);
-            if(nameTok.kind == EToken.IDENTIFIER) {
+            if(nameTok.etoken == EToken.IDENTIFIER) {
                 return "Struct member '%s' is not visible".format(nameTok.text);
             }
             return "Struct member is not visible";
@@ -154,6 +154,6 @@ string getSummaryMessage(CompilationError error) {
             return "Anonymous structs cannot have const members";
 
         default: 
-            return "Generic Error: %s".format(error.kind());
+            return "Generic Error: %s".format(error.eerror());
     }
 }

@@ -26,7 +26,7 @@ void parseType(Node parent, ParseState state) {
 
     type = consumePointer(type, state);
 
-    if(state.tokenKind() == EToken.LSQUARE) {
+    if(state.etoken() == EToken.LSQUARE) {
 
         type = parseArrayType(type, state);
         type = consumePointer(type, state);
@@ -39,10 +39,10 @@ bool isType(ParseState state) {
     return isSimpleType(state) || isAnonStruct(state) || isUserDefinedType(state) || isTypeOf(state) || isFunctionPtr(state);
 }
 bool isSimpleType(ParseState state) {
-    return peekSimpleTypeKind(state) != TypeKind.UNKNOWN;
+    return peekSimpleEType(state) != EType.UNKNOWN;
 }
 bool isUserDefinedType(ParseState state) {
-    if(state.tokenKind() != EToken.IDENTIFIER) return false;
+    if(state.etoken() != EToken.IDENTIFIER) return false;
     
     string name = state.text();
     
@@ -50,17 +50,17 @@ bool isUserDefinedType(ParseState state) {
     if(state.mod.isUDT(name, state.mod, null)) return true;
 
     // moduleAlias.Type
-    if(state.mod.isModuleAlias(name) && state.tokenKind(1) == EToken.DOT && state.mod.isUDT(state.text(2), state.mod, name)) {
+    if(state.mod.isModuleAlias(name) && state.etoken(1) == EToken.DOT && state.mod.isUDT(state.text(2), state.mod, name)) {
         return true;
     }
 
     return false;
 }
 bool isTypeOf(ParseState state) {
-    return state.tokenKind() == EToken.COLON2 && state.peek(1).text == "typeOf";
+    return state.etoken() == EToken.COLON2 && state.peek(1).text == "typeOf";
 }
 bool isAnonStruct(ParseState state) {
-    return state.text() == "struct" && state.tokenKind(1) == EToken.LBRACE;
+    return state.text() == "struct" && state.etoken(1) == EToken.LBRACE;
 }
 /**
  * fn(params)->void 
@@ -69,32 +69,32 @@ bool isFunctionPtr(ParseState state) {
     if(!state.matches(0, EToken.IDENTIFIER, EToken.LPAREN)) return false;
     int closing = state.findOffsetOfClosing(1, EToken.LPAREN, EToken.RPAREN);
     if(closing == -1) return false;
-    return state.peek(closing+1).kind == EToken.RARROW;
+    return state.peek(closing+1).etoken == EToken.RARROW;
 }
 
 //──────────────────────────────────────────────────────────────────────────────────────────────────
 private:
 
 Type consumePointer(Type type, ParseState state) {
-    while(state.tokenKind() == EToken.STAR) {
+    while(state.etoken() == EToken.STAR) {
         type = makePointerTypeWithChild(type);
         state.next();
     }
     return type;
 }
 
-TypeKind peekSimpleTypeKind(ParseState state) {
+EType peekSimpleEType(ParseState state) {
     switch(state.text()) {
-        case "bool": return TypeKind.BOOL;
-        case "byte": return TypeKind.BYTE;
-        case "short": return TypeKind.SHORT;
-        case "int": return TypeKind.INT;
-        case "long": return TypeKind.LONG;
-        case "float": return TypeKind.FLOAT;
-        case "double": return TypeKind.DOUBLE;
-        case "void": return TypeKind.VOID;
-        case "...": return TypeKind.C_VARARGS;
-        default: return TypeKind.UNKNOWN;
+        case "bool": return EType.BOOL;
+        case "byte": return EType.BYTE;
+        case "short": return EType.SHORT;
+        case "int": return EType.INT;
+        case "long": return EType.LONG;
+        case "float": return EType.FLOAT;
+        case "double": return EType.DOUBLE;
+        case "void": return EType.VOID;
+        case "...": return EType.C_VARARGS;
+        default: return EType.UNKNOWN;
     }
     assert(false);
 }
@@ -123,11 +123,11 @@ Type parseTypeOf(ParseState state) {
  * 'byte' | 'int' etc... 
  */
 Type parseSimpleType(ParseState state) {
-    TypeKind tk = peekSimpleTypeKind(state);
-    if(tk == TypeKind.UNKNOWN) return null;
+    EType tk = peekSimpleEType(state);
+    if(tk == EType.UNKNOWN) return null;
 
     SimpleType type = makeNode!SimpleType(state);
-    type.setTypeKind(tk);
+    type.setEType(tk);
     state.next();
     return type;
 }
@@ -137,10 +137,10 @@ Type parseAnonStruct(ParseState state) {
     state.skip("struct");
     state.skip(EToken.LBRACE);
 
-    while(state.tokenKind() != EToken.RBRACE) {
+    while(state.etoken() != EToken.RBRACE) {
         parseVariable(s, state, false);
 
-        if(state.tokenKind().isOneOf(EToken.SEMICOLON, EToken.COMMA)) {
+        if(state.etoken().isOneOf(EToken.SEMICOLON, EToken.COMMA)) {
             state.next();
         }
     }
@@ -156,7 +156,7 @@ Type parseAnonStruct(ParseState state) {
 Type parseUserDefinedType(ParseState state) {
     assert(isUserDefinedType(state));
 
-    if(state.mod.isModuleAlias(state.text()) && state.tokenKind(1) == EToken.DOT) {
+    if(state.mod.isModuleAlias(state.text()) && state.etoken(1) == EToken.DOT) {
 
         Module m = state.mod.importedModulesQualified[state.text()]; 
         state.next();
@@ -178,7 +178,7 @@ Type parseUserDefinedType(ParseState state) {
  * '[' Expression ']'
  */
 Type parseArrayType(Expression type, ParseState state) {
-    assert(state.tokenKind() == EToken.LSQUARE);
+    assert(state.etoken() == EToken.LSQUARE);
 
     ArrayType a = makeNode!ArrayType(state);
     a.add(type);
@@ -206,12 +206,12 @@ Type parseFunctionPtr(ParseState state) {
 
     // Parameters
     state.skip(EToken.LPAREN);
-    while(state.tokenKind() != EToken.RPAREN) {
+    while(state.etoken() != EToken.RPAREN) {
         parseParameter(f, state);
         f.numParams++;
 
         // ,
-        if(state.tokenKind() == EToken.COMMA) {
+        if(state.etoken() == EToken.COMMA) {
             state.skip(EToken.COMMA);
         }
     }

@@ -1,8 +1,8 @@
-module ppl7.ast.types.TypeKind;
+module ppl7.ast.types.EType;
 
 import ppl7.all;
 
-enum TypeKind {
+enum EType {
     UNKNOWN,
 
     // C varargs (special type valid only on extern function parameters)

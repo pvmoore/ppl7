@@ -9,11 +9,11 @@ import ppl7.all;
 final class TypeOf : Type {
 public:
     // Node
-    override NodeKind nodeKind() { return NodeKind.TYPE_OF; }
+    override ENode enode() { return ENode.TYPE_OF; }
     override bool isResolved() { return false; }
 
     // Type
-    override TypeKind typeKind() { return TypeKind.UNKNOWN; }
+    override EType etype() { return EType.UNKNOWN; }
 
     override bool exactlyMatches(Type other) {
         return exactlyMatches(expr().getType());
@@ -28,6 +28,6 @@ public:
     Expression expr() { return first().as!Expression; }
 
     override string toString() {
-        return "TypeOf %s".format(expr().nodeKind());
+        return "TypeOf %s".format(expr().enode());
     }
 }

@@ -76,7 +76,7 @@ ScanResult scanModule(Module mod) {
 
     while(i < tokens.length) {
         Token tok = peek();
-        switch(tok.kind) with(EToken) {
+        switch(tok.etoken) with(EToken) {
             case LBRACE: brace++; break;
             case RBRACE: brace--; break;
             case LSQUARE: square++; break;
@@ -90,31 +90,31 @@ ScanResult scanModule(Module mod) {
                 // Ignore any identifier that is not at the top level
                 if(brace != 0 || square != 0 || paren != 0 || angle != 0) break; 
 
-                if(tok.text == "public" && peek(1).kind == EToken.COLON) {
+                if(tok.text == "public" && peek(1).etoken == EToken.COLON) {
                     publicScope = true;
                     break;
                 }
 
-                if(tok.text == "private" && peek(1).kind == EToken.COLON) {
+                if(tok.text == "private" && peek(1).etoken == EToken.COLON) {
                     publicScope = false;
                     break;
                 }
 
                 string name;
 
-                if("struct" == tok.text && peek(1).kind == EToken.IDENTIFIER) {
+                if("struct" == tok.text && peek(1).etoken == EToken.IDENTIFIER) {
                     i++;
                     name = peek().text;
                     result.udts[name] = UDT(name, isPublicStmt());
-                } else if("union" == tok.text && peek(1).kind == EToken.IDENTIFIER) {
+                } else if("union" == tok.text && peek(1).etoken == EToken.IDENTIFIER) {
                     i++;
                     name = peek().text;
                     result.udts[name] = UDT(name, isPublicStmt());
-                } else if("alias" == tok.text && peek(1).kind == EToken.IDENTIFIER) {
+                } else if("alias" == tok.text && peek(1).etoken == EToken.IDENTIFIER) {
                     i++;
                     name = peek().text;
                     result.udts[name] = UDT(name, isPublicStmt());
-                } else if("enum" == tok.text && peek(1).kind == EToken.IDENTIFIER) {
+                } else if("enum" == tok.text && peek(1).etoken == EToken.IDENTIFIER) {
                     i++;
                     name = peek().text;
                     result.udts[name] = UDT(name, isPublicStmt());
@@ -125,7 +125,7 @@ ScanResult scanModule(Module mod) {
                     ScanImport imp;
 
                     // Alias
-                    if(peek(1).kind == EToken.EQUAL) {
+                    if(peek(1).etoken == EToken.EQUAL) {
                         imp.aliasToken = peek();
                         imp.alias_     = peek().text;
                         i+=2;
@@ -134,7 +134,7 @@ ScanResult scanModule(Module mod) {
                     imp.moduleToken = peek();
 
                     // Library name followed by ':'
-                    if(peek(1).kind == EToken.COLON) {
+                    if(peek(1).etoken == EToken.COLON) {
                         imp.libName = peek().text;
                         i += 2;
                     } 
@@ -142,7 +142,7 @@ ScanResult scanModule(Module mod) {
                     // The import path
                     imp.path = peek().text;
 
-                    while(peek(1).kind == EToken.SLASH) {
+                    while(peek(1).etoken == EToken.SLASH) {
                         i+=2;
                         imp.path ~= "/";
                         imp.path ~= peek().text;

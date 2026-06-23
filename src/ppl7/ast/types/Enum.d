@@ -14,11 +14,11 @@ public:
     bool isUnqualified;
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.ENUM; }
+    override ENode enode() { return ENode.ENUM; }
     override bool isResolved() { return resolveEvaluated && elementType().isResolved() && allMembersHaveInitialisers(); }
 
     // Type
-    override TypeKind typeKind() { return TypeKind.ENUM; }
+    override EType etype() { return EType.ENUM; }
 
     override bool exactlyMatches(Type other) {
         if(Enum o = other.extract!Enum) {

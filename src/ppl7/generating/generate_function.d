@@ -73,7 +73,7 @@ void generateFunctionBody(Function f, GenerateState state) {
     }
 
     // Add implicit return if this is a void function
-    if(f.returnType.typeKind() == TypeKind.VOID) {
+    if(f.returnType.etype() == EType.VOID) {
         bool addRetVoid = f.numChildren() == 0 || !f.last().isA!Return;
 
         if(addRetVoid) {

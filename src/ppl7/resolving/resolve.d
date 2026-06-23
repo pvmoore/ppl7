@@ -21,40 +21,40 @@ void resolveChildren(Node parent, ResolveState state) {
 
         if(!alwaysResolve && n.isResolved()) continue;
 
-        switch(n.nodeKind()) {
-            case NodeKind.ADDRESS_OF: resolveAddressOf(n.as!AddressOf, state); break;
-            case NodeKind.ALIAS: break;
-            case NodeKind.ARRAY_LITERAL: resolveArrayLiteral(n.as!ArrayLiteral, state); break;
-            case NodeKind.ARRAY_TYPE: resolveArrayType(n.as!ArrayType, state); break;
-            case NodeKind.AS: resolveAs(n.as!As, state); break;
-            case NodeKind.ASSERT: resolveAssert(n.as!Assert, state); break;
-            case NodeKind.BINARY: resolveBinary(n.as!Binary, state); break;
-            case NodeKind.BUILTIN: resolveBuiltin(n.as!Builtin, state); break;
-            case NodeKind.CALL: resolveCall(n.as!Call, state); break;
-            case NodeKind.DOT: break;
-            case NodeKind.ENUM: resolveEnum(n.as!Enum, state); break;
-            case NodeKind.ENUM_MEMBER: break;
-            case NodeKind.FUNCTION: break;
-            case NodeKind.IDENTIFIER: resolveIdentifier(n.as!Identifier, state); break;
-            case NodeKind.IF: resolveIf(n.as!If, state); break;
-            case NodeKind.INDEX: break;
-            case NodeKind.IS: resolveIs(n.as!Is, state); break;
-            case NodeKind.MODULE_REF: break;
-            case NodeKind.NODE_REF: break;
-            case NodeKind.NUMBER: resolveNumber(n.as!Number, state); break;
-            case NodeKind.NULL: resolveNull(n.as!Null, state); break;
-            case NodeKind.PARENS: break;
-            case NodeKind.POINTER_TYPE: break;
-            case NodeKind.RETURN: break;
-            case NodeKind.STRING_LITERAL: resolveStringLiteral(n.as!StringLiteral, state); break;
-            case NodeKind.STRUCT: break;
-            case NodeKind.STRUCT_LITERAL: resolveStructLiteral(n.as!StructLiteral, state); break;
-            case NodeKind.TYPE_OF: resolveTypeOf(n.as!TypeOf, state); break;
-            case NodeKind.TYPE_REF: resolveTypeRef(n.as!TypeRef, state); break;
-            case NodeKind.UNARY: break;
-            case NodeKind.VALUE_OF: break;
-            case NodeKind.VARIABLE: resolveVariable(n.as!Variable, state); break;
-            default: assert(false, "Handle resolve(%s)".format(n.nodeKind()));
+        switch(n.enode()) {
+            case ENode.ADDRESS_OF: resolveAddressOf(n.as!AddressOf, state); break;
+            case ENode.ALIAS: break;
+            case ENode.ARRAY_LITERAL: resolveArrayLiteral(n.as!ArrayLiteral, state); break;
+            case ENode.ARRAY_TYPE: resolveArrayType(n.as!ArrayType, state); break;
+            case ENode.AS: resolveAs(n.as!As, state); break;
+            case ENode.ASSERT: resolveAssert(n.as!Assert, state); break;
+            case ENode.BINARY: resolveBinary(n.as!Binary, state); break;
+            case ENode.BUILTIN: resolveBuiltin(n.as!Builtin, state); break;
+            case ENode.CALL: resolveCall(n.as!Call, state); break;
+            case ENode.DOT: break;
+            case ENode.ENUM: resolveEnum(n.as!Enum, state); break;
+            case ENode.ENUM_MEMBER: break;
+            case ENode.FUNCTION: break;
+            case ENode.IDENTIFIER: resolveIdentifier(n.as!Identifier, state); break;
+            case ENode.IF: resolveIf(n.as!If, state); break;
+            case ENode.INDEX: break;
+            case ENode.IS: resolveIs(n.as!Is, state); break;
+            case ENode.MODULE_REF: break;
+            case ENode.NODE_REF: break;
+            case ENode.NUMBER: resolveNumber(n.as!Number, state); break;
+            case ENode.NULL: resolveNull(n.as!Null, state); break;
+            case ENode.PARENS: break;
+            case ENode.POINTER_TYPE: break;
+            case ENode.RETURN: break;
+            case ENode.STRING_LITERAL: resolveStringLiteral(n.as!StringLiteral, state); break;
+            case ENode.STRUCT: break;
+            case ENode.STRUCT_LITERAL: resolveStructLiteral(n.as!StructLiteral, state); break;
+            case ENode.TYPE_OF: resolveTypeOf(n.as!TypeOf, state); break;
+            case ENode.TYPE_REF: resolveTypeRef(n.as!TypeRef, state); break;
+            case ENode.UNARY: break;
+            case ENode.VALUE_OF: break;
+            case ENode.VARIABLE: resolveVariable(n.as!Variable, state); break;
+            default: assert(false, "Handle resolve(%s)".format(n.enode()));
         }
 
         // At this point Node n may no longer be attached

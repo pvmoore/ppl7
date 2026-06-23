@@ -28,7 +28,7 @@ string formatErrorMessage(Module mod, string message, int line, int column) {
         string colour = Ansi.WHITE;
         if(t.column == column) {
             colour = Ansi.YELLOW_BOLD;
-        } else if(t.kind == EToken.IDENTIFIER && t.text in KEYWORDS) {
+        } else if(t.etoken == EToken.IDENTIFIER && t.text in KEYWORDS) {
             colour = Ansi.BLUE;
         } 
         formatted ~= fmt(colour, t.text);

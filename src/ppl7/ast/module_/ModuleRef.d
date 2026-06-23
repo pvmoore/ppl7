@@ -10,7 +10,7 @@ public:
     Module mod;
 
     // Node
-    override NodeKind nodeKind() { return NodeKind.MODULE_REF; }
+    override ENode enode() { return ENode.MODULE_REF; }
     override bool isResolved() { return true; }
 
     // Statement
