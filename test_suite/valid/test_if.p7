@@ -13,7 +13,7 @@ public fn main() {
     if(a is 1) {
         a = 2
     }
-    assert(a is 2)
+    assert a is 2
     
     // if with then and else branch
     int a2 = 1
@@ -22,16 +22,16 @@ public fn main() {
     } else {
         a2 = 3
     }
-    assert(a2 is 2)
+    assert a2 is 2
 
     // if with then and else branch without braces
     int a3 = 1
     if(a3 is 2) a3 = 2 else a3 = 3
-    assert(a3 is 3)
+    assert a3 is 3
     
     // if expression
     int b = if(2 is 2) 3 else 4
-    assert(b is 3)
+    assert b is 3
 
     int c = if(false) {
         int d = 3
@@ -40,5 +40,5 @@ public fn main() {
         int e = 4
         e + 20
     }
-    assert(c is 24)
+    assert c is 24
 }

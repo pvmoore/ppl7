@@ -1,7 +1,7 @@
 module ppl7.Project;
 
 import ppl7.all;
-import std.file : getcwd, exists, mkdirRecurse;
+import std.file : getcwd, exists, mkdirRecurse, rmdirRecurse;
 import std.path : baseName, dirName, withExtension;
 
 final class Project {
@@ -111,8 +111,8 @@ public:
             //];
         } else {
             externalLibs ~= [
-                "msvcrt.lib",               // MS C initialization and termination (release)
-                //"ucrt.lib",                 // MS universal C99 runtime (release)
+                "msvcrt.lib",                   // MS C initialization and termination (release)
+                //"ucrt.lib",                   // MS universal C99 runtime (release)
                 "legacy_stdio_definitions.lib", // Required for printf (and probably other stdio functions)
             ];
             //externalLibs ~= [
@@ -131,15 +131,19 @@ public:
 //──────────────────────────────────────────────────────────────────────────────────────────────────
 private:
     void createTargetDirectory() {
-        void create(string dir) {
+        void create(string dir, bool removeContents) {
+            debug if(removeContents && exists(dir)) {
+                rmdirRecurse(dir);
+            }
+
             if(!dir.exists()) {
                 mkdirRecurse(dir);
-            }
+            } 
         }
-        create(targetDirectory ~ "/scan/");
-        create(targetDirectory ~ "/ast/");
-        create(targetDirectory ~ "/ll/");
-        create(targetDirectory ~ "/logs/");
+        create(targetDirectory ~ "/scan/", false);
+        create(targetDirectory ~ "/ast/", false);
+        create(targetDirectory ~ "/ll/", false);
+        create(targetDirectory ~ "/logs/", true);
     } 
     /**
      * Recursively process a source file. 

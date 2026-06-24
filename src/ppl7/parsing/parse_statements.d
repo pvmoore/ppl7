@@ -187,9 +187,7 @@ void parseAssert(Node parent, ParseState state) {
 
     state.skip("assert");
 
-    state.skip(EToken.LPAREN);
     parseExpression(a, state);
-    state.skip(EToken.RPAREN);
 }
 
 /**

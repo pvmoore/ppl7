@@ -23,98 +23,98 @@ public fn main() {
     struct { int a, int b } s
     int[2] j
 
-    assert(::isInteger(a))
-    assert(::isInteger(b))
-    assert(::isBool(c))
-    assert(::isBool(false))
-    assert(::isReal(d))
-    assert(::isReal(e))
-    assert(::isInteger(f))
-    assert(::isInteger(g))
-    assert(::isInteger(h))
-    assert(::isPointer(i))
-    assert(::isValue(a))
-    assert(::isStruct(s))
-    assert(::isStruct(BI_1))
-    assert(::isStruct(BI_2))
-    assert(::isPacked(BI_1) is false)
-    assert(::isPacked(BI_2))
-    assert(::isArray(j))
-    assert(::isArray([1,2,3]))    
-    assert(::isArray([]))    
+    assert ::isInteger(a)
+    assert ::isInteger(b)
+    assert ::isBool(c)
+    assert ::isBool(false)
+    assert ::isReal(d)
+    assert ::isReal(e)
+    assert ::isInteger(f)
+    assert ::isInteger(g)
+    assert ::isInteger(h)
+    assert ::isPointer(i)
+    assert ::isValue(a)
+    assert ::isStruct(s)
+    assert ::isStruct(BI_1)
+    assert ::isStruct(BI_2)
+    assert ::isPacked(BI_1) is false
+    assert ::isPacked(BI_2)
+    assert ::isArray(j)
+    assert ::isArray([1,2,3])   
+    assert ::isArray([])   
 
     // ::sizeOf
-    assert(::sizeOf(int) is 4)
-    assert(::sizeOf(byte) is 1)
-    assert(::sizeOf(bool) is 1)
-    assert(::sizeOf(float) is 4)
-    assert(::sizeOf(double) is 8)
-    assert(::sizeOf(long) is 8)
-    assert(::sizeOf(a) is 4)
+    assert ::sizeOf(int) is 4
+    assert ::sizeOf(byte) is 1
+    assert ::sizeOf(bool) is 1
+    assert ::sizeOf(float) is 4
+    assert ::sizeOf(double) is 8
+    assert ::sizeOf(long) is 8
+    assert ::sizeOf(a) is 4
 
     // ::isFunction
     fn()->void fptr
     int notf
 
-    assert(::isFunction(main))
-    assert(::isFunction(fptr))
-    assert(::isFunction(int) is false)
-    assert(::isFunction(notf) is false)
+    assert ::isFunction(main)
+    assert ::isFunction(fptr)
+    assert ::isFunction(int) is false
+    assert ::isFunction(notf) is false
 
     // ::isVoid
-    assert(::isVoid(void))
-    assert(::isVoid(int) is false)
-    assert(::isVoid(notf) is false)
+    assert ::isVoid(void)
+    assert ::isVoid(int) is false
+    assert ::isVoid(notf) is false
 
     // ::isEnum
     TB_1 en
-    assert(::isEnum(TB_1))
-    assert(::isEnum(en))
-    assert(::isEnum(int) is false)
-    assert(::isEnum(notf) is false)
+    assert ::isEnum(TB_1)
+    assert ::isEnum(en)
+    assert ::isEnum(int) is false
+    assert ::isEnum(notf) is false
 
     // ::isPublic
-    assert(::isPublic(a) is false)
-    assert(::isPublic(main))
-    assert(::isPublic(g_public))
-    assert(::isPublic(g_private) is false)
-    assert(::isPublic(TB_1) is false)    
-    assert(::isPublic(BI_3)) 
-    assert(::isPublic(int) is false)            
+    assert ::isPublic(a) is false
+    assert ::isPublic(main)
+    assert ::isPublic(g_public)
+    assert ::isPublic(g_private) is false
+    assert ::isPublic(TB_1) is false   
+    assert ::isPublic(BI_3)
+    assert ::isPublic(int) is false        
 
     // ::alignOf
-    assert(::alignOf(int) is 4)
-    assert(::alignOf(byte) is 1)
-    assert(::alignOf(bool) is 1)
-    assert(::alignOf(float) is 4)
-    assert(::alignOf(double) is 8)
-    assert(::alignOf(long) is 8)
-    assert(::alignOf(a) is 4)
+    assert ::alignOf(int) is 4
+    assert ::alignOf(byte) is 1
+    assert ::alignOf(bool) is 1
+    assert ::alignOf(float) is 4
+    assert ::alignOf(double) is 8
+    assert ::alignOf(long) is 8
+    assert ::alignOf(a) is 4
 
     // ::offsetOf
-    assert(::offsetOf(s.a) is 0)
-    assert(::offsetOf(s.b) is 4)
+    assert ::offsetOf(s.a) is 0
+    assert ::offsetOf(s.b) is 4
 
     // ::isConst   
     const int cint = 1
     const float cfloat = 1.0
-    assert(::isConst(cint))
-    assert(::isConst(cfloat))
-    assert(::isConst(a) is false)
-    assert(::isConst(j) is false)
+    assert ::isConst(cint)
+    assert ::isConst(cfloat)
+    assert ::isConst(a) is false
+    assert ::isConst(j) is false
 
     // ::typeOf
-    assert(::typeOf(a) is int)
-    assert(::typeOf(b) is byte)
-    assert(::typeOf(c) is bool)
-    assert(::typeOf(d) is float)
-    assert(::typeOf(e) is double)
-    assert(::typeOf(f) is long)
-    assert(::typeOf(g) is long)
-    assert(::typeOf(h) is short)
-    assert(::typeOf(i) is int*)
-    assert(::typeOf(s) is struct { int a, int b })
-    assert(::typeOf(j) is int[2])
+    assert ::typeOf(a) is int
+    assert ::typeOf(b) is byte
+    assert ::typeOf(c) is bool
+    assert ::typeOf(d) is float
+    assert ::typeOf(e) is double
+    assert ::typeOf(f) is long
+    assert ::typeOf(g) is long
+    assert ::typeOf(h) is short
+    assert ::typeOf(i) is int*
+    assert ::typeOf(s) is struct { int a, int b }
+    assert ::typeOf(j) is int[2]
 
 }
 

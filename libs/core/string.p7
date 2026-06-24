@@ -15,22 +15,22 @@ fn slice(string str, int start, int end) -> string {
         // assert_always(start >= 0 && start < str.len)
 
         // TODO - add preconditions and postconditions for functions
-        assert(str.ptr is not null)
-        assert(start >= 0 and start < str.len)
-        assert(end >= 0 and end <= start)
+        assert str.ptr is not null
+        assert start >= 0 and start < str.len
+        assert end >= 0 and end <= start
     }
 
     // Fixme: this fails to compile. Have we implemented pointer arithmetic?
     //byte* p = str.ptr + start
 
-    string s = { ptr: str.ptr /*+ start*/, len: end - start } // uncomment this when the bug is fixed 
+    string s = { ptr: str.ptr /*+ start*/, len: end - start } // uncomment this when the bug is fixed
 
     // Fixme - check for return here if the following line is missing
-    return s 
+    return s
 
 
-    // return string { 
-    //     ptr: str.ptr + start, 
-    //     len: end - start 
+    // return string {
+    //     ptr: str.ptr + start,
+    //     len: end - start
     // }
 }
