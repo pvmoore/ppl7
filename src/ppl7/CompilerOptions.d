@@ -33,6 +33,10 @@ public:
     bool writeLL    = false;
     bool writeAST   = false;
 
+    // built-in properties and properties passed in by the user
+    // eg. -Dmy_property=1
+    string[string] properties; 
+
     this() {
         // Add built-in libraries
         CompilerOptions.Lib coreLib = {

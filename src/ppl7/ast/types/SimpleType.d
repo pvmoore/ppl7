@@ -5,7 +5,7 @@ import ppl7.all;
 final class SimpleType : Type {
 public:
     // Node
-    override ENode enode() { return ENode.BASIC_TYPE; }
+    override ENode enode() { return ENode.SIMPLE_TYPE; }
     override bool isResolved() { return _etype != EType.UNKNOWN; }
 
     // Type

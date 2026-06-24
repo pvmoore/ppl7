@@ -21,6 +21,19 @@ string getSummaryMessage(CompilationError error) {
             return "Cannot implicitly convert %s to the array element type %s".format(ele.getType(), at.elementType());    
         }
 
+        case BUILTIN_PROPERTY_MISSING_TYPE:
+            return "@property() first argument must be a type";
+        case BUILTIN_PROPERTY_MISSING_KEY:
+            return "@property() second argument must be a string literal";
+        case BUILTIN_PROPERTY_INVALID_TYPE:
+            return "@property() type must be one of bool, byte, short, int, long, float, double";
+        case BUILTIN_PROPERTY_NOT_DEFINED:
+            return "@property(\"%s\") not defined and no default was provided".format(stmt.as!StringLiteral().stringValue);
+        case BUILTIN_PROPERTY_INVALID_VALUE:
+            return "@property() value cannot be converted to the expected type";
+        case BUILTIN_PROPERTY_INVALID_DEFAULT_VALUE:
+            return "@property() default value cannot be converted to the expected type";
+            
         case BUILTIN_OFFSET_OF_NOT_MEMBER:
             return "@offsetOf() requires a struct member as the first argument";  
         case BUILTIN_ISCONST_NOT_IDENTIFIER:

@@ -3,7 +3,7 @@ module test_suite;
 import std.path;
 import std.stdio     : writef, writefln;
 import std.file      : read, dirEntries, SpanMode;
-import std.array     : replace;
+import std.array     : replace, join;
 import std.string    : indexOf, split, strip, toLower;
 import std.format    : format;
 import std.algorithm : map;
@@ -57,16 +57,18 @@ void runTestSuite() {
 private:
 
 enum {
-    CYAN         = "\u001b[36m",
-    GREEN_BOLD   = "\u001b[32;1m",
-    RED_BOLD     = "\u001b[31;1m",
-    MAGENTA_BOLD = "\u001b[35;1m",
-    YELLOW_BOLD  = "\u001b[33;1m",
-    RESET        = "\u001b[0m",
+    BLUE_BOLD     = "\u001b[34;1m",
+    CYAN          = "\u001b[36m",
+    GREEN_BOLD    = "\u001b[32;1m",
+    RED_BOLD      = "\u001b[31;1m",
+    MAGENTA_BOLD  = "\u001b[35;1m",
+    YELLOW_BOLD   = "\u001b[33;1m",
+    WHITE_BOLD    = "\u001b[37;1m",
+    RESET         = "\u001b[0m",
 }
 
 void runTestDirectory(string suiteName, string directory) {
-    writefln("[%s%s%s]", MAGENTA_BOLD, suiteName, RESET);
+    writefln("[%s%s%s]", WHITE_BOLD, suiteName, RESET);
     foreach(e; dirEntries(directory, "**.p7", SpanMode.breadth)) {
         runTest(e.name);
     }
@@ -110,11 +112,16 @@ void runTest(string filename) {
     options.enableNullChecks    = true;
     options.enableBoundsChecks  = true;
 
+    options.properties["myBoolean"] = "true";
+    options.properties["myInteger"] = "3";
+    options.properties["myFloat"]   = "3.14";
+
     Compiler compiler = new Compiler(options);
 
     auto errors = compiler.compileProject(filename);
 
     bool pass = false;
+    string[] msg;
 
     if(meta.errors.length == 0) {
         // This is expected to pass. If there are no errors (in which case this is a fail) then
@@ -130,14 +137,26 @@ void runTest(string filename) {
             }
         }
     } else {
-        // This is expected to fail. Check for the expected errors 
-        lp:foreach(actual; errors) {
+        // This is expected to fail. Check that all expected errors are found 
+
+        int numFound;
+        foreach(actual; errors) {
             string summary = actual.getSummary().toLower();
             foreach(expected; meta.errors) {
                 if(summary.indexOf(expected) != -1) {
-                    pass = true;
-                    break lp;
+                    numFound++;
                 }
+            }
+        }
+        pass = numFound == meta.errors.length;
+
+        if(!pass) {
+            msg ~=  "Not all expected error(s) were found:";
+            msg ~= meta.errors.map!(it=>"  Expected : '%s'".format(it)).array();
+            msg ~= errors.map!(it=>"  Actual   : '%s'".format(it.getSummary())).array();
+
+            if(errors.length == 0) {
+                msg ~= "  Actual   : No errors found";
             }
         }
     }
@@ -150,6 +169,9 @@ void runTest(string filename) {
     } else {
         g_numFailed++;
         writefln(" %s%s%s", RED_BOLD, "FAIL", RESET);
+        if(msg) {
+            foreach(m; msg) writefln("  %s%s%s", YELLOW_BOLD, m, RESET);
+        }
     }
     g_testIndex++;
 }

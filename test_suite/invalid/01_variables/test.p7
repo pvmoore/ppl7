@@ -6,6 +6,6 @@
  * errors ["cannot be resolved"]
  */
 public fn main() -> int {
-    a = 0
+    a = 0      
     return 0
 }

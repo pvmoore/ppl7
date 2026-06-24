@@ -356,6 +356,26 @@ void parseBuiltin(Node parent, ParseState state) {
             parseExpressionWithUpperBound(b, state);
             state.skip(EToken.RPAREN);
             break;
+        case "@property":
+            // This must have 2 or 3 arguments
+            
+            state.skip(EToken.LPAREN);
+
+            //Type
+            parseExpressionWithUpperBound(b, state);
+
+            // Name
+            state.skip(EToken.COMMA);
+            parseExpressionWithUpperBound(b, state);
+
+            // Optional default value
+            if(state.etoken() == EToken.COMMA) {
+                state.skip(EToken.COMMA);
+                parseExpressionWithUpperBound(b, state);
+            }
+
+            state.skip(EToken.RPAREN);
+            break;
         default:
             syntaxError(state, "Unknown builtin function %s".format(b.name));
     }

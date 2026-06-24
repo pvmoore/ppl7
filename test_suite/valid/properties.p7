@@ -1,0 +1,33 @@
+/**
+ * magic!!
+ * name "builtin property"
+ * tags [builtin]
+ * args []
+ * errors []
+ */
+ public fn main() {
+    // All of these builtin properties should be true    
+    bool isDebug        = ::property(bool, "__DEBUG__")
+    bool isBoundsChecks = ::property(bool, "__BOUNDS_CHECKS__")
+    bool isAssert       = ::property(bool, "__ASSERTS__")
+    bool nullChecks     = ::property(bool, "__NULL_CHECKS__")
+
+    // These 3 properties have been set for each test suite test
+    bool myBool   = ::property(bool, "myBoolean")   ; assert(myBool)            
+    int myInt     = ::property(int, "myInteger")    ; assert(myInt is 3)        
+    float myFloat = ::property(float, "myFloat")    ; assert(myFloat is 3.14)   
+
+    // Property "blah" does not exist
+    int a   = ::property(int, "blah", "7")      ; assert(a is 7)
+    int b   = ::property(int, "blah", 8)        ; assert(b is 8)    
+    bool c  = ::property(bool, "blah", true)    ; assert(c)
+    bool d  = ::property(bool, "blah", "true")  ; assert(d)
+    float e = ::property(float, "blah", "3.15") ; assert(e is 3.15)    
+    float f = ::property(float, "blah", 3.15)   ; assert(f is 3.15)
+
+    if(::property(bool, "__BOUNDS_CHECKS__")) {
+        assert(true)
+    } else {
+        assert(false)
+    }
+ }

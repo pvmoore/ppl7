@@ -20,15 +20,13 @@ public:
     Module[string] modulesByName;
     CompilationError[] errors;
 
-    // built-in properties and properties passed in by the user
-    // eg. -Dmy_property=1
-    string[string] defines; 
-
     this(CompilerOptions options, string mainFilename) {
         this.options = options;
 
-        defines["__DEBUG__"] = options.isDebug ? "1" : "0";
-        defines["__BOUNDS_CHECKS__"] = options.enableBoundsChecks ? "1" : "0";
+        options.properties["__BOUNDS_CHECKS__"] = "%s".format(options.enableBoundsChecks);
+        options.properties["__DEBUG__"]         = "%s".format(options.isDebug);
+        options.properties["__ASSERTS__"]       = "%s".format(options.enableAsserts);
+        options.properties["__NULL_CHECKS__"]   = "%s".format(options.enableNullChecks);
 
         string normalisedFilename = toCanonicalFilename(mainFilename, false);
 

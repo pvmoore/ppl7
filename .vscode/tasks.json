@@ -39,7 +39,7 @@
             "problemMatcher": []
         },
         {
-            "label": "**** Run Test Suite ****",
+            "label": "[ Test Suite ]",
             "type": "shell",
             "windows": {
                 "command": "scripts/run_build.bat dmd debug test test_suite",

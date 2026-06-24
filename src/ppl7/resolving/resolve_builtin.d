@@ -10,13 +10,15 @@ void resolveBuiltin(Builtin n, ResolveState state) {
     Expression[] arguments = n.arguments();
     Expression arg0 = arguments[0];
 
-    if("@debug" == n.name) {
+    if("@property" == n.name) {
+        handleProperty(state, n);
+    } else if("@debug" == n.name) {
         // Output the Expression to the console
         auto expr = n.first().as!Expression;
-        rewriteToBool(state, n, true);
-
         string s = expr.isA!StringLiteral ? expr.as!StringLiteral.stringValue : expr.toString();
         consoleLog("DEBUG: %s", s);
+
+        rewriteToBool(state, n, true);
     } else if("@isArray" == n.name) {
         auto expr = n.first().as!Expression;
         auto result = expr.getType().isA!ArrayType;
@@ -73,19 +75,19 @@ void resolveBuiltin(Builtin n, ResolveState state) {
         auto result = expr.getType().isVoidValue();
         rewriteToBool(state, n, result);
 
-    } else if("@initOf" == n.name) {
-        todo("implement me");
-    } else if("@sizeOf" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto size = expr.getType().size();
-        rewriteToInt(state, n, size);
     } else if("@alignOf" == n.name) {
         auto expr = n.first().as!Expression;
         auto align_ = expr.getType().alignment();
         rewriteToInt(state, n, align_);
+    } else if("@initOf" == n.name) {
+        todo("implement me");
     } else if("@offsetOf" == n.name) {
         handleOffsetOf(state, n, arg0);
-    } 
+    } else if("@sizeOf" == n.name) {
+        auto expr = n.first().as!Expression;
+        auto size = expr.getType().size();
+        rewriteToInt(state, n, size);
+    }
 }
 
 //──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -153,5 +155,62 @@ void handleOffsetOf(ResolveState state, Builtin n, Expression arg0) {
         log(state.mod, "expr is %s", n.first().enode());
 
         semanticError(n, EError.BUILTIN_OFFSET_OF_NOT_IDENTIFIER);
+    }
+}
+void handleProperty(ResolveState state, Builtin n) {
+    assert(n.numChildren().isOneOf(2,3));
+
+    Expression[] args = n.arguments();
+
+    // Check that argument[0] is a type
+    if(!args[0].isA!Type) {
+        semanticError(n, EError.BUILTIN_PROPERTY_MISSING_TYPE);
+        return;
+    }
+    // Check that argument[1] is a StringLiteral
+    if(!args[1].isA!StringLiteral) {
+        semanticError(args[1], EError.BUILTIN_PROPERTY_MISSING_KEY);
+        return;
+    }
+
+    // Check that the type is supported
+    Type type = args[0].as!Type;
+    if(!type.isInteger() && !type.isBool() && !type.isReal()) {
+        semanticError(n, EError.BUILTIN_PROPERTY_INVALID_TYPE);
+        return;
+    }
+
+    bool hasDefault        = n.numChildren() == 3;
+    string key             = args[1].as!StringLiteral.stringValue;
+    string value           = state.project.options.properties.get(key, null);
+    Expression defaultExpr = hasDefault ? args[$-1] : null;
+
+    // If there is no value and no default value then we have an error
+    if(value is null && defaultExpr is null) {
+        semanticError(args[1], EError.BUILTIN_PROPERTY_NOT_DEFINED);
+        return;
+    }
+
+    if(value) {
+        value = value.toLower();
+        rewriteToNumber(state, n, value, type);
+
+    } else {
+        // Use the defaultExpr
+
+        if(defaultExpr.as!StringLiteral) {
+            value = defaultExpr.as!StringLiteral.stringValue.toLower();
+            rewriteToNumber(state, n, value, type);     
+            return;  
+        }
+
+        Type defaultType = defaultExpr.getType();
+
+        if(!defaultType.canImplicitlyCastTo(type)) {
+            semanticError(defaultExpr, EError.BUILTIN_PROPERTY_INVALID_DEFAULT_VALUE);
+            return;
+        }
+
+        rewrite(state, n, defaultExpr);
     }
 }

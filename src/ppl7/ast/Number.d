@@ -35,13 +35,14 @@ public:
 
     bool isZero() {
         switch(_type.etype()) {
+            case EType.BOOL:   return value.byteValue == 0;
             case EType.BYTE:   return value.byteValue == 0;
             case EType.SHORT:  return value.shortValue == 0;
             case EType.INT:    return value.intValue == 0;
             case EType.LONG:   return value.longValue == 0;
             case EType.FLOAT:  return value.floatValue == 0.0;
             case EType.DOUBLE: return value.doubleValue == 0.0;
-            default: assert(false);
+            default: assert(false, "We shouldn't get here. type is %s".format(_type.etype()));
         }
         assert(false);  
     }
@@ -56,13 +57,14 @@ public:
 
     bool getValueAsBool() {
         switch(_type.etype()) {
+            case EType.BOOL:   return value.byteValue != 0;
             case EType.BYTE:   return value.byteValue != 0;
             case EType.SHORT:  return value.shortValue != 0;
             case EType.INT:    return value.intValue != 0;
             case EType.LONG:   return value.longValue != 0;
             case EType.FLOAT:  return value.floatValue != 0.0;
             case EType.DOUBLE: return value.doubleValue != 0.0;
-            default: assert(false);
+            default: assert(false, "We shouldn't get here. type is %s".format(_type.etype()));
         }
     }
     int getValueAsInt() {
@@ -73,6 +75,17 @@ public:
             case EType.LONG:   return value.longValue.as!int;
             case EType.FLOAT:  return value.floatValue.as!int;
             case EType.DOUBLE: return value.doubleValue.as!int;
+            default: assert(false);
+        }
+    }
+    float getValueAsFloat() {
+        switch(_type.etype()) {
+            case EType.BYTE:   return value.byteValue;
+            case EType.SHORT:  return value.shortValue;
+            case EType.INT:    return value.intValue;
+            case EType.LONG:   return value.longValue;
+            case EType.FLOAT:  return value.floatValue;
+            case EType.DOUBLE: return value.doubleValue.as!float;
             default: assert(false);
         }
     }
@@ -103,6 +116,23 @@ private:
     Type _type;
 }
 
+Number makeNumber(string value, Type type) {
+    auto n = makeNode!Number(0);
+    n.stringValue = value;
+    switch(type.etype()) {
+        case EType.BOOL:   n.value.byteValue = value.toBool() ? -1 : 0; break;
+        case EType.BYTE:   n.value.byteValue = value.toInt().as!byte; break;
+        case EType.SHORT:  n.value.shortValue = value.toInt().as!short; break;
+        case EType.INT:    n.value.intValue = value.toInt(); break;
+        case EType.LONG:   n.value.longValue = value.toLong(); break;
+        case EType.FLOAT:  n.value.floatValue = value.toFloat(); break;
+        case EType.DOUBLE: n.value.doubleValue = value.toDouble(); break;
+        default: assert(false, "We shouldn't get here. type is %s".format(type.etype()));
+    }
+    n.setType(type);
+    return n;
+}
+
 Number makeBoolNumber(bool b) {
     auto n = makeNode!Number(0);
     n.stringValue = b ? "true" : "false";
@@ -126,6 +156,20 @@ Number makeLongNumber(long value) {
     n.stringValue = "%s".format(value);
     n.value.longValue = value;
     n.setType(makeLongType());
+    return n;
+}
+Number makeFloatNumber(float value) {
+    auto n = makeNode!Number(0);
+    n.stringValue = "%.5f".format(value);
+    n.value.floatValue = value;
+    n.setType(makeFloatType());
+    return n;
+}
+Number makeDoubleNumber(double value) {
+    auto n = makeNode!Number(0);
+    n.stringValue = "%.8f".format(value);
+    n.value.doubleValue = value;
+    n.setType(makeDoubleType());
     return n;
 }
 Number makeRealNumber(double value, Type type) {

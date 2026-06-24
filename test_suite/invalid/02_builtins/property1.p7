@@ -1,0 +1,13 @@
+/**
+ * magic!!
+ * name "property not found and no default"
+ * tags [builtin, property]
+ * args []
+ * errors ["not defined and no default was provided"]
+ */
+public fn main() -> int {
+
+    bool e = ::property(bool, "blah")
+
+    return 0
+}

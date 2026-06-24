@@ -35,7 +35,7 @@ enum ENode {
 
     // Types
     ARRAY_TYPE,
-    BASIC_TYPE,
+    SIMPLE_TYPE,
     POINTER_TYPE,
     STRUCT,
     TYPE_OF,

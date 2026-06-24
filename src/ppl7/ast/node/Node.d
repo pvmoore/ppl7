@@ -58,6 +58,7 @@ public:
 
     // ---------------------------------------------------------------------- Navigation
     final Node first() { return hasChildren() ? children[0] : null; }
+    final Node second() { return numChildren()  > 1 ? children[1] : null; }
     final Node last() { return hasChildren() ? children[$-1] : null; }
 
     final Node prev(bool descend) {

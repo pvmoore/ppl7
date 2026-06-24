@@ -10,7 +10,7 @@ import ppl7.all;
  *
  * @isArray(Expression)     
  * @isBool(Expression)      
- * @isConst(Expression)
+ * @isConst(Expression)     *todo add @isMutable(xxx)
  * @isEnum(Expression)      
  * @isFunction(Expression)  
  * @isInteger(Expression)   
@@ -23,10 +23,12 @@ import ppl7.all;
  * @isValue(Expression)     
  * @isVoid(Expression)    
  *  
- * @sizeOf(Expression)      
  * @alignOf(Expression)     
- * @offsetOf(Expression)   
  * @initOf(Expression)      *todo
+ * @offsetOf(Expression)   
+ * @sizeOf(Expression)   
+ *
+ * @property(Type, StringLiteral, [StringLiteral])   
  */
 final class Builtin : Expression {
 public:

@@ -10,7 +10,7 @@ struct string {
  * Return a slice of the string
  */
 fn slice(string str, int start, int end) -> string {
-    if(__BOUNDS_CHECKS__) {
+    if(::property(bool, "__BOUNDS_CHECKS__")) {
         // TODO add always assert that is not removed when enableAsserts is false eg.
         // assert_always(start >= 0 && start < str.len)
 

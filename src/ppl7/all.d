@@ -9,7 +9,7 @@ import std.format             : format;
 import std.algorithm          : any, all, map, filter, find, sum;
 import std.range              : array, chain;
 import std.array              : join;
-import std.string             : toStringz, fromStringz, replace, strip, toUpper;
+import std.string             : toStringz, fromStringz, replace, strip, toLower, toUpper;
 import std.datetime.stopwatch : StopWatch;
 import std.typecons           : Tuple, tuple;
 

@@ -72,6 +72,37 @@ void writeScanResults(Project project, Module mod) {
 bool isDigit(char c) {
     return c >= '0' && c <= '9';
 }
+bool isBool(string s) {
+    string b = s.toLower();
+    return b == "true" || b == "false";
+}
+bool isNumber(string s) {
+    if(s is null || s.length == 0) return false;
+    int pos = s[0] == '-' ? 1 : 0;
+    foreach(c; s[pos..$]) if(!isDigit(c)) return false;
+    return true;
+}
+
+bool toBool(string s) {
+    string b = s.toLower();
+    return b == "true" || (isNumber(b) && toInt(b) != 0);
+}
+long toLong(string s) {
+    import std.conv : to;
+    return to!long(s);
+}
+int toInt(string s) {
+    import std.conv : to;
+    return to!int(s);
+}
+float toFloat(string s) {
+    import std.conv : to;
+    return to!float(s);
+}
+double toDouble(string s) {
+    import std.conv : to;
+    return to!double(s);
+}
 
 /**
  * Return a 'n' times repeated string
