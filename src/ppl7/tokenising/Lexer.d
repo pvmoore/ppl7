@@ -11,7 +11,7 @@ public:
     Token[] tokenise() {
 
         updateLoggingContext(mod, LoggingStage.Tokenising);
-        
+
         while(pos < source.length) {
             char ch = peek();
             //log("ch = %s", ch);
@@ -36,14 +36,14 @@ public:
                         addToken(EToken.SLASH);
                     }
                     break;
-                case '+': 
+                case '+':
                     if(peek(1) == '=') {
                         addToken(EToken.PLUS_EQUAL);
                     } else {
                         addToken(EToken.PLUS);
-                    } 
+                    }
                     break;
-                case '-': 
+                case '-':
                     if(tokenStart==pos && peek(1).isDigit()) {
                         // This is a negative number
                         pos++;
@@ -52,47 +52,47 @@ public:
                     if(peek(1) == '=') {
                         addToken(EToken.MINUS_EQUAL);
                     } else if(peek(1) == '>') {
-                        addToken(EToken.RARROW); 
+                        addToken(EToken.RARROW);
                     } else {
                         addToken(EToken.MINUS);
-                    }                    
+                    }
                     break;
-                case '*': 
+                case '*':
                     if(peek(1) == '=') {
                         addToken(EToken.STAR_EQUAL);
                     } else {
                         addToken(EToken.STAR);
                     }
                     break;
-                case '%': 
+                case '%':
                     if(peek(1) == '=') {
                         addToken(EToken.PERCENT_EQUAL);
                     } else {
                         addToken(EToken.PERCENT);
-                    } 
+                    }
                     break;
-                case '^': 
+                case '^':
                     if(peek(1) == '=') {
                         addToken(EToken.HAT_EQUAL);
                     } else {
                         addToken(EToken.HAT);
                     }
                     break;
-                case '&': 
+                case '&':
                     if(peek(1) == '=') {
                         addToken(EToken.AMPERSAND_EQUAL);
                     } else {
                         addToken(EToken.AMPERSAND);
                     }
                     break;
-                case '|': 
+                case '|':
                     if(peek(1) == '=') {
                         addToken(EToken.PIPE_EQUAL);
                     } else {
                         addToken(EToken.PIPE);
                     }
                     break;
-                case '~': 
+                case '~':
                     if(peek(1) == '=') {
                         addToken(EToken.TILDE_EQUAL);
                     } else {
@@ -110,43 +110,43 @@ public:
                 case ';': addToken(EToken.SEMICOLON); break;
                 case ',': addToken(EToken.COMMA); break;
                 case '?': addToken(EToken.QUESTION); break;
-                //case '@': addToken(EToken.AT); break;
+                case '@': addToken(EToken.AT); break;
                 case '#': addToken(EToken.HASH); break;
                 case '$': addToken(EToken.DOLLAR); break;
 
-                case ':': 
+                case ':':
                     if(peek(1)==':') {
                         addToken(EToken.COLON2);
                     } else {
-                        addToken(EToken.COLON); 
+                        addToken(EToken.COLON);
                     }
                     break;
-                case '.': 
+                case '.':
                     if(isDigit(peek(-1)) && isDigit(peek(1))) {
                         // Assume this is a real number
                         pos++;
                     } else if(peek(1)=='.' && peek(2)=='.') {
                         addToken(EToken.ELLIPSIS);
                     } else {
-                        addToken(EToken.DOT); 
+                        addToken(EToken.DOT);
                     }
                     break;
 
-                case '!': 
+                case '!':
                     if(peek(1)=='=') {
                         addToken(EToken.BANG_EQUAL);
                     } else {
                         addToken(EToken.BANG);
-                    } 
+                    }
                     break;
-                case '=': 
+                case '=':
                     if(peek(1)=='=') {
                         addToken(EToken.EQUAL2);
                     } else {
                         addToken(EToken.EQUAL);
-                    } 
+                    }
                     break;
-                case '<': 
+                case '<':
                     if(peek(1)=='=') {
                         addToken(EToken.LANGLE_EQUAL);
                     } else if(peek(1) == '<' && peek(2)=='=') {
@@ -154,10 +154,10 @@ public:
                     } else if(peek(1)=='<') {
                         addToken(EToken.LANGLE2);
                     } else {
-                        addToken(EToken.LANGLE); 
+                        addToken(EToken.LANGLE);
                     }
                     break;
-                case '>': 
+                case '>':
                     if(peek(1)=='=') {
                         addToken(EToken.RANGLE_EQUAL);
                     } else if(peek(1) == '>' && peek(2)=='=') {
@@ -165,11 +165,11 @@ public:
                     } else if(peek(1)=='>') {
                         addToken(EToken.RANGLE2);
                     } else {
-                        addToken(EToken.RANGLE); 
+                        addToken(EToken.RANGLE);
                     }
                     break;
 
-                default: 
+                default:
                     pos++;
                     break;
             }
@@ -194,7 +194,7 @@ private:
         if(pos > tokenStart) {
             string text = source[tokenStart..pos];
             int column  = tokenStart - lineStart;
-            
+
             // Identify the token type
             auto tk2 = EToken.IDENTIFIER;
             char ch1 = text[0];
@@ -202,7 +202,7 @@ private:
             if(ch1 == '\'') tk2 = EToken.NUMBER;
             else if(ch1 == '"') tk2 = EToken.STRING;
             else if(isDigit(ch1) || (ch1=='-' && isDigit(ch2)) || (ch1=='.' && isDigit(ch2))) tk2 = EToken.NUMBER;
-        
+
             tokens ~= Token(tk2, text, line, column);
         }
         if(tk != EToken.NONE) {
@@ -210,7 +210,7 @@ private:
             string text = source[pos..pos+len];
             int column  = pos - lineStart;
 
-            tokens ~= Token(tk, text, line, column); 
+            tokens ~= Token(tk, text, line, column);
             pos += len;
         }
         // Reset the token start position
@@ -251,7 +251,7 @@ private:
         }
         addToken();
     }
-    /** 
+    /**
      *  's' | '\n' | '\\'
      */
     void lexChar() {

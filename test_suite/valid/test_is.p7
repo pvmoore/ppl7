@@ -14,19 +14,19 @@ public fn main() {
     //assert bb is not not null // double negation is not allowed
 
     // Type is Type
-    bool c = int is int;        assert c
-    bool d = int is not int;    assert d is false
+    bool c = int is int     ; assert c
+    bool d = int is not int ; assert d is false
     assert int is int
     assert int is not bool
 
-    // Type is Expression (not allowed - use ::typeOf)
-    // Expression is Type (not allowed - use ::typeOf)
+    // Type is Expression (not allowed - use @typeOf)
+    // Expression is Type (not allowed - use @typeOf)
     //e:bool = int is a
     //f:bool = a is int
 
-    bool e1 = int is ::typeOf(a);       assert e1
-    bool e2 = ::typeOf(a) is int;       assert e2
-    bool e3 = ::typeOf(a) is not byte;  assert e3
+    bool e1 = int is @typeOf(a)      ; assert e1
+    bool e2 = @typeOf(a) is int      ; assert e2
+    bool e3 = @typeOf(a) is not byte ; assert e3
 
     // Pointer is pointer
     int* f1  = null

@@ -12,6 +12,7 @@ import std.array              : join;
 import std.string             : toStringz, fromStringz, replace, strip, toLower, toUpper;
 import std.datetime.stopwatch : StopWatch;
 import std.typecons           : Tuple, tuple;
+import std.traits             : EnumMembers;
 
 // Import the public interface
 import ppl7;
@@ -85,7 +86,6 @@ import ppl7.generating.generate_struct;
 import ppl7.generating.generate_variable;
 import ppl7.generating.GenerateState;
 
-import ppl7.linking.link;
 import ppl7.linking.lld_linker;
 import ppl7.linking.ms_linker;
 

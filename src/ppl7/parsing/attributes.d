@@ -11,6 +11,12 @@ struct Attribute {
     Token token;
 }
 
+/**
+ * #(name)
+ *
+ * #(packed)
+ * #(name=x) eg. #(name=itoa)
+ */
 final class Attributes {
 public:
     bool hasAttribute(string name) {
@@ -30,7 +36,7 @@ public:
         // Consume Attributes
         while(state.etoken() == EToken.HASH) {
             if(state.etoken(1) == EToken.IDENTIFIER && state.text(1) == "end") {
-                state.skip(EToken.HASH); 
+                state.skip(EToken.HASH);
                 state.skip("end");
 
                 if(multiStatementAttributes.length == 0) {
@@ -88,12 +94,12 @@ Attribute parseAttribute(ParseState state) {
 
         state.skip(EToken.LPAREN);
 
-        attr.name = state.text(); 
-        
+        attr.name = state.text();
+
         if(state.hasAttribute(attr.name)) {
             syntaxError(state, "Duplicate '%s' attribute".format(attr.name));
-        } 
-        
+        }
+
         state.next();
 
         if(!isRecognisedAttribute(attr.name)) {
@@ -113,7 +119,7 @@ Attribute parseAttribute(ParseState state) {
             }
         }
 
-        state.skip(EToken.RPAREN);  
+        state.skip(EToken.RPAREN);
 
         return attr;
     }
@@ -126,7 +132,7 @@ bool isRecognisedAttribute(string name) {
         case "packed":
         case "inline":
         case "name":
-        case "noinline": 
+        case "noinline":
         case "unqualified":
             return true;
         default: return false;

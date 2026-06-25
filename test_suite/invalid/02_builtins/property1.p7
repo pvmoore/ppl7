@@ -7,7 +7,7 @@
  */
 public fn main() -> int {
 
-    bool e = ::property(bool, "blah")
+    bool e = @property(bool, "blah")
 
     return 0
 }

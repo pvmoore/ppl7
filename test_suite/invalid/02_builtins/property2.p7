@@ -7,7 +7,7 @@
  */
 public fn main() -> int {
 
-    bool g = ::property(void, "sdfsds")
+    bool g = @property(void, "sdfsds")
 
     return 0
 }

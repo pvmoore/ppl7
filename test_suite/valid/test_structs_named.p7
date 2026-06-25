@@ -90,72 +90,72 @@ fn defaultInitialisation() {
     assert apple4a.c is true
 
     Fig fig
-    assert ::alignOf(fig) is 8
-    assert ::alignOf(fig.a) is 4
-    assert ::alignOf(fig.b) is 4
-    assert ::alignOf(fig.c) is 1
-    assert ::alignOf(fig.d) is 2
-    assert ::alignOf(fig.e) is 1
-    assert ::alignOf(fig.f) is 8
+    assert @alignOf(fig) is 8
+    assert @alignOf(fig.a) is 4
+    assert @alignOf(fig.b) is 4
+    assert @alignOf(fig.c) is 1
+    assert @alignOf(fig.d) is 2
+    assert @alignOf(fig.e) is 1
+    assert @alignOf(fig.f) is 8
 
-    //assert ::offsetOf(fig) is 0 // error - not a struct member
-    //assert ::offsetOf(Fig) is 0   // error - not a struct member
+    //assert @offsetOf(fig) is 0 // error - not a struct member
+    //assert @offsetOf(Fig) is 0   // error - not a struct member
 
-    assert ::offsetOf(fig.a) is 0
-    assert ::offsetOf(fig.b) is 4
-    assert ::offsetOf(fig.c) is 8
-    assert ::offsetOf(fig.d) is 10
-    assert ::offsetOf(fig.e) is 12
-    assert ::offsetOf(fig.f) is 16
+    assert @offsetOf(fig.a) is 0
+    assert @offsetOf(fig.b) is 4
+    assert @offsetOf(fig.c) is 8
+    assert @offsetOf(fig.d) is 10
+    assert @offsetOf(fig.e) is 12
+    assert @offsetOf(fig.f) is 16
 
-    assert ::offsetOf(Fig.a) is 0
-    assert ::offsetOf(Fig.b) is 4
-    assert ::offsetOf(Fig.c) is 8
-    assert ::offsetOf(Fig.d) is 10
-    assert ::offsetOf(Fig.e) is 12
-    assert ::offsetOf(Fig.f) is 16
+    assert @offsetOf(Fig.a) is 0
+    assert @offsetOf(Fig.b) is 4
+    assert @offsetOf(Fig.c) is 8
+    assert @offsetOf(Fig.d) is 10
+    assert @offsetOf(Fig.e) is 12
+    assert @offsetOf(Fig.f) is 16
 
     // nested struct members
     Gnat gnat
-    assert ::sizeOf(gnat) is 1
-    assert ::alignOf(gnat) is 1
-    assert ::offsetOf(gnat.a) is 0
+    assert @sizeOf(gnat) is 1
+    assert @alignOf(gnat) is 1
+    assert @offsetOf(gnat.a) is 0
 
     Chicken chicken
-    assert ::sizeOf(chicken) is 8
-    assert ::alignOf(chicken) is 4
-    assert ::offsetOf(chicken.a) is 0
-    assert ::offsetOf(chicken.b) is 4
-    assert ::offsetOf(chicken.c) is 6
+    assert @sizeOf(chicken) is 8
+    assert @alignOf(chicken) is 4
+    assert @offsetOf(chicken.a) is 0
+    assert @offsetOf(chicken.b) is 4
+    assert @offsetOf(chicken.c) is 6
 
     Egg egg
-    assert ::sizeOf(egg) is 16
+    assert @sizeOf(egg) is 16
 
-    assert ::offsetOf(egg.a) is 0
-    assert ::offsetOf(egg.b) is 4
-    assert ::offsetOf(egg.c) is 12
+    assert @offsetOf(egg.a) is 0
+    assert @offsetOf(egg.b) is 4
+    assert @offsetOf(egg.c) is 12
 
-    assert ::offsetOf(egg.b.a) is 0
-    assert ::offsetOf(egg.b.b) is 4
-    assert ::offsetOf(egg.b.c) is 6
+    assert @offsetOf(egg.b.a) is 0
+    assert @offsetOf(egg.b.b) is 4
+    assert @offsetOf(egg.b.c) is 6
 
     // Packed structs
     Blueberry blueberry
-    assert ::sizeOf(blueberry) is 15
+    assert @sizeOf(blueberry) is 15
     assert blueberry.a is 7
     assert blueberry.b is 0
     assert blueberry.c is 0.0
     assert blueberry.d is 0
 
-    assert ::alignOf(blueberry) is 8
-    assert ::alignOf(blueberry.a) is 4
-    assert ::alignOf(blueberry.b) is 1
-    assert ::alignOf(blueberry.c) is 8
-    assert ::alignOf(blueberry.d) is 2
+    assert @alignOf(blueberry) is 8
+    assert @alignOf(blueberry.a) is 4
+    assert @alignOf(blueberry.b) is 1
+    assert @alignOf(blueberry.c) is 8
+    assert @alignOf(blueberry.d) is 2
 
     Small small
-    assert ::sizeOf(small) is 1
-    assert ::alignOf(small) is 1
+    assert @sizeOf(small) is 1
+    assert @alignOf(small) is 1
 }
 
 fn structLiterals() {
@@ -206,15 +206,15 @@ fn structLiterals() {
 
 fn opaque() -> void {
     TNSOpaque o
-    assert ::sizeOf(o) is 0
-    assert ::alignOf(o) is 1
+    assert @sizeOf(o) is 0
+    assert @alignOf(o) is 1
 }
 
 fn arrayOfStructs() {
     // Array of structs
     Small[2] smallArray
-    assert ::sizeOf(smallArray) is 2
-    assert ::alignOf(smallArray) is 1
+    assert @sizeOf(smallArray) is 2
+    assert @alignOf(smallArray) is 1
 }
 
 fn structIsStruct() {
@@ -265,21 +265,21 @@ private:
 
 fn visibility() {
     Green green
-    assert ::isPublic(green.a) is false
-    assert ::isPublic(green.b)
-    assert ::isPublic(green.c) is false
-    assert ::isPublic(green.d)
-    assert ::isPublic(green.e) is false
-    assert ::isPublic(green.f)
-    assert ::isPublic(green.g) is false
+    assert @isPublic(green.a) is false
+    assert @isPublic(green.b)
+    assert @isPublic(green.c) is false
+    assert @isPublic(green.d)
+    assert @isPublic(green.e) is false
+    assert @isPublic(green.f)
+    assert @isPublic(green.g) is false
 
-    assert ::isPublic(Green.a) is false
-    assert ::isPublic(Green.b)
-    assert ::isPublic(Green.c) is false
-    assert ::isPublic(Green.d)
-    assert ::isPublic(Green.e) is false
-    assert ::isPublic(Green.f)
-    assert ::isPublic(Green.g) is false
+    assert @isPublic(Green.a) is false
+    assert @isPublic(Green.b)
+    assert @isPublic(Green.c) is false
+    assert @isPublic(Green.d)
+    assert @isPublic(Green.e) is false
+    assert @isPublic(Green.f)
+    assert @isPublic(Green.g) is false
 
     // Local private struct members should be visible here
     green.a = 1
@@ -293,21 +293,21 @@ fn visibility() {
     Green green2 = { a:1, b:1, c:1, d:1, e:1, f:1, g:1 }
 
     qual.QualGreen qg
-    assert ::isPublic(qg.a) is false
-    assert ::isPublic(qg.b)
-    assert ::isPublic(qg.c) is false
-    assert ::isPublic(qg.d)
-    assert ::isPublic(qg.e) is false
-    assert ::isPublic(qg.f)
-    assert ::isPublic(qg.g) is false
+    assert @isPublic(qg.a) is false
+    assert @isPublic(qg.b)
+    assert @isPublic(qg.c) is false
+    assert @isPublic(qg.d)
+    assert @isPublic(qg.e) is false
+    assert @isPublic(qg.f)
+    assert @isPublic(qg.g) is false
 
-    assert ::isPublic(qual.QualGreen.a) is false
-    assert ::isPublic(qual.QualGreen.b)
-    assert ::isPublic(qual.QualGreen.c) is false
-    assert ::isPublic(qual.QualGreen.d)
-    assert ::isPublic(qual.QualGreen.e) is false
-    assert ::isPublic(qual.QualGreen.f)
-    assert ::isPublic(qual.QualGreen.g) is false
+    assert @isPublic(qual.QualGreen.a) is false
+    assert @isPublic(qual.QualGreen.b)
+    assert @isPublic(qual.QualGreen.c) is false
+    assert @isPublic(qual.QualGreen.d)
+    assert @isPublic(qual.QualGreen.e) is false
+    assert @isPublic(qual.QualGreen.f)
+    assert @isPublic(qual.QualGreen.g) is false
 
     // External module private struct members are not visible here
     //qg.a = 1    // error - not visible
@@ -322,21 +322,21 @@ fn visibility() {
     //qual.QualGreen qg2 = { b:1, d:1, f:1, g:1 }
 
     UnqualGreen ug
-    assert ::isPublic(ug.a) is false
-    assert ::isPublic(ug.b)
-    assert ::isPublic(ug.c) is false
-    assert ::isPublic(ug.d)
-    assert ::isPublic(ug.e) is false
-    assert ::isPublic(ug.f)
-    assert ::isPublic(ug.g) is false
+    assert @isPublic(ug.a) is false
+    assert @isPublic(ug.b)
+    assert @isPublic(ug.c) is false
+    assert @isPublic(ug.d)
+    assert @isPublic(ug.e) is false
+    assert @isPublic(ug.f)
+    assert @isPublic(ug.g) is false
 
-    assert ::isPublic(UnqualGreen.a) is false
-    assert ::isPublic(UnqualGreen.b)
-    assert ::isPublic(UnqualGreen.c) is false
-    assert ::isPublic(UnqualGreen.d)
-    assert ::isPublic(UnqualGreen.e) is false
-    assert ::isPublic(UnqualGreen.f)
-    assert ::isPublic(UnqualGreen.g) is false
+    assert @isPublic(UnqualGreen.a) is false
+    assert @isPublic(UnqualGreen.b)
+    assert @isPublic(UnqualGreen.c) is false
+    assert @isPublic(UnqualGreen.d)
+    assert @isPublic(UnqualGreen.e) is false
+    assert @isPublic(UnqualGreen.f)
+    assert @isPublic(UnqualGreen.g) is false
 
     //ug = { a:1, b:1, d:1, e:1, f:1 }   // error - some of these members are not visible
 }

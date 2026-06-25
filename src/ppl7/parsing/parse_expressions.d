@@ -8,7 +8,7 @@ import ppl7.all;
 void parseExpression(Node parent, ParseState state) {
     parseSingle(parent, state);
     parseInfix(parent, state);
-}   
+}
 
 /**
  * Parse an expression. This overload ensures that any new Expressions do not get reordered above the current parent.
@@ -71,10 +71,6 @@ void parseSingle(Node parent, ParseState state) {
                 syntaxError(state, "Boolean 'not' should be replaced with 'is false'");
                 return;
             }
-            if(state.text().startsWith("@")) {
-                syntaxError(state, "Builtin functions must be called as ::name()");
-                return;
-            }
             // Function call
             if(state.peek(1).etoken == EToken.LPAREN) {
                 parseCall(parent, state);
@@ -97,7 +93,7 @@ void parseSingle(Node parent, ParseState state) {
             return;
         case EToken.LPAREN:
             parseParens(parent, state);
-            return;    
+            return;
         case EToken.STRING:
             parseStringLiteral(parent, state);
             return;
@@ -113,6 +109,7 @@ void parseSingle(Node parent, ParseState state) {
         case EToken.BANG:
             syntaxError(state, "Use 'not' instead of '!' for boolean negation");
             return;
+        case EToken.AT:
         case EToken.COLON2:
             parseBuiltin(parent, state);
             return;
@@ -165,7 +162,7 @@ void parseInfix(Node parent, ParseState state) {
                         break;
                     }
                     case "and":
-                    case "or": 
+                    case "or":
                     case "udiv":
                     case "umod":
                     case "ult":
@@ -177,8 +174,8 @@ void parseInfix(Node parent, ParseState state) {
                         parent = attachAndRead(parent, b, state, true);
                         break;
                     }
-                    default: 
-                        return;   
+                    default:
+                        return;
                 }
                 break;
             case EToken.EQUAL2:
@@ -206,7 +203,7 @@ void parseInfix(Node parent, ParseState state) {
             case EToken.RANGLE2:
             case EToken.LANGLE2_EQUAL:
             case EToken.RANGLE2_EQUAL:
-            
+
             case EToken.PLUS_EQUAL:
             case EToken.MINUS_EQUAL:
             case EToken.STAR_EQUAL:
@@ -223,7 +220,7 @@ void parseInfix(Node parent, ParseState state) {
                 parent = attachAndRead(parent, b, state, true);
                 break;
             case EToken.LSQUARE: {
-                auto i = parseAndReturnIndex(state); 
+                auto i = parseAndReturnIndex(state);
                 parent = attachAndRead(parent, i, state, false);
                 break;
             }
@@ -320,14 +317,15 @@ void parseArrayLiteral(Node parent, ParseState state) {
 }
 
 /**
- * '::' name '(' Expression ')'
+ * '@' name '(' Expression ')'
  */
 void parseBuiltin(Node parent, ParseState state) {
     auto b = makeNode!Builtin(state);
     parent.add(b);
 
-    state.skip(EToken.COLON2);
-    b.name = "@" ~ state.text(); 
+    state.skip(EToken.AT);
+
+    b.name = "@" ~ state.text();
     state.next();
 
     switch(b.name) {
@@ -358,7 +356,7 @@ void parseBuiltin(Node parent, ParseState state) {
             break;
         case "@property":
             // This must have 2 or 3 arguments
-            
+
             state.skip(EToken.LPAREN);
 
             //Type
@@ -382,7 +380,7 @@ void parseBuiltin(Node parent, ParseState state) {
 }
 
 /**
- * name '(' { Expression } ')' 
+ * name '(' { Expression } ')'
  */
 void parseCall(Node parent, ParseState state) {
     Call c = makeNode!Call(state);
@@ -419,8 +417,8 @@ void parseIdentifier(Node parent, ParseState state) {
 }
 
 /**
- * if        ::= 'if' condition then [ else ] 
- * condition ::= '(' Expression ')' 
+ * if        ::= 'if' condition then [ else ]
+ * condition ::= '(' Expression ')'
  * then      ::= [ '{ ] { Statement } [ '}' ]
  * else      ::= 'else' [ '{' ] { Statement } [ '}' ]
  */
@@ -539,7 +537,7 @@ void parseStringLiteral(Node parent, ParseState state) {
 
         value = value[1..$-1];
 
-        // This is a string struct string literal. 
+        // This is a string struct string literal.
         // Consume multiple string literals as long as they are not c-strings
         while(state.etoken() == EToken.STRING) {
             if(state.text().endsWith("z")) break;
@@ -548,7 +546,7 @@ void parseStringLiteral(Node parent, ParseState state) {
             value ~= state.text()[1..$-1];
             state.next();
         }
-    }  
+    }
 
     s.stringValue = value;
 }
@@ -581,7 +579,7 @@ void parseStructLiteral(Node parent, ParseState state) {
     }
 
     state.skip(EToken.RBRACE);
-}  
+}
 
 /**
  * not | ~ | -
@@ -663,7 +661,7 @@ Binary parseAndReturnBinary(ParseState state) {
                 state.next();
             } else {
                 b.op = Operator.USHR;
-            } 
+            }
             break;
         case "udiv":
             if(state.peek(1).etoken == EToken.EQUAL) {
@@ -671,7 +669,7 @@ Binary parseAndReturnBinary(ParseState state) {
                 state.next();
             } else {
                 b.op = Operator.UDIV;
-            } 
+            }
             break;
         case "umod":
             if(state.peek(1).etoken == EToken.EQUAL) {
@@ -679,7 +677,7 @@ Binary parseAndReturnBinary(ParseState state) {
                 state.next();
             } else {
                 b.op = Operator.UMOD;
-            } 
+            }
             break;
         case "ult": b.op = Operator.ULT; break;
         case "ugt": b.op = Operator.UGT; break;
@@ -708,7 +706,7 @@ Index parseAndReturnIndex(ParseState state) {
 }
 
 /**
- * '.' 
+ * '.'
  */
 Dot parseAndReturnDot(ParseState state) {
     Dot d = makeNode!Dot(state);

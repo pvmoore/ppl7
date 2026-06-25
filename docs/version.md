@@ -1,5 +1,10 @@
 # Version History
 
+## 0.2.16
+
+- Add timings which are optionally displayed after compilation
+- Change builtin syntax from ::name to @name
+
 ## 0.2.15
 
 - Rename internal @common lib to ppl. Rename @assert to ppl_assert

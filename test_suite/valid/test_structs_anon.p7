@@ -13,20 +13,20 @@ public fn main() {
         bool c
     } anonStruct
 
-    assert ::isStruct(anonStruct)
-    assert ::sizeOf(anonStruct) is 12
-    assert ::alignOf(anonStruct) is 4
-    assert ::typeOf(anonStruct) is struct { int; float; bool; }
-    assert ::typeOf(anonStruct) is struct { int a; float b; bool c; }
-    assert ::typeOf(anonStruct) is struct { int float bool }
-    assert ::offsetOf(anonStruct.a) is 0
-    assert ::offsetOf(anonStruct.b) is 4
-    assert ::offsetOf(anonStruct.c) is 8
-    assert ::isValue(anonStruct)
-    assert ::isPointer(anonStruct) is false
-    assert ::isInteger(anonStruct) is false
-    assert ::isReal(anonStruct) is false
-    assert ::isBool(anonStruct) is false
+    assert @isStruct(anonStruct)
+    assert @sizeOf(anonStruct) is 12
+    assert @alignOf(anonStruct) is 4
+    assert @typeOf(anonStruct) is struct { int; float; bool; }
+    assert @typeOf(anonStruct) is struct { int a; float b; bool c; }
+    assert @typeOf(anonStruct) is struct { int float bool }
+    assert @offsetOf(anonStruct.a) is 0
+    assert @offsetOf(anonStruct.b) is 4
+    assert @offsetOf(anonStruct.c) is 8
+    assert @isValue(anonStruct)
+    assert @isPointer(anonStruct) is false
+    assert @isInteger(anonStruct) is false
+    assert @isReal(anonStruct) is false
+    assert @isBool(anonStruct) is false
 
     anonStruct.a = 1
     anonStruct.b = 2.0

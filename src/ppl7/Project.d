@@ -8,7 +8,7 @@ final class Project {
 public:
     // Fixed state
     string mainFilename;
-    string directory;   
+    string directory;
     string targetName;
     string targetDirectory;
     CompilerOptions options;
@@ -41,7 +41,7 @@ public:
 
         string workingDirectory = toCanonicalDirectory(getcwd(), false);
         this.targetDirectory = toCanonicalDirectory(options.targetDirectory, false);
-        this.createTargetDirectory();      
+        this.createTargetDirectory();
 
         consoleLog("Working directory .. %s", workingDirectory);
         consoleLog("Project directory .. %s", this.directory);
@@ -83,7 +83,7 @@ public:
         }
     }
 
-    Module processMainSourceFile(string relFilename) { 
+    Module processMainSourceFile(string relFilename) {
         if(!exists(directory ~ relFilename)) {
             throw new Exception("Main source file not found: %s".format(directory ~ relFilename));
         }
@@ -131,22 +131,22 @@ public:
 //──────────────────────────────────────────────────────────────────────────────────────────────────
 private:
     void createTargetDirectory() {
-        void create(string dir, bool removeContents) {
-            debug if(removeContents && exists(dir)) {
+        void create(string dir) {
+            debug if(options.cleanTarget && exists(dir)) {
                 rmdirRecurse(dir);
             }
 
             if(!dir.exists()) {
                 mkdirRecurse(dir);
-            } 
+            }
         }
-        create(targetDirectory ~ "/scan/", false);
-        create(targetDirectory ~ "/ast/", false);
-        create(targetDirectory ~ "/ll/", false);
-        create(targetDirectory ~ "/logs/", true);
-    } 
+        create(targetDirectory ~ "/scan/");
+        create(targetDirectory ~ "/ast/");
+        create(targetDirectory ~ "/ll/");
+        create(targetDirectory ~ "/logs/");
+    }
     /**
-     * Recursively process a source file. 
+     * Recursively process a source file.
      * - Read the source
      * - Tokenise the source
      * - Scan the source for user defined types, imports and function names
@@ -175,12 +175,12 @@ private:
         // Lex the source into a Token array
         mod.tokens = new Lexer(mod, source).tokenise();
 
-        // Scan the module for user defined types and imports 
+        // Scan the module for user defined types and imports
         mod.scanResult = scanModule(mod);
 
         // Process the imports
         foreach(ScanImport imp; mod.scanResult.imports) {
-            processImport(mod, imp);   
+            processImport(mod, imp);
         }
 
         writeScanResults(this, mod);
@@ -199,7 +199,7 @@ private:
         string baseDirectory;
 
         //consoleLog("looking for import [%s] from module %s %s", imp, mod.name, mod.baseDirectory);
-        
+
         if(imp.libName) {
             // This is a library include
             if(auto lib = options.getLib(imp.libName)) {
@@ -244,6 +244,6 @@ private:
 
             mod.importedModulesUnqualified[key] = importedModule;
             mod.log("  Importing module %s", key);
-        }   
+        }
     }
 }

@@ -2,13 +2,6 @@ module ppl7.checking.check;
 
 import ppl7.all;
 
-bool checkAllModules(Project project) {
-    foreach(m; project.allModules) {
-        checkModule(m);
-    }
-    return !project.hasErrors();
-}
-
 void checkModule(Module mod) {
     updateLoggingContext(mod, LoggingStage.Checking);
     log(mod, "Checking Module");

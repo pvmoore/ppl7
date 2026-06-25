@@ -57,7 +57,7 @@ bool isUserDefinedType(ParseState state) {
     return false;
 }
 bool isTypeOf(ParseState state) {
-    return state.etoken() == EToken.COLON2 && state.peek(1).text == "typeOf";
+    return (state.etoken() == EToken.AT && state.peek(1).text == "typeOf");
 }
 bool isAnonStruct(ParseState state) {
     return state.text() == "struct" && state.etoken(1) == EToken.LBRACE;
@@ -100,13 +100,13 @@ EType peekSimpleEType(ParseState state) {
 }
 
 /**
- * '::' 'typeOf' '(' Expression ')'
+ * '@' 'typeOf' '(' Expression ')'
  */
 Type parseTypeOf(ParseState state) {
 
     auto b = makeNode!TypeOf(state);
 
-    state.skip(EToken.COLON2);
+    state.skip(EToken.AT);
 
     state.skip("typeOf");
 

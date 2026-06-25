@@ -6,7 +6,7 @@ final class Compiler {
 public:
     enum versionMajor = 0;
     enum versionMinor = 2;
-    enum versionPatch = 15;
+    enum versionPatch = 16;
 
     this(CompilerOptions options) {
         this.options = options;
@@ -73,6 +73,10 @@ public:
 
                 consoleLogAnsi(Ansi.GREEN_BOLD, "Success");
 
+                if(options.enableTimings) {
+                    timings.display();
+                }
+
             }while(false);
         }catch(Exception e) {
             consoleLogAnsiAlways(Ansi.RED_BOLD, "!! Exception: %s %s:%s %s", e.msg, e.file, e.line, e.info);
@@ -88,8 +92,34 @@ private:
     CompilerOptions options;
     Project project;
     LLVMTargetMachine llvm;
+    Timings timings;
+
+    struct Timings {
+        enum Area { PARSE, RESOLVE, CHECK, GENERATE, LINK }
+        StopWatch[Area.max+1] watches;
+
+        void start(Area area) { watches[area].start(); }
+        void stop(Area area) { watches[area].stop(); }
+        ulong nsecs(Area area) { return watches[area].peek().total!"nsecs"; }
+        double msecs(Area area) { return nsecs(area) / 1_000_000.0; }
+
+        void display() {
+            consoleLog("\n####################### Timings");
+            ulong total;
+            foreach(area; EnumMembers!Area) {
+                total += nsecs(area);
+                double msecs = this.msecs(area);
+                consoleLog("% 8s : %5.2f ms", area, msecs);
+            }
+            consoleLog("   TOTAL : %5.2f ms", total / 1_000_000.0);
+            consoleLog("#######################");
+        }
+    }
 
     void parseAllModules() {
+        timings.start(Timings.Area.PARSE);
+        scope(exit) timings.stop(Timings.Area.PARSE);
+
         foreach(mod; project.allModules) {
             auto parseState = new ParseState(project, mod);
             parseStatementsAtModuleScope(parseState);
@@ -97,6 +127,8 @@ private:
     }
 
     bool resolveAllModules() {
+        timings.start(Timings.Area.RESOLVE);
+        scope(exit) timings.stop(Timings.Area.RESOLVE);
 
         // Create ResolveStates for all Modules
         ResolveState[] resolveStates = project.allModules.map!(m => new ResolveState(project, m)).array;
@@ -135,9 +167,22 @@ private:
             }
             return false;
         }
+
         return true;
     }
+    bool checkAllModules(Project project) {
+        timings.start(Timings.Area.CHECK);
+        scope(exit) timings.stop(Timings.Area.CHECK);
+
+        foreach(m; project.allModules) {
+            checkModule(m);
+        }
+        return !project.hasErrors();
+    }
     bool generateIRForAllModules() {
+        timings.start(Timings.Area.GENERATE);
+        scope(exit) timings.stop(Timings.Area.GENERATE);
+
         // Use the same LLVM context for all modules. We do this so that we can link the modules together
         // before running the optimiser. This requires that the context is the same for all modules.
         // This is less efficient than using a separate context for each module
@@ -149,6 +194,15 @@ private:
             if(!generateModule(state)) return false;
         }
         return true;
+    }
+    /**
+     * Call the external linker to create the executable
+     */
+    bool linkProject(Project project) {
+        timings.start(Timings.Area.LINK);
+        scope(exit) timings.stop(Timings.Area.LINK);
+
+        return msLink(project);
     }
     /*
     void addCommonCodeModule() {
