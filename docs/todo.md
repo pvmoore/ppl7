@@ -18,10 +18,10 @@ Alternatively we can iterate through the members and compare them one by one
 Currently we have imports at Module scope. We could allow these at any Statement scope but we would need
 to change the way the scanner works. The Module properties would be affected:
 
-  Module[string] importedModulesQualified;  
+  Module[string] importedModulesQualified;
   Module[string] importedModulesUnqualified;
 
-Resolving identifiers, calls and TYpes would need to be modified to walk backwards up the AST.  
+Resolving identifiers, calls and TYpes would need to be modified to walk backwards up the AST.
 
 ## Public imports
 
@@ -36,10 +36,10 @@ Investigate the following functions for checking for null pointer dereferences:
   LLVMBuildIsNull
   LLVMBuildIsNotNull
 ```
-Ideally we want to replace all pointer dereferances with a function call that checks the pointer is not null. 
+Ideally we want to replace all pointer dereferances with a function call that checks the pointer is not null.
 If the pointer is null we can call another function eg:
 ```
-  @nullPointerDeref(ptr, modulename, filename, line)  
+  @nullPointerDeref(ptr, modulename, filename, line)
 ```
 
 There is already a config flag:
@@ -64,7 +64,7 @@ Add debugging metadata
 ## Scope block expressions
 
 Allow inner scope blocks to be used as expressions eg.
-```      
+```
   int a = { int b = 1; b + 1; }
 ```
 This would yield the final expression as the result of the block. Maybe disallow return statements inside the block.
@@ -73,7 +73,7 @@ This would yield the final expression as the result of the block. Maybe disallow
 
 Add a 'select' expression that can be used like a switch but with more flexibility eg.
 ```
-  int a = select(t) { 
+  int a = select(t) {
     1: 10
     2: 20
     3..5: 30
@@ -132,7 +132,7 @@ Add auto type:
 
 ## Vararg functions
 
-We need to support functions with variable parameters for internal calls. We already support extern functions with varargs but we cannot call stagecoach functions in this way.
+We need to support functions with variable parameters for internal calls. We already support extern functions with varargs but we cannot call PPL7 functions in this way.
 ```
   fn foo(int a, ... args) {
     // args is a slice of Type (requires slices)
@@ -161,7 +161,7 @@ These are simple struct templates (template syntax tbc).
 
 ## Array length property
 
-Add an array length property eg. a.length that returns an int. If the array length is greater than 2^31-1 then 
+Add an array length property eg. a.length that returns an int. If the array length is greater than 2^31-1 then
 return a long. This length is known at compile time.
 
 Slices should also have the same property but we won't know at compile time whether it is > 2^31-1.

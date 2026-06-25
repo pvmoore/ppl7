@@ -14,7 +14,7 @@ struct ScanResult {
             "Unqualified imports:\n--------------------\n%s")
             .format(udts.values().filter!(it=>it.isPublic).map!(it => it.name).join("\n"),
                     udts.values().filter!(it=>!it.isPublic).map!(it => it.name).join("\n"),
-                    imports.filter!(it=>it.alias_ !is null).map!(it => it.toString()).join("\n"), 
+                    imports.filter!(it=>it.alias_ !is null).map!(it => it.toString()).join("\n"),
                     imports.filter!(it=>it.alias_ is null).map!(it => it.toString()).join("\n"));
     }
 }
@@ -25,9 +25,10 @@ struct UDT {
 }
 
 struct ScanImport {
-    string path;    
+    string path;
     string alias_;
     string libName;
+
     Token aliasToken;
     Token moduleToken;
 
@@ -54,9 +55,9 @@ ScanResult scanModule(Module mod) {
     Token[] tokens = mod.tokens;
     ScanResult result;
 
-    // Add an implicit [import @common:@common]
-    if(mod.name != "@common") {
-        result.imports ~= ScanImport("@common", null, "@common");
+    // Add an implicit [import pplcommon:common]
+    if(mod.name != "common") {
+        result.imports ~= ScanImport("common", null, "ppl");
     }
 
     int brace = 0;
@@ -71,7 +72,7 @@ ScanResult scanModule(Module mod) {
     bool isPublicStmt() {
         bool pub = publicScope || peek(-2).text == "public";
         bool priv = peek(-2).text == "private";
-        return pub && !priv;    
+        return pub && !priv;
     }
 
     while(i < tokens.length) {
@@ -84,11 +85,11 @@ ScanResult scanModule(Module mod) {
             case LPAREN: paren++; break;
             case RPAREN: paren--; break;
             case LANGLE: angle++; break;
-            case RANGLE: angle--; break;    
+            case RANGLE: angle--; break;
             case IDENTIFIER: {
 
                 // Ignore any identifier that is not at the top level
-                if(brace != 0 || square != 0 || paren != 0 || angle != 0) break; 
+                if(brace != 0 || square != 0 || paren != 0 || angle != 0) break;
 
                 if(tok.text == "public" && peek(1).etoken == EToken.COLON) {
                     publicScope = true;
@@ -137,7 +138,7 @@ ScanResult scanModule(Module mod) {
                     if(peek(1).etoken == EToken.COLON) {
                         imp.libName = peek().text;
                         i += 2;
-                    } 
+                    }
 
                     // The import path
                     imp.path = peek().text;

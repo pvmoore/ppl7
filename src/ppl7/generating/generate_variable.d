@@ -16,7 +16,7 @@ void generateVariableDeclaration(Variable n, GenerateState state) {
     if(n.vkind == VariableKind.GLOBAL) {
         LLVMValueRef varValue = LLVMAddGlobal(state.currentModule, state.getLLVMType(n.getType()), n.name.toStringz());
         n.llvmValueByModule[state.mod.name] = varValue;
-        
+
         LLVMSetLinkage(varValue, LLVMLinkage.LLVMExternalLinkage);
         // LLVMSetLinkage(varValue, LLVMLinkage.LLVMExternalWeakLinkage);
         //LLVMSetLinkage(varValue, LLVMLinkage.LLVMCommonLinkage);
@@ -32,7 +32,7 @@ void generateLocal(Variable n, GenerateState state) {
 
     LLVMTypeRef llvmType = state.getLLVMType(n.getType());
     LLVMValueRef varPtr = LLVMBuildAlloca(state.builder, llvmType, n.name.toStringz());
-    
+
     n.llvmValueByModule[state.mod.name] = varPtr;
     state.lhs = varPtr;
 
@@ -71,11 +71,11 @@ void generateGlobal(Variable n, GenerateState state) {
         setDefaultInitialiser(n, varPtr, llvmType, state);
         state.switchToNormalBuilder();
     }
-} 
+}
 
 void setDefaultInitialiser(Variable n, LLVMValueRef varPtr, LLVMTypeRef llvmType, GenerateState state) {
     if(n.getType().isPointer()) {
-        
+
     } else if(n.getType().isEnum()) {
         // Enums are initialised to the first enum value
         Enum en = n.getType().extract!Enum;
@@ -83,9 +83,9 @@ void setDefaultInitialiser(Variable n, LLVMValueRef varPtr, LLVMTypeRef llvmType
         state.generate(member);
         state.castType(state.rhs, member.getType(), n.getType());
         LLVMBuildStore(state.builder, state.rhs, varPtr);
-    } else if(ArrayType array = n.getType().extract!ArrayType) {
+    } else if(auto array = n.getType().extract!Array) {
         defaultInitialiseArray(array, varPtr, state);
     } else if(Struct st = n.getType().extract!Struct) {
         defaultInitialiseStruct(st, varPtr, state);
-    } 
+    }
 }

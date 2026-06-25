@@ -7,7 +7,7 @@ public:
     struct Lib {
         string name;                // eg. "core"
         string sourceDirectory;     // eg. "C:/work/ppl7/libs/core"
-        string libFile;             // eg. "C:/work/ppl7/libs/core/lib/libcore.lib" 
+        string libFile;             // eg. "C:/work/ppl7/libs/core/lib/libcore.lib"
     }
     enum TargetType {
         EXE,
@@ -26,7 +26,7 @@ public:
     uint maxErrors      = uint.max;
 
     bool enableAsserts      = true;
-    bool enableNullChecks   = true; 
+    bool enableNullChecks   = true;
     bool enableBoundsChecks = true;
 
     bool writeObj   = false;
@@ -35,7 +35,7 @@ public:
 
     // built-in properties and properties passed in by the user
     // eg. -Dmy_property=1
-    string[string] properties; 
+    string[string] properties;
 
     this() {
         // Add built-in libraries
@@ -46,8 +46,8 @@ public:
         };
 
         CompilerOptions.Lib commonLib = {
-            name: "@common",
-            sourceDirectory: "libs/common",
+            name: "ppl",
+            sourceDirectory: "libs/ppl",
             libFile: null
         };
 
@@ -88,17 +88,17 @@ public:
             "  writeAST: %s\n" ~
             "  libs: %s\n" ~
             "}").format(
-                targetTriple, 
-                subsystem, 
-                isDebug, 
-                checkOnly, 
-                enableAsserts, 
-                enableNullChecks, 
-                enableBoundsChecks, 
-                writeObj, 
-                writeLL, 
+                targetTriple,
+                subsystem,
+                isDebug,
+                checkOnly,
+                enableAsserts,
+                enableNullChecks,
+                enableBoundsChecks,
+                writeObj,
+                writeLL,
                 writeAST,
-                libs); 
+                libs);
     }
 //──────────────────────────────────────────────────────────────────────────────────────────────────
 private:

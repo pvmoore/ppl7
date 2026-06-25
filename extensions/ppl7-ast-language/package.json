@@ -1,7 +1,7 @@
 {
-    "name": "stagecoach-ast-lang",
-    "displayName": "Stagecoach-ast",
-    "description": "Stagecoach AST syntax highlighting support",
+    "name": "ppl7-ast-lang",
+    "displayName": "PPL7-ast",
+    "description": "PPL7 AST syntax highlighting support",
     "version": "0.0.1",
     "engines": {
         "vscode": "^1.100.0"

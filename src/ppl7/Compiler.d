@@ -6,7 +6,7 @@ final class Compiler {
 public:
     enum versionMajor = 0;
     enum versionMinor = 2;
-    enum versionPatch = 14;
+    enum versionPatch = 15;
 
     this(CompilerOptions options) {
         this.options = options;
@@ -26,7 +26,7 @@ public:
         try{
             do{
                 consoleLogAnsi(Ansi.CYAN, "─────────────────────────────────────────────────────────── Scanning Modules");
-                
+
                 // Start processing the main file. This will pull in imports and process them as well
                 project.processMainSourceFile(project.mainFilename);
 
@@ -72,7 +72,7 @@ public:
                 linkProject(project);
 
                 consoleLogAnsi(Ansi.GREEN_BOLD, "Success");
-                
+
             }while(false);
         }catch(Exception e) {
             consoleLogAnsiAlways(Ansi.RED_BOLD, "!! Exception: %s %s:%s %s", e.msg, e.file, e.line, e.info);
@@ -138,13 +138,13 @@ private:
         return true;
     }
     bool generateIRForAllModules() {
-        // Use the same LLVM context for all modules. We do this so that we can link the modules together 
+        // Use the same LLVM context for all modules. We do this so that we can link the modules together
         // before running the optimiser. This requires that the context is the same for all modules.
         // This is less efficient than using a separate context for each module
         // since we can't parallelise the generation and optimisation steps.
         LLVMContextRef context = LLVMContextCreate();
-        
-        foreach(mod; project.allModules) {    
+
+        foreach(mod; project.allModules) {
             auto state = new GenerateState(mod, context);
             if(!generateModule(state)) return false;
         }
@@ -207,10 +207,10 @@ private:
         mod.add(assertFn);
 
         Binary b = makeBinary(Operator.EQUAL, makeIdentifier("condition"), makeBoolNumber(false), CONST_BOOL_TYPE);
-        
+
         Statement[] thenStmts;
-        {        
-            auto v = makeVariable("str2", makeArrayType(makeSimpleType(EType.BYTE), 128), VariableKind.LOCAL);
+        {
+            auto v = makeVariable("str2", makeArray(makeSimpleType(EType.BYTE), 128), VariableKind.LOCAL);
             thenStmts ~= v;
         }
         {
@@ -235,21 +235,21 @@ private:
         {
             thenStmts ~= makeCall("exit", [makeIntegerNumber(-1, CONST_INT_TYPE)]);
         }
-        
+
         // These are available in msvcrt.lib:
-        //  - exit 
-        //  - putchar 
+        //  - exit
+        //  - putchar
         //  - puts
-        //  - memcmp 
-        //  - sprintf_s 
-        //  - _itoa 
+        //  - memcmp
+        //  - sprintf_s
+        //  - _itoa
         //  - _ui64toa
 
         auto ifStmt = makeIf(b, thenStmts, []);
         assertFn.add(ifStmt);
     }
     */
-    void cleanup() { 
+    void cleanup() {
         if(llvm) llvm.destroy();
     }
 }

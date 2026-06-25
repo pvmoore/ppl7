@@ -14,12 +14,12 @@ public:
     override bool isResolved() { return expr().isResolved() && index().isResolved(); }
 
     // Statement
-    override Type getType() { 
-        Type t = expr().getType(); 
+    override Type getType() {
+        Type t = expr().getType();
         if(!t.isResolved()) return t;
 
-        if(t.isArrayType()) {
-            return t.as!ArrayType.elementType();
+        if(t.isArray()) {
+            return t.as!Array.elementType();
         }
         if(t.isPointer()) {
             return t.as!PointerType.valueExpr().getType();
@@ -33,7 +33,7 @@ public:
     Expression expr() { return last().as!Expression; }
     Expression index() { return first().as!Expression; }
 
-    bool isArrayIndex() { return expr().getType().isArrayType(); }
+    bool isArrayIndex() { return expr().getType().isArray(); }
     bool isPointerIndex() { return expr().getType().isPointer(); }
 
     override string toString() {

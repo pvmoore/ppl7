@@ -11,14 +11,14 @@ string getSummaryMessage(CompilationError error) {
 
         case ARRAY_LITERAL_NUM_ELEMENTS: {
             ArrayLiteral al = error.stmt.as!ArrayLiteral; assert(al);
-            ArrayType at = al.getType().as!ArrayType; assert(at);
+            Array at = al.getType().as!Array; assert(at);
             return "Array literal has %s elements, but the array type requires %s".format(al.elements().length, at.numElements());
         }
         case ARRAY_LITERAL_ELEMENT_TYPE_MISMATCH: {
             Expression ele = error.stmt.as!Expression; assert(ele);
             ArrayLiteral al = ele.parent.as!ArrayLiteral; assert(al);
-            ArrayType at = al.getType().as!ArrayType; assert(at);
-            return "Cannot implicitly convert %s to the array element type %s".format(ele.getType(), at.elementType());    
+            Array at = al.getType().as!Array; assert(at);
+            return "Cannot implicitly convert %s to the array element type %s".format(ele.getType(), at.elementType());
         }
 
         case BUILTIN_PROPERTY_MISSING_TYPE:
@@ -33,11 +33,11 @@ string getSummaryMessage(CompilationError error) {
             return "@property() value cannot be converted to the expected type";
         case BUILTIN_PROPERTY_INVALID_DEFAULT_VALUE:
             return "@property() default value cannot be converted to the expected type";
-            
+
         case BUILTIN_OFFSET_OF_NOT_MEMBER:
-            return "@offsetOf() requires a struct member as the first argument";  
+            return "@offsetOf() requires a struct member as the first argument";
         case BUILTIN_ISCONST_NOT_IDENTIFIER:
-            return "::isConst() requires an identifier as the first argument";    
+            return "::isConst() requires an identifier as the first argument";
         case BUILTIN_ISPUBLIC_NOT_IDENTIFIER_OR_TYPE:
             return "::isPublic() requires an identifier or type as the first argument";
 
@@ -45,7 +45,7 @@ string getSummaryMessage(CompilationError error) {
         case CALL_AMBIGUOUS_FUNCTION: {
             return "Ambiguous function call: %s".format(stmt.as!Call().name);
             //string s2 = formatAmbiguousFunction(stmt.as!Call());
-            //return s1 ~ "\n" ~ s2; 
+            //return s1 ~ "\n" ~ s2;
         }
         case CALL_ARGUMENT_TYPE_MISMATCH: {
             Expression arg = error.stmt.as!Expression; assert(arg);
@@ -64,29 +64,29 @@ string getSummaryMessage(CompilationError error) {
             return "Enum members must be explicitly initialised when the element type is not an integer or real";
 
 
-        case FUNCTION_NOT_FOUND: 
-            return "Function not found: %s".format(stmt.as!Call().name); 
+        case FUNCTION_NOT_FOUND:
+            return "Function not found: %s".format(stmt.as!Call().name);
         case FUNCTION_MISSING_RETURN:
             return "This function is missing a return statement";
         case FUNCTION_NON_EXTERN_MISSING_BODY:
             return "Non-extern function must have a body";
         case FUNCTION_MAIN_NOT_PUBLIC:
-            return "The program entry function must be public";   
+            return "The program entry function must be public";
 
-        
+
         case VARIABLE_INITIALISER_TYPE_MISMATCH: {
             Expression initialiser = error.stmt.as!Expression; assert(initialiser);
             Variable v = initialiser.parent.as!Variable; assert(v);
-            return "Cannot implicitly convert %s to %s".format(initialiser.getType().shortName(), v.getType().shortName());    
+            return "Cannot implicitly convert %s to %s".format(initialiser.getType().shortName(), v.getType().shortName());
         }
 
         case IDENTIFIER_NOT_FOUND: {
-            Identifier id = stmt.as!Identifier();   
+            Identifier id = stmt.as!Identifier();
             Struct st = id.parent.isA!Dot ? id.parent.as!Dot.container().getType().extract!Struct : null;
             if(st) {
                 string structName = st ? st.name : id.parent.as!Dot.container().getType().toString();
                 return "Member %s not found for struct %s".format(id.name, structName);
-            } 
+            }
             return "'%s' cannot be resolved to a variable or function".format(id.name);
         }
         case IDENTIFIER_NOT_VISIBLE:
@@ -99,7 +99,7 @@ string getSummaryMessage(CompilationError error) {
             return "If expression requires an expression at the end of the 'else' block";
         case IF_EXPRESSION_TYPE_MISMATCH:
             return "If expression requires the 'then' and 'else' expressions to be castable to the same type";
-        
+
         case IS_TYPE_MISMATCH: {
             Is i = error.stmt.as!Is; assert(i);
             if(i.left().isA!Type) {
@@ -143,17 +143,17 @@ string getSummaryMessage(CompilationError error) {
         case BINARY_UNSIGNED_WITH_REAL:
             return "Cannot use unsigned operator with real numbers";
         case BINARY_ASSIGNMENT_TYPE_MISMATCH:
-            return "Cannot assign %s to %s".format(error.stmt.as!Binary.rightType().shortName(), error.stmt.as!Binary.leftType().shortName());    
+            return "Cannot assign %s to %s".format(error.stmt.as!Binary.rightType().shortName(), error.stmt.as!Binary.leftType().shortName());
         case BINARY_MODIFYING_CONSTANT:
             return "Constant is modified";
-        
-        
+
+
         case STRUCT_MEMBER_UNNAMED:
             return "Expecting this Struct member to be named";
-        
-        
+
+
         case SYNTAX:
-            return error.extraInfo.as!StringErrorExtraInfo.msg;     
+            return error.extraInfo.as!StringErrorExtraInfo.msg;
 
         case VARIABLE_SHADOWING: {
             Variable v = error.stmt.as!Variable; assert(v);
@@ -166,7 +166,7 @@ string getSummaryMessage(CompilationError error) {
         case VARIABLE_ANON_STRUCT_CONST:
             return "Anonymous structs cannot have const members";
 
-        default: 
+        default:
             return "Generic Error: %s".format(error.eerror());
     }
 }

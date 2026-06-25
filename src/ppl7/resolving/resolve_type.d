@@ -2,7 +2,7 @@ module ppl7.resolving.resolve_type;
 
 import ppl7.all;
 
-void resolveArrayType(ArrayType n, ResolveState state) {
+void resolveArray(Array n, ResolveState state) {
     resolveConstNumber(n.numElementsExpr(), state);
 }
 
@@ -38,7 +38,7 @@ void resolveEnum(Enum n, ResolveState state) {
                     if(!m.value().getType().exactlyMatches(elementType)) {
                         rewriteToAs(state, m.value(), m.value().as!Expression, makeTypeRef(elementType));
                     }
-                    
+
                 } else {
                     // Create a new Number node with the correct value
                     Number num = makeNode!Number(m.tokenIndex);

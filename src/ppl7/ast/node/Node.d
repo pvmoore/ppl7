@@ -63,29 +63,29 @@ public:
 
     final Node prev(bool descend) {
         auto i = this.index(); assert(i!=-1);
-        if(i == 0) return descend ? parent : null; 
-        return parent.children[i - 1]; 
+        if(i == 0) return descend ? parent : null;
+        return parent.children[i - 1];
     }
     final Node next() {
         auto i = this.index(); assert(i!=-1);
-        if(i == parent.children.length - 1) return null; 
-        return parent.children[i + 1]; 
+        if(i == parent.children.length - 1) return null;
+        return parent.children[i + 1];
     }
 
-    final Module getModule() { 
+    final Module getModule() {
         if(this.isA!Module) return this.as!Module;
         assert(parent !is null);
-        return parent.getModule();   
+        return parent.getModule();
     }
     final Project getProject() {
         return getModule().project;
     }
-    final auto range() { 
-        return NodeRange(this); 
+    final auto range() {
+        return NodeRange(this);
     }
 
     // ---------------------------------------------------------------------- Mutation
-    final void add(Node child) { 
+    final void add(Node child) {
         if(child.parent) {
             child.parent.remove(child);
         }
@@ -110,7 +110,7 @@ public:
     final void remove(Node child) {
         children.remove(child);
         child.parent = null;
-    }  
+    }
     final void detach() {
         if(parent !is null) {
             parent.remove(this);
@@ -138,9 +138,9 @@ public:
         return s;
     }
     final override size_t toHash() { return id; }
-    final override bool opEquals(Object o) { 
+    final override bool opEquals(Object o) {
         if(Node n = o.as!Node) return n.id == id;
-        return false; 
+        return false;
     }
 protected:
 
@@ -157,11 +157,11 @@ bool areResolved(T)(T[] nodes) if(is(T: Node)) {
 
 /**
  * Return a Range of children of type T
- * 
+ *
  * eg. foreach(v; node.childrenOfType!Variable) { ...}
  */
-auto childrenOfType(T)(Node n) { 
-    return n.children.filter!(it=>it.isA!T).map!(it=>it.as!T); 
+auto childrenOfType(T)(Node n) {
+    return n.children.filter!(it=>it.isA!T).map!(it=>it.as!T);
 }
 
 /**

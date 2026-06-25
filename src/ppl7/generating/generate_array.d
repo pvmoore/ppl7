@@ -25,7 +25,7 @@ void generateArrayLiteral(ArrayLiteral n, GenerateState state) {
     state.lhs = arrayPtr;
 }
 
-void defaultInitialiseArray(ArrayType array, LLVMValueRef arrayPtr, GenerateState state) {
+void defaultInitialiseArray(Array array, LLVMValueRef arrayPtr, GenerateState state) {
     Type elementType = array.elementType();
     LLVMTypeRef arrayTypeRef = state.getLLVMType(array);
     LLVMTypeRef elementTypeRef = state.getLLVMType(elementType);
@@ -67,9 +67,9 @@ void defaultInitialiseArray(ArrayType array, LLVMValueRef arrayPtr, GenerateStat
 /**
  * Generate a loop to copy the first element value to all of the other elements (if there is more than 1 element)
  */
-void propagateArrayValue(ArrayType array, LLVMValueRef arrayPtr, LLVMTypeRef elementTypeRef, GenerateState state) {
-    
-    // Only 1 element. No need to copy anything 
+void propagateArrayValue(Array array, LLVMValueRef arrayPtr, LLVMTypeRef elementTypeRef, GenerateState state) {
+
+    // Only 1 element. No need to copy anything
     if(array.numElements() == 1) return;
 
     LLVMValueRef endCounterValue = state.createConstI32Value(array.numElements() - 1);
@@ -84,10 +84,10 @@ void propagateArrayValue(ArrayType array, LLVMValueRef arrayPtr, LLVMTypeRef ele
     // loop:
     LLVMPositionBuilderAtEnd(state.builder, loopBlock);
     LLVMValueRef phi = LLVMBuildPhi(state.builder, state.INT32_TYPE, "counter_phi");
-    
+
     LLVMValueRef counter = LLVMBuildAdd(state.builder, phi, state.createConstI32Value(1), "counter");
     LLVMAddIncoming(phi, [state.createConstI32Value(0), counter].ptr, [startBlock, loopBlock].ptr, 2);
-    
+
     // Copy the src element to the current dest index
     LLVMValueRef destPtr = LLVMBuildInBoundsGEP2(state.builder, elementTypeRef, arrayPtr, [counter].ptr, 1, "dest_ptr");
     LLVMBuildStore(state.builder, srcValue, destPtr);

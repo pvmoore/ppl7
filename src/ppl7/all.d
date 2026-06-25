@@ -53,7 +53,7 @@ import ppl7.ast.stmts.Statement;
 import ppl7.ast.stmts.Variable;
 
 import ppl7.ast.types.Alias;
-import ppl7.ast.types.ArrayType;
+import ppl7.ast.types.Array;
 import ppl7.ast.types.Enum;
 import ppl7.ast.types.EType;
 import ppl7.ast.types.SimpleType;
@@ -116,7 +116,7 @@ import ppl7.resolving.resolve;
 import ppl7.resolving.ResolveState;
 import ppl7.resolving.rewriter;
 import ppl7.resolving.TargetOfCall;
-import ppl7.resolving.TargetOfIdentifier;   
+import ppl7.resolving.TargetOfIdentifier;
 
 import ppl7.scanning.scanner;
 
@@ -128,7 +128,7 @@ import ppl7.utils.utils;
 import ppl7.utils.container_utils;
 import ppl7.utils.logging_utils;
 
-__gshared { 
+__gshared {
     // All static initialisation needs to go in here to avoid circular dependencies
     static this() {
         g_logMutex = new Mutex();

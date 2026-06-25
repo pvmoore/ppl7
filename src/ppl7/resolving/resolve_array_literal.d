@@ -20,14 +20,14 @@ void resolveArrayLiteral(ArrayLiteral n, ResolveState state) {
 
 private:
 
-/** Generate the ArrayType assuming we cannot determine the type from the parent */
+/** Generate the Array assuming we cannot determine the type from the parent */
 Type getTypeFromElements(ArrayLiteral n, ResolveState state) {
-    
+
     // If we have no elements, then the type is int[0]
-    if(n.elements().length == 0) return makeArrayType(makeIntType(), 0);
+    if(n.elements().length == 0) return makeArray(makeIntType(), 0);
 
     Type elementType = n.first().as!Expression.getType();
     if(!elementType.isResolved()) return makeUnknownType();
 
-    return makeArrayType(elementType, n.elements().length.as!uint);
+    return makeArray(elementType, n.elements().length.as!uint);
 }

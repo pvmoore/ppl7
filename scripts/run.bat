@@ -6,7 +6,7 @@ if "%1"=="" (
     set PROJECT=examples
 ) else (
     set PROJECT=examples\%1
-) 
+)
 
 rem cd ..
 
@@ -14,7 +14,7 @@ rem cd ..
 del /Q .target\*.*
 
 if not exist "ppl7.exe" goto COMPILE
-del stagecoach.exe
+del ppl7.exe
 
 :COMPILE
 dub build --parallel --build=debug --config=test --arch=x86_64 --compiler=dmd
@@ -44,4 +44,4 @@ goto END
 
 :END
 
-echo. 
+echo.

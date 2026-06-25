@@ -3,19 +3,19 @@ module ppl7.resolving.resolve_is;
 import ppl7.all;
 
 void resolveIs(Is n, ResolveState state) {
-    
+
     // Wait for both sides to be resolved
     if(!n.left().isResolved() || !n.right().isResolved()) return;
 
     //log("resolving is: %s is %s", n.left(), n.right());
-    
+
     n.resolveEvaluated = true;
-    
+
     Type lt = n.leftType();
     Type rt = n.rightType();
     Expression left = n.left();
     Expression right = n.right();
-    
+
     // Type is Type
     if(left.isA!Type && right.isA!Type) {
         // Rewrite to bool Number
@@ -54,10 +54,10 @@ void resolveIs(Is n, ResolveState state) {
     // Expression is Expression
     if(lt.isValue() && rt.isValue()) {
 
-        // if(state.mod.name == "tests/enum/test_enums") 
+        // if(state.mod.name == "tests/enum/test_enums")
         //     log("[%s:%s] %s is %s", state.mod.name, n.startToken.line, lt, rt);
 
-        if(lt.isArrayType() != rt.isArrayType()) {
+        if(lt.isArray() != rt.isArray()) {
             rewriteToBool(state, n, n.negate);
             return;
         }
@@ -98,17 +98,17 @@ void resolveIs(Is n, ResolveState state) {
             return;
         }
 
-        // Array comparison. The sizes must be the same otherwise we would have caught it above 
+        // Array comparison. The sizes must be the same otherwise we would have caught it above
         // Rewrite to Binary ==
-        if(lt.isArrayType()) {
-            
+        if(lt.isArray()) {
+
             // Element Types are different
-            if(!lt.as!ArrayType.elementType().exactlyMatches(rt.as!ArrayType.elementType())) {
+            if(!lt.as!Array.elementType().exactlyMatches(rt.as!Array.elementType())) {
                 rewriteToBool(state, n, n.negate);
                 return;
             }
 
-            // Assume left and right are both of the same ArrayType so we need to check the contents
+            // Assume left and right are both of the same Array so we need to check the contents
 
             // Rewrite this to memcmp
 
@@ -116,8 +116,8 @@ void resolveIs(Is n, ResolveState state) {
             auto rightPtr = makeAs(makeAddressOf(right), makeBytePointerType());
 
             // Multiply num elements by sizeof (numElements should be a Number at this point)
-            auto numElements = makeIntNumber(lt.as!ArrayType.numElements());
-            auto size = makeIntNumber(lt.as!ArrayType.elementType().size());
+            auto numElements = makeIntNumber(lt.as!Array.numElements());
+            auto size = makeIntNumber(lt.as!Array.elementType().size());
             auto length = makeBinary(Operator.MUL, numElements, size, makeIntType());
 
             rewriteToMemcmp(state, n, leftPtr, rightPtr, length, !n.negate);

@@ -9,7 +9,7 @@ public:
 
     // Expression
     override int precedence() { return Precedence.LOWEST; }
-    
+
     // Type
     abstract EType etype();
     abstract bool exactlyMatches(Type);
@@ -37,21 +37,21 @@ bool isPointer(Type t)   { return t.etype() == EType.POINTER || t.etype() == ETy
 bool isValue(Type t)     { return !isPointer(t); }
 bool isVararg(Type t)    { return t.etype() == EType.C_VARARGS; }
 
-bool isFunction(Type t) { 
-    return t.etype() == EType.FUNCTION; 
+bool isFunction(Type t) {
+    return t.etype() == EType.FUNCTION;
 }
-bool isArrayType(Type t) { 
-    return t.etype() == EType.ARRAY; 
+bool isArray(Type t) {
+    return t.etype() == EType.ARRAY;
 }
-bool isStruct(Type t) { 
-    return t.extract!Struct !is null; 
+bool isStruct(Type t) {
+    return t.extract!Struct !is null;
 }
 bool isAnonStruct(Type t) {
     if(Struct st = t.extract!Struct) return st.name is null;
     return false;
 }
-bool isEnum(Type t) { 
-    return t.extract!Enum !is null; 
+bool isEnum(Type t) {
+    return t.extract!Enum !is null;
 }
 
 bool isPublic(Type t) {
@@ -65,33 +65,33 @@ uint size(Type t) {
     final switch(t.etype()) {
         case EType.ARRAY: {
             // todo - account for alignment here
-            ArrayType at = t.extract!ArrayType;
+            Array at = t.extract!Array;
             return at.numElements() * size(at.elementType());
         }
-        case EType.FUNCTION: 
+        case EType.FUNCTION:
             // todo - this is 8 if this is a function pointer, otherwise this might be an error
             return 8;
         case EType.STRUCT:
-            return t.extract!Struct.getSize();    
+            return t.extract!Struct.getSize();
         case EType.POINTER:
             return 8;
-        case EType.BOOL: 
-        case EType.BYTE: 
+        case EType.BOOL:
+        case EType.BYTE:
             return 1;
-        case EType.SHORT: 
+        case EType.SHORT:
             return 2;
-        case EType.INT: 
-        case EType.FLOAT: 
+        case EType.INT:
+        case EType.FLOAT:
             return 4;
-        case EType.LONG: 
-        case EType.DOUBLE: 
+        case EType.LONG:
+        case EType.DOUBLE:
             return 8;
         case EType.ENUM:
             return size(t.extract!Enum.elementType());
-        case EType.VOID: 
-        case EType.UNKNOWN: 
+        case EType.VOID:
+        case EType.UNKNOWN:
         case EType.C_VARARGS:
-            throwIf(true, "size(%s) not supported", t.etype()); 
+            throwIf(true, "size(%s) not supported", t.etype());
             assert(false);
     }
     assert(false);
@@ -100,25 +100,25 @@ uint size(Type t) {
 uint alignment(Type t) {
     if(t.isPointer()) return 8;
     switch(t.etype()) {
-        case EType.BOOL: 
-        case EType.BYTE: 
+        case EType.BOOL:
+        case EType.BYTE:
             return 1;
-        case EType.SHORT: 
+        case EType.SHORT:
             return 2;
-        case EType.INT: 
-        case EType.FLOAT: 
+        case EType.INT:
+        case EType.FLOAT:
             return 4;
-        case EType.LONG: 
-        case EType.DOUBLE: 
+        case EType.LONG:
+        case EType.DOUBLE:
             return 8;
         case EType.ARRAY:
-            return alignment(t.extract!ArrayType.elementType());
+            return alignment(t.extract!Array.elementType());
         case EType.STRUCT:
             return t.extract!Struct.getAlignment();
         case EType.ENUM:
             return alignment(t.extract!Enum.elementType());
         default:
-            throwIf(true, "alignment(%s) not supported", t.etype()); 
+            throwIf(true, "alignment(%s) not supported", t.etype());
             assert(false);
     }
     assert(false);
@@ -141,11 +141,11 @@ Type selectCommonType(Type a, Type b) {
         throwIf(true, "Handle Structs here");
         return null;
     }
-    if(a.isArrayType() || b.isArrayType()) {
-        throwIf(true, "Handle ArrayTypes here");
+    if(a.isArray() || b.isArray()) {
+        throwIf(true, "Handle Arrays here");
         return null;
     }
-    
+
     if(a.isFunction() || b.isFunction()) {
         throwIf(true, "Handle Functions here");
         return null;

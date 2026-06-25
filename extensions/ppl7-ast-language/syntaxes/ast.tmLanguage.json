@@ -1,6 +1,6 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "canast",
+	"name": "ppl7ast",
 	"patterns": [
 		{
 			"include": "#keywords"
@@ -112,7 +112,7 @@
 			"patterns": [
 				{
 					"match": "::",
-					"name": "punctuation.double-colon.stage1"
+					"name": "punctuation.double-colon.ast"
 				}
 			]
 		},
@@ -121,10 +121,10 @@
 				{
 					"captures": {
 						"1": {
-							"name": "storage.type.module_reference.stage1"
+							"name": "storage.type.module_reference.ast"
 						},
 						"2": {
-							"name": "punctuation.double-colon.stage1"
+							"name": "punctuation.double-colon.ast"
 						}
 					},
 					"match": "\\b([_a-zA-Z][_a-zA-Z0-9]+)(::)"

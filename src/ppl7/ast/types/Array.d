@@ -1,22 +1,22 @@
-module ppl7.ast.types.ArrayType;
+module ppl7.ast.types.Array;
 
 import ppl7.all;
 
 /**
- *  ArrayType
+ *  Array
  *      Type        elementType
- *      Number      numElements 
+ *      Number      numElements
  */
-final class ArrayType : Type {
+final class Array : Type {
 public:
     LLVMTypeRef llvmType;
 
     // Node
     override ENode enode() { return ENode.ARRAY_TYPE; }
-    override bool isResolved() { 
-        return elementType.isResolved() && 
+    override bool isResolved() {
+        return elementType.isResolved() &&
                numElementsExpr().isResolved() &&
-               numElementsExpr().extractNumber() !is null; 
+               numElementsExpr().extractNumber() !is null;
     }
 
     // Statement
@@ -26,13 +26,13 @@ public:
 
     override bool exactlyMatches(Type other) {
         assert(isResolved() && other.isResolved());
-        if(ArrayType o = other.as!ArrayType) {
+        if(Array o = other.as!Array) {
             return numElements == o.numElements && elementType.exactlyMatches(o.elementType);
         }
         return false;
     }
     override bool canImplicitlyCastTo(Type other) {
-        if(ArrayType o = other.as!ArrayType) {
+        if(Array o = other.as!Array) {
             // The length and element types must match
             return numElements() == o.numElements() && elementType.exactlyMatches(o.elementType);
         }
@@ -42,16 +42,16 @@ public:
     override string shortName() { return "%s[]".format(elementType().shortName()); }
     override string mangledName() { return "A%s[%s]".format(elementType().mangledName(), numElements()); }
 
-    Type elementType() { 
-        return first().as!Type; 
+    Type elementType() {
+        return first().as!Type;
     }
-    Expression numElementsExpr() { 
-        return last().as!Expression; 
+    Expression numElementsExpr() {
+        return last().as!Expression;
     }
-    int numElements() { 
-        assert(isResolved(), "Don't call this until the ArrayType is resolved"); 
+    int numElements() {
+        assert(isResolved(), "Don't call this until the Array is resolved");
         assert(numElementsExpr().extractNumber() !is null, "numElement is not a Number");
-        return numElementsExpr().extractNumber().value.intValue; 
+        return numElementsExpr().extractNumber().value.intValue;
     }
 
     override string toString() {
@@ -60,9 +60,9 @@ public:
     }
 }
 
-ArrayType makeArrayType(Type elementType, int numElements) { 
-    auto a =  makeNode!ArrayType(0);
+Array makeArray(Type elementType, int numElements) {
+    auto a =  makeNode!Array(0);
     a.add(elementType);
     a.add(makeIntNumber(numElements));
-    return a; 
+    return a;
 }

@@ -21,15 +21,15 @@ void resolveBuiltin(Builtin n, ResolveState state) {
         rewriteToBool(state, n, true);
     } else if("@isArray" == n.name) {
         auto expr = n.first().as!Expression;
-        auto result = expr.getType().isA!ArrayType;
+        auto result = expr.getType().isA!Array;
         rewriteToBool(state, n, result);
     } else if("@isBool" == n.name) {
         auto expr = n.first().as!Expression;
         auto result = expr.getType().isBool();
-        rewriteToBool(state, n, result);      
+        rewriteToBool(state, n, result);
     } else if("@isConst" == n.name) {
         auto expr = n.first().as!Expression;
-        rewriteToBool(state, n, getIsConst(n, expr));    
+        rewriteToBool(state, n, getIsConst(n, expr));
     } else if("@isEnum" == n.name) {
         auto expr = n.first().as!Expression;
         auto result = expr.getType().isEnum();
@@ -48,14 +48,14 @@ void resolveBuiltin(Builtin n, ResolveState state) {
             rewriteToBool(state, n, st.isPacked);
         } else {
             rewriteToBool(state, n, false);
-        }        
+        }
     } else if("@isPointer" == n.name) {
         auto expr = n.first().as!Expression;
         auto result = expr.getType().isPointer();
         rewriteToBool(state, n, result);
     } else if("@isPublic" == n.name) {
         auto expr = n.first().as!Expression;
-        rewriteToBool(state, n, getIsPublic(n, expr));  
+        rewriteToBool(state, n, getIsPublic(n, expr));
     } else if("@isReal" == n.name) {
         auto expr = n.first().as!Expression;
         auto result = expr.getType().isReal();
@@ -65,11 +65,11 @@ void resolveBuiltin(Builtin n, ResolveState state) {
         auto result = expr.getType().isStruct();
         rewriteToBool(state, n, result);
     } else if("@isUnion" == n.name) {
-        todo("implement me");                   
+        todo("implement me");
     } else if("@isValue" == n.name) {
         auto expr = n.first().as!Expression;
         auto result = !expr.getType().isPointer();
-        rewriteToBool(state, n, result);  
+        rewriteToBool(state, n, result);
     } else if("@isVoid" == n.name) {
         auto expr = n.first().as!Expression;
         auto result = expr.getType().isVoidValue();
@@ -200,8 +200,8 @@ void handleProperty(ResolveState state, Builtin n) {
 
         if(defaultExpr.as!StringLiteral) {
             value = defaultExpr.as!StringLiteral.stringValue.toLower();
-            rewriteToNumber(state, n, value, type);     
-            return;  
+            rewriteToNumber(state, n, value, type);
+            return;
         }
 
         Type defaultType = defaultExpr.getType();

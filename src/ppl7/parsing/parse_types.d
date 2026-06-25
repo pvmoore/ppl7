@@ -18,7 +18,7 @@ void parseType(Node parent, ParseState state) {
         type = parseUserDefinedType(state);
     } else if(isFunctionPtr(state)) {
         type = parseFunctionPtr(state);
-    } 
+    }
 
     if(!type) {
         syntaxError(state, "Expected type");
@@ -28,7 +28,7 @@ void parseType(Node parent, ParseState state) {
 
     if(state.etoken() == EToken.LSQUARE) {
 
-        type = parseArrayType(type, state);
+        type = parseArray(type, state);
         type = consumePointer(type, state);
     }
 
@@ -43,9 +43,9 @@ bool isSimpleType(ParseState state) {
 }
 bool isUserDefinedType(ParseState state) {
     if(state.etoken() != EToken.IDENTIFIER) return false;
-    
+
     string name = state.text();
-    
+
     // Type
     if(state.mod.isUDT(name, state.mod, null)) return true;
 
@@ -63,7 +63,7 @@ bool isAnonStruct(ParseState state) {
     return state.text() == "struct" && state.etoken(1) == EToken.LBRACE;
 }
 /**
- * fn(params)->void 
+ * fn(params)->void
  */
 bool isFunctionPtr(ParseState state) {
     if(!state.matches(0, EToken.IDENTIFIER, EToken.LPAREN)) return false;
@@ -120,7 +120,7 @@ Type parseTypeOf(ParseState state) {
 }
 
 /**
- * 'byte' | 'int' etc... 
+ * 'byte' | 'int' etc...
  */
 Type parseSimpleType(ParseState state) {
     EType tk = peekSimpleEType(state);
@@ -158,7 +158,7 @@ Type parseUserDefinedType(ParseState state) {
 
     if(state.mod.isModuleAlias(state.text()) && state.etoken(1) == EToken.DOT) {
 
-        Module m = state.mod.importedModulesQualified[state.text()]; 
+        Module m = state.mod.importedModulesQualified[state.text()];
         state.next();
         state.skip(EToken.DOT);
 
@@ -177,10 +177,10 @@ Type parseUserDefinedType(ParseState state) {
 /**
  * '[' Expression ']'
  */
-Type parseArrayType(Expression type, ParseState state) {
+Type parseArray(Expression type, ParseState state) {
     assert(state.etoken() == EToken.LSQUARE);
 
-    ArrayType a = makeNode!ArrayType(state);
+    Array a = makeNode!Array(state);
     a.add(type);
 
     // [
@@ -201,7 +201,7 @@ Type parseArrayType(Expression type, ParseState state) {
 Type parseFunctionPtr(ParseState state) {
 
     Function f = makeNode!Function(state);
-    
+
     state.skip("fn");
 
     // Parameters
@@ -218,7 +218,7 @@ Type parseFunctionPtr(ParseState state) {
     state.skip(EToken.RPAREN);
 
     state.skip(EToken.RARROW);
-    
+
     // Return type
     parseType(f, state);
 
@@ -229,5 +229,5 @@ Type parseFunctionPtr(ParseState state) {
     }
 
     return f;
-}   
+}
 

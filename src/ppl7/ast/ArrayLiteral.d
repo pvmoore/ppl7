@@ -24,7 +24,7 @@ public:
 
     Expression[] elements() { return children.map!(v=>v.as!Expression).array; }
 
-    Type elementType() { assert(isResolved()); return type.as!ArrayType.elementType(); }
+    Type elementType() { assert(isResolved()); return type.as!Array.elementType(); }
 
     void setType(Type type) { this.type = type; }
 

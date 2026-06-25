@@ -25,7 +25,7 @@
         "grammars": [
             {
                 "language": "ppl7",
-                "scopeName": "source.stage",
+                "scopeName": "source.ppl7",
                 "path": "./syntaxes/ppl7.tmLanguage.json"
             }
         ]

@@ -51,9 +51,9 @@ public:
         // log("Alignment of ptr is %s", LLVMPreferredAlignmentOfType(targetData, PTR_TYPE));
         //log("Alignment of struct [ { i8 } x 2 ] is %s", LLVMPreferredAlignmentOfType(targetData, LLVMArrayType2(LLVMStructTypeInContext(context, [INT8_TYPE].ptr, 1, 0), 2)));
         //log("Size of array of structs [ { i8 } x 2 ] is %s", LLVMABISizeOfType(targetData, LLVMArrayType2(LLVMStructTypeInContext(context, [INT8_TYPE].ptr, 1, 0), 2)));
-   
+
         // struct Chicken { // size = 8
-        //     int a;      // align 0 
+        //     int a;      // align 0
         //     bool b;     // align 4
         //     short c;    // align 6
         // }
@@ -127,7 +127,7 @@ public:
             case ENode.UNARY: generateUnary(n.as!Unary, this); break;
             case ENode.VALUE_OF: generateValueOf(n.as!ValueOf, this); break;
             case ENode.VARIABLE: generateVariable(n.as!Variable, this); break;
-            default: throwIf(true, "Handle generate %s", n.enode()); 
+            default: throwIf(true, "Handle generate %s", n.enode());
         }
 
         //this.log(" Generated %s", n.enode());
@@ -172,19 +172,19 @@ public:
         LLVMTypeRef[] paramTypes = f.paramTypes().filter!(it=>it.etype() != EType.C_VARARGS)
                                                  .map!(it => getLLVMType(it))
                                                  .array;
-        
+
         return LLVMFunctionType(returnType, paramTypes.ptr, paramTypes.length.as!uint, f.hasVarargParam.toLLVMBool());
     }
 
     LLVMTypeRef getLLVMType(Type t) {
-        // This also covers functions because they are also pointers 
+        // This also covers functions because they are also pointers
         if(t.isPointer()) {
-            LLVMTypeRef valueType = t.isFunction() ? getLLVMFunctionType(t.extract!Function) 
+            LLVMTypeRef valueType = t.isFunction() ? getLLVMFunctionType(t.extract!Function)
                                                    : getLLVMType(t.extract!PointerType.valueType());
             return LLVMPointerType(valueType, 0);
         }
-        if(t.isArrayType()) {
-            ArrayType at = t.extract!ArrayType; assert(at);
+        if(t.isArray()) {
+            Array at = t.extract!Array; assert(at);
             if(at.llvmType) return at.llvmType;
 
             at.llvmType = LLVMArrayType2(getLLVMType(at.elementType()), at.numElements());
@@ -211,29 +211,29 @@ public:
     LLVMTypeRef getLLVMType(EType tk) {
         final switch(tk) {
             case EType.VOID: return VOID_TYPE;
-            case EType.BOOL: // Bool is also a byte 
-            case EType.BYTE: 
+            case EType.BOOL: // Bool is also a byte
+            case EType.BYTE:
                 return INT8_TYPE;
             case EType.SHORT: return INT16_TYPE;
             case EType.INT: return INT32_TYPE;
             case EType.LONG: return INT64_TYPE;
             case EType.FLOAT: return FLOAT_TYPE;
             case EType.DOUBLE: return DOUBLE_TYPE;
-            case EType.POINTER: 
+            case EType.POINTER:
                 throwIf(true, "getLLVMType(EType.POINTER) -> call getLLVMType(Type) for Pointers");
                 break;
             case EType.FUNCTION:
                 throwIf(true, "getLLVMType(EType.FUNCTION) -> call getLLVMType(Type) for Functions");
                 break;
             case EType.ARRAY:
-                throwIf(true, "getLLVMType(EType.ARRAY) -> call getLLVMType(Type) for ArrayTypes");
+                throwIf(true, "getLLVMType(EType.ARRAY) -> call getLLVMType(Type) for Arrays");
                 break;
             case EType.STRUCT:
                 throwIf(true, "getLLVMType(EType.STRUCT) -> call getLLVMType(Type) for Structs");
                 break;
             case EType.ENUM:
                 throwIf(true, "getLLVMType(EType.ENUM) -> call getLLVMType(Type) for Enums");
-                break;    
+                break;
             case EType.UNKNOWN:
             case EType.C_VARARGS:
                 throwIf(true, "getLLVMType() Unexpected EType %s", tk);
@@ -241,12 +241,12 @@ public:
         }
         assert(false);
     }
-    void addFunctionDeclaration(string name, 
-                                LLVMTypeRef returnType, 
-                                LLVMTypeRef[] paramTypes, 
-                                CallingConv callingConv, 
+    void addFunctionDeclaration(string name,
+                                LLVMTypeRef returnType,
+                                LLVMTypeRef[] paramTypes,
+                                CallingConv callingConv,
                                 LLVMLinkage linkage,
-                                bool isVarArg = false) 
+                                bool isVarArg = false)
     {
         if(functionDeclarations.containsKey(name)) {
             log(mod, "Function decl added more than once: %s", name);
@@ -270,7 +270,7 @@ public:
     }
     /**
      * This should get the intrinsic function and add it to the module if not already there.
-     * It is not working for me however since when i ask for 'llvm.memset.inline' and params 
+     * It is not working for me however since when i ask for 'llvm.memset.inline' and params
      * (ptr, i8, i64, i1) it returns a function with params (ptr, i8, i8, i1). Not sure why.
      */
     LLVMValueRef getIntrinsicFunctionValue(string name, LLVMTypeRef[] paramTypes) {
@@ -333,7 +333,7 @@ public:
     LLVMValueRef castType(LLVMValueRef value, Type from, Type to, string name = null) {
         assert(from);
         assert(to);
-        
+
         LLVMTypeRef toType = getLLVMType(to);
         auto namez = name.toStringz();
 
@@ -341,8 +341,8 @@ public:
 
         //this.log("castType from %s to %s", from, to);
 
-        if(from.isArrayType() || to.isArrayType()) {
-            throwIf(true, "Can't cast ArrayTypes. They should exactly match");
+        if(from.isArray() || to.isArray()) {
+            throwIf(true, "Can't cast Arrays. They should exactly match");
         }
 
         // Pointer casts are not required
@@ -357,7 +357,7 @@ public:
         //     log("2");
         //     return this.rhs;
         // }
-        
+
         if(from.isPointer() && to.isInteger()) {
             this.rhs = LLVMBuildPtrToInt(builder, value, toType, namez);
             return this.rhs;
@@ -372,7 +372,7 @@ public:
         }
 
         if(from.isStruct() && to.isStruct()) {
-            throwIf(true, "struct to struct cast should not happen. from = %s, to = %s, module = %s, function = %s", 
+            throwIf(true, "struct to struct cast should not happen. from = %s, to = %s, module = %s, function = %s",
                 from, to, mod.name, currentFunction ? currentFunction.printValueToString() : "unknown");
         }
 
@@ -452,7 +452,7 @@ public:
     /**
      * Add an attribute to a function.
      * These are defined in build/include/llvm/IR/Attributes.inc
-     * eg. noinline, alwaysinline, inlinehint, nounwind, hot, cold, 
+     * eg. noinline, alwaysinline, inlinehint, nounwind, hot, cold,
      */
     void addFunctionAttribute(LLVMValueRef functionValue, string attributeName) {
         addFunctionParamAttribute(functionValue, -1, attributeName);

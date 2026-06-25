@@ -25,7 +25,7 @@ void resolveChildren(Node parent, ResolveState state) {
             case ENode.ADDRESS_OF: resolveAddressOf(n.as!AddressOf, state); break;
             case ENode.ALIAS: break;
             case ENode.ARRAY_LITERAL: resolveArrayLiteral(n.as!ArrayLiteral, state); break;
-            case ENode.ARRAY_TYPE: resolveArrayType(n.as!ArrayType, state); break;
+            case ENode.ARRAY_TYPE: resolveArray(n.as!Array, state); break;
             case ENode.AS: resolveAs(n.as!As, state); break;
             case ENode.ASSERT: resolveAssert(n.as!Assert, state); break;
             case ENode.BINARY: resolveBinary(n.as!Binary, state); break;
@@ -74,9 +74,9 @@ void resolveAddressOf(AddressOf n, ResolveState state) {
 
 
 
-    if(n.expr().getType().isArrayType()) {
+    if(n.expr().getType().isArray()) {
         // Add explicit cast for &array
-        ArrayType at = n.expr().getType().extract!ArrayType;
+        Array at = n.expr().getType().extract!Array;
         PointerType ptr = makePointerType(at.elementType());
         rewriteToAs(state, n, n, ptr);
     }
@@ -93,7 +93,7 @@ void resolveAssert(Assert n, ResolveState state) {
 
     if(!n.first().isResolved()) return;
 
-    // Rewrite to call @assert
+    // Rewrite to call ppl_assert
     auto condition = n.first().as!Expression;
     auto moduleName = makeStringLiteral(state.mod.name, true);
     auto moduleFilename = makeStringLiteral(state.mod.relFilename, true);
@@ -109,7 +109,7 @@ void resolveAssert(Assert n, ResolveState state) {
         condition = makeBinary(Operator.NOT_EQUAL, condition, makeLongNumber(0), makeBoolType());
     }
 
-    rewriteToCall(state, n, "@assert", [condition, moduleName, moduleFilename, line]);
+    rewriteToCall(state, n, "ppl_assert", [condition, moduleName, moduleFilename, line]);
 }
 
 void resolveBinary(Binary n, ResolveState state) {

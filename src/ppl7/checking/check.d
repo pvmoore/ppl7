@@ -6,7 +6,7 @@ bool checkAllModules(Project project) {
     foreach(m; project.allModules) {
         checkModule(m);
     }
-    return !project.hasErrors();   
+    return !project.hasErrors();
 }
 
 void checkModule(Module mod) {
@@ -56,8 +56,8 @@ void checkChildren(Node parent) {
 void checkArrayLiteral(ArrayLiteral n) {
     //log(" Checking array literal");
 
-    assert(n.getType().isArrayType());
-    ArrayType at = n.getType().as!ArrayType;
+    assert(n.getType().isArray());
+    Array at = n.getType().as!Array;
 
     // Check that we have the correct number of elements
     if(n.elements().length != at.numElements()) {
@@ -180,7 +180,7 @@ void checkStructLiteral(StructLiteral n) {
                     semanticError(e, -2, EError.STRUCT_LITERAL_ARGUMENT_NOT_VISIBLE);
                 }
             }
-        } 
+        }
     } else {
         // Unnamed arguments: (They must all be unnamed if we get here)
 
