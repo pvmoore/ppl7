@@ -72,6 +72,7 @@ public:
         if(e.eerror() == EError.SYNTAX) { throw new Exception(e.getSummary()); }
     }
     void addModule(Module mod) {
+        //consoleLog("Adding module %s %s", mod.baseDirectory, mod.relFilename);
         allModules ~= mod;
         modulesByName[mod.name] = mod;
         modulesByFilename[mod.relFilename] = mod;
@@ -98,7 +99,10 @@ public:
      */
     string[] getExternalLibs() {
         string[] externalLibs;
+
         if(options.isDebug) {
+            // DEBUG
+
             externalLibs ~= [
                 //"ucrtd.lib",                  // MS universal C99 runtime (debug)
                 "msvcrtd.lib",                  // MS C initialization and termination (debug)
@@ -109,7 +113,15 @@ public:
             //    "libcmtd.lib",
             //    "libvcruntimed.lib"
             //];
+
+            foreach(l; options.getLibs()) {
+                if(l.debugLibFile) {
+                    externalLibs ~= l.debugLibFile;
+                }
+            }
         } else {
+            // RELEASE
+
             externalLibs ~= [
                 "msvcrt.lib",                   // MS C initialization and termination (release)
                 //"ucrt.lib",                   // MS universal C99 runtime (release)
@@ -120,12 +132,14 @@ public:
             //    "libcmt.lib",
             //    "libvcruntime.lib"
             //];
-        }
-        foreach(l; options.getLibs()) {
-            if(l.libFile) {
-                externalLibs ~= l.libFile;
+
+            foreach(l; options.getLibs()) {
+                if(l.libFile) {
+                    externalLibs ~= l.libFile;
+                }
             }
         }
+
         return externalLibs;
     }
 //──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -164,11 +178,11 @@ private:
         string source = read(baseDirectory ~ relFilename).as!string;
 
         // Create and initialise the Module instance
-        Module mod = makeNode!Module(0);
-        mod.project = this;
-        mod.name = toModuleName(relFilename);
-        mod.relFilename = relFilename;
-        mod.source = source;
+        Module mod        = makeNode!Module(0);
+        mod.project       = this;
+        mod.name          = toModuleName(relFilename);
+        mod.relFilename   = relFilename;
+        mod.source        = source;
         mod.baseDirectory = baseDirectory;
         addModule(mod);
 

@@ -1,5 +1,5 @@
 import stdc = core:stdc
-import vk   = vulkan:test_vulkan 
+import vk   = vulkan:test_vulkan
 import cstr = core:string
 
 public fn main() -> int {
@@ -13,7 +13,7 @@ public fn main() -> int {
     int* pp = &p
     if(1) {
         stdc.puts(""z)
-    }  
+    }
 
     return 0
 }

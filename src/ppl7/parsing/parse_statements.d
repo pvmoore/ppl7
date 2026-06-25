@@ -13,19 +13,13 @@ void parseStatementsAtModuleScope(ParseState state) {
     while(!state.eof() && !state.project.hasErrors()) {
         parseStatementAtModuleScope(state);
     }
-
-    // If we get here and some of the attribute scopes were not closed we should report an error
-    state.attributes.parse(state);
-    foreach(a; state.attributes.getCurrentAttributes()) {
-        syntaxError(state.mod, a.token, "This attribute scope was not closed");
-    }
 }
 /**
  * Statements allowed at Module scope:
- *   - Import   
- *   - Struct   
+ *   - Import
+ *   - Struct
  *   - Alias
- *   - Enum    
+ *   - Enum
  *   - Union    *todo
  *
  *   - Function ::= fn foo(Types) -> Type {}
@@ -58,13 +52,13 @@ void parseStatementAtModuleScope(ParseState state) {
                 case "enum":
                     parseEnum(mod, state, isPublic);
                     break;
-                case "struct": 
+                case "struct":
                     parseStruct(mod, state, isPublic);
-                    break; 
+                    break;
                 case "import":
                     parseImport(mod, state, isPublic);
                     break;
-                default: 
+                default:
                     syntaxError(state, "Expected statement but found %s".format(state.token()));
                     break;
             }
@@ -79,10 +73,10 @@ void parseStatementAtModuleScope(ParseState state) {
  * Statements allowed at Function scope:
  *   - Assert
  *   - Return
- *   - Variable    
- *   - While        *todo        
+ *   - Variable
+ *   - While        *todo
  *   - For          *todo
- *   - Expression   
+ *   - Expression
  */
 void parseStatementAtFunctionScope(Statement parent, ParseState state) {
 
@@ -112,7 +106,7 @@ void parseStatementAtFunctionScope(Statement parent, ParseState state) {
     }
 
     // If we get here then it must be an Expression
-    parseExpression(parent, state); 
+    parseExpression(parent, state);
 }
 
 //──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -252,7 +246,7 @@ void parseFunction(Module mod, ParseState state, bool isPublic) {
     }
 
     if(state.hasAttribute("ABI")) {
-        string value = state.getAttribute("ABI").value; 
+        string value = state.getAttribute("ABI").value;
         if(value.isOneOf("C", "WIN64")) {
             f.callingConvention = value;
         } else {
@@ -286,7 +280,7 @@ void parseFunction(Module mod, ParseState state, bool isPublic) {
     // Return type
     if(state.etoken() == EToken.RARROW) {
         state.skip(EToken.RARROW);
-        
+
         parseType(f, state);
     } else {
         if(f.isMain) {
@@ -313,7 +307,7 @@ void parseFunction(Module mod, ParseState state, bool isPublic) {
     } else {
         f.isExtern = true;
     }
-    
+
     if(f.isMain || (f.isExtern && !f.callingConvention)) {
         f.callingConvention = "C";
     }
@@ -340,7 +334,7 @@ void parseParameter(Function parent, ParseState state) {
     v.vkind = VariableKind.PARAMETER;
     v.isConst = state.text() == "const";
     if(v.isConst) state.next();
-    
+
     // Type
     parseType(v, state);
 
@@ -455,7 +449,7 @@ void parseStruct(Node parent, ParseState state, bool isPublic) {
 
         // Consume public, private
         bool isPublicMember = parseVisibility(state, false, s.isNamed());
-        
+
         // Anon struct members are always public
         if(!s.isNamed()) {
             isPublicMember = true;

@@ -1,5 +1,12 @@
 # Version History
 
+## 0.2.17
+
+- Remove ABI attribute. Assume calling convention depends on the OS and not the function.
+- Remove multi-statement attributes
+- Add debugLibFile to CompilerOptions.Lib. Use the debug libs in debug mode and the standard libs in release mode
+- Fix error CompilationError.getLocationString() when the error is in one of the library files
+
 ## 0.2.16
 
 - Add timings which are optionally displayed after compilation

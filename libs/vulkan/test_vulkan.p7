@@ -200,15 +200,11 @@ struct VkLayerProperties {
     byte[VK_MAX_DESCRIPTION_SIZE] description
 }
 
-#begin(ABI=Win64)
-
 fn(VkInstance, byte* pName) -> void* vkGetInstanceProcAddr
 fn(int*)-> VkResult vkEnumerateInstanceVersion
 fn(VkInstanceCreateInfo*, VkAllocationCallbacks*, VkInstance*) -> VkResult vkCreateInstance
 fn(byte*,int*,VkExtensionProperties*) -> VkResult vkEnumerateInstanceExtensionProperties
 fn(int*,VkLayerProperties*) -> VkResult vkEnumerateInstanceLayerProperties
-
-#end(ABI)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 private:

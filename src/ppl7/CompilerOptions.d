@@ -8,6 +8,7 @@ public:
         string name;                // eg. "core"
         string sourceDirectory;     // eg. "C:/work/ppl7/libs/core"
         string libFile;             // eg. "C:/work/ppl7/libs/core/lib/libcore.lib"
+        string debugLibFile;        // eg. "C:/work/ppl7/libs/core/lib/libcore.lib"
     }
     enum TargetType {
         EXE,
@@ -44,13 +45,15 @@ public:
         CompilerOptions.Lib coreLib = {
             name: "core",
             sourceDirectory: "libs/core",
-            libFile: null
+            libFile: null,
+            debugLibFile: null
         };
 
         CompilerOptions.Lib commonLib = {
             name: "ppl",
             sourceDirectory: "libs/ppl",
-            libFile: null
+            libFile: null,
+            debugLibFile: null
         };
 
         addLib(coreLib);

@@ -13,7 +13,7 @@
             "problemMatcher": []
         },
         {
-            "label": "[ Compile PPL7 ]",
+            "label": "[ 🔧 Compile PPL7 ]",
             "type": "shell",
             "windows": {
                 "command": "scripts/run_build.bat dmd debug test",
@@ -26,7 +26,7 @@
             "problemMatcher": []
         },
          {
-            "label": "[ Compile PPL7 - RELEASE mode ]",
+            "label": "[ 🔧 Compile PPL7 - RELEASE mode ]",
             "type": "shell",
             "windows": {
                 "command": "scripts/run_build.bat ldc2 release test",
@@ -39,7 +39,7 @@
             "problemMatcher": []
         },
         {
-            "label": "[ Compile PPL7 and run ]",
+            "label": "[ 🔧🏃 Compile PPL7 and run ]",
             "type": "shell",
             "windows": {
                 "command": "scripts\\run.bat"

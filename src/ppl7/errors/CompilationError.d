@@ -23,8 +23,7 @@ public:
         return _eerror;
     }
     string getLocationString() {
-        Project project = mod.project;
-        return "%s%s(%s,%s)".format(project.directory, mod.relFilename, line+1, column+1);
+        return "%s%s(%s,%s)".format(mod.baseDirectory, mod.relFilename, line+1, column+1);
     }
     string getSummary() {
         return getSummaryMessage(this);
@@ -90,6 +89,6 @@ void semanticError(Project project, Module mod, Node n, EError kind, ErrorExtraI
     auto stmt = n.as!Statement;
     if(stmt) {
         t = stmt.startToken;
-    } 
+    }
     project.addError(new CompilationError(mod, stmt, t.line, t.column, kind, extraInfo));
 }
