@@ -11,6 +11,7 @@ enum CallingConv : uint {
 }
 
 void writeLLToFile(Module mod, string filename) {
+    if(!mod.project.options.writeLL) return;
     char* error;
     scope(exit) if(error !is null) LLVMDisposeMessage(error);
     if(LLVMPrintModuleToFile(mod.llvmModule, filename.toStringz(), &error)) {

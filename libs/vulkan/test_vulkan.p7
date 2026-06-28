@@ -2,7 +2,7 @@
 import console = core:console
 import win 	   = core:windows
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+#################################################################################################
 public:
 
 fn testVulkan() {
@@ -34,7 +34,7 @@ fn vkLoad() {
 
 	vkLoadGlobalCommandFunctions()
 	createVulkanInstance()
-	//vkLoadInstanceFunctions(null)
+	#vkLoadInstanceFunctions(null)
 }
 fn vkUnload() {
 	win.FreeLibrary(g_handle)
@@ -61,16 +61,16 @@ fn createVulkanInstance() {
         sType: VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
         pApplicationInfo: &applicationInfo
     }
-	// // Dump Layers
-	// log("Instance layers: %s", layers.length);
-	// foreach(i, l; layers.values()) {
-	// 	log("  [%s] layer name:'%s' desc:'%s' specVersion:%s implVersion:%s",
-	// 		i,
-	// 		l.layerName.ptr.fromStringz,
-	// 		l.description.ptr.fromStringz,
-	// 		versionToString(l.specVersion),
-	// 		l.implementationVersion);
-	// }
+	# # Dump Layers
+	# log("Instance layers: %s", layers.length);
+	# foreach(i, l; layers.values()) {
+	# 	log("  [%s] layer name:'%s' desc:'%s' specVersion:%s implVersion:%s",
+	# 		i,
+	# 		l.layerName.ptr.fromStringz,
+	# 		l.description.ptr.fromStringz,
+	# 		versionToString(l.specVersion),
+	# 		l.implementationVersion);
+	# }
 }
 
 fn vulkanVersion(int major, int minor, int patch) -> int {
@@ -79,18 +79,18 @@ fn vulkanVersion(int major, int minor, int patch) -> int {
 fn toVkBool32(bool b) -> VkBool32 {
     return if(b) VK_TRUE else VK_FALSE
 }
-// fn clearColour(float r, float g, float b, float a) -> VkClearValue {
-//     VkClearColorValue value
-//     value.float32 = [r,g,b,a]
-//     return value as VkClearValue
-// }
-// union VkClearValue {
-//     VkClearColorValue           color
-//     VkClearDepthStencilValue    depthStencil
-// }
+# fn clearColour(float r, float g, float b, float a) -> VkClearValue {
+#     VkClearColorValue value
+#     value.float32 = [r,g,b,a]
+#     return value as VkClearValue
+# }
+# union VkClearValue {
+#     VkClearColorValue           color
+#     VkClearDepthStencilValue    depthStencil
+# }
 fn check(VkResult r) -> bool {
     if(r is not VK_SUCCESS) {
-        //log("API call returned %s", r);
+        #log("API call returned %s", r);
         return false
     }
 	return true
@@ -113,9 +113,9 @@ const int VK_TRUE = 1
 const int VK_FALSE = 0
 const int VK_MAX_EXTENSION_NAME_SIZE = 256
 const int VK_MAX_DESCRIPTION_SIZE = 256
-//const int VK_VERSION_1_0 = vulkanVersion(1,0,0)	// todo - constant fold this to a Number
+#const int VK_VERSION_1_0 = vulkanVersion(1,0,0)	// todo - constant fold this to a Number
 
-#(unqualified)
+[[unqualified]]
 enum VkResult {
     VK_SUCCESS 		= 0
 	VK_NOT_READY 	= 1
@@ -123,21 +123,21 @@ enum VkResult {
     VK_EVENT_SET 	= 3
     VK_EVENT_RESET 	= 4
     VK_INCOMPLETE 	= 5
-	// ...
+	# ...
 }
 
-#(unqualified)
+[[unqualified]]
 enum VkStructureType {
     VK_STRUCTURE_TYPE_APPLICATION_INFO      = 0
     VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO  = 1
 }
 
-#(unqualified)
+[[unqualified]]
 enum VkInstanceCreateFlagBits {
     VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR = 0x00000001
 }
 
-#(unqualified)
+[[unqualified]]
 enum VkSystemAllocationScope {
     VK_SYSTEM_ALLOCATION_SCOPE_COMMAND = 0
     VK_SYSTEM_ALLOCATION_SCOPE_OBJECT = 1
@@ -146,7 +146,7 @@ enum VkSystemAllocationScope {
     VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE = 4
 }
 
-#(unqualified)
+[[unqualified]]
 enum VkInternalAllocationType {
     VK_INTERNAL_ALLOCATION_TYPE_EXECUTABLE = 0,
 }
@@ -206,7 +206,7 @@ fn(VkInstanceCreateInfo*, VkAllocationCallbacks*, VkInstance*) -> VkResult vkCre
 fn(byte*,int*,VkExtensionProperties*) -> VkResult vkEnumerateInstanceExtensionProperties
 fn(int*,VkLayerProperties*) -> VkResult vkEnumerateInstanceLayerProperties
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+#################################################################################################
 private:
 
 HANDLE g_handle

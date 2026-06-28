@@ -2,7 +2,7 @@ module test_suite;
 
 import std.path;
 import std.stdio     : writef, writefln;
-import std.file      : read, dirEntries, SpanMode;
+import std.file      : read, dirEntries, SpanMode, exists, remove;
 import std.array     : replace, join;
 import std.string    : indexOf, split, strip, toLower;
 import std.format    : format;
@@ -17,11 +17,11 @@ __gshared {
     uint g_numPassed;
     uint g_numFailed;
 
-    bool g_verboseFailures = true;  // enable to dump errors for all failed tests 
+    bool g_verboseFailures = true;  // enable to dump errors for all failed tests
 
     bool g_compileInDebugMode = true; // tests will be compiled in debug mode
 
-    string[] g_tagsToRun; // = ["identifier"];
+    string[] g_tagsToRun; // = ["pete"];
 }
 
 void runTestSuite() {
@@ -94,15 +94,16 @@ void runTest(string filename) {
     }
 
     auto options = new CompilerOptions();
-    options.writeLL = false;
-    options.writeAST = true;
-    options.writeObj = false;
-    options.checkOnly = false;
+    options.writeLL     = true;
+    options.writeAST    = true;
+    options.writeObj    = false;
+    options.checkOnly   = false;
+    options.cleanTarget = false;
 
     options.subsystem = "console";
     options.targetDirectory = ".target/";
     options.targetName = "test";
-    
+
     options.verboseLogging = false;
 
     options.isDebug = g_compileInDebugMode;
@@ -115,6 +116,10 @@ void runTest(string filename) {
     options.properties["myBoolean"] = "true";
     options.properties["myInteger"] = "3";
     options.properties["myFloat"]   = "3.14";
+
+    if(exists(".target/test.exe")) {
+        remove(".target/test.exe");
+    }
 
     Compiler compiler = new Compiler(options);
 
@@ -137,7 +142,7 @@ void runTest(string filename) {
             }
         }
     } else {
-        // This is expected to fail. Check that all expected errors are found 
+        // This is expected to fail. Check that all expected errors are found
 
         int numFound;
         foreach(actual; errors) {
@@ -160,9 +165,9 @@ void runTest(string filename) {
             }
         }
     }
-    
+
     writef("[%s] %s'%s' %s %s", g_testIndex, CYAN, meta.name, filename, RESET);
-    
+
     if(pass) {
         g_numPassed++;
         writefln(" %s%s%s", GREEN_BOLD, "PASS", RESET);
@@ -234,8 +239,8 @@ struct Meta {
             isTest: true
         };
         meta.name   = between(s, "name", "\"", "\"");
-        meta.tags   = between(s, "tags", "[", "]").split(",");
-        meta.args   = between(s, "args", "[", "]").split(",");
+        meta.tags   = between(s, "tags", "[", "]").split(",").map!(it=>it.strip()).array();
+        meta.args   = between(s, "args", "[", "]").split(",").map!(it=>it.strip()).array();
         meta.errors = between(s, "errors", "[", "]")
             .split(",")
             .map!(it=>it.strip())
@@ -256,7 +261,7 @@ struct Meta {
 private:
     static string between(string s, string skipTo, string start, string end) {
         auto fromIdx  = skipTo is null ? 0 : s.indexOf(skipTo) + skipTo.length;
-        auto startIdx = s.indexOf(start, fromIdx) + start.length;  
+        auto startIdx = s.indexOf(start, fromIdx) + start.length;
         auto endIdx   = s.indexOf(end, startIdx);
         return s[startIdx..endIdx];
     }

@@ -5,10 +5,10 @@ import cstr = core:string
 public fn main() -> int {
     vk.testVulkan()
 
-    // Green OK
+    # Green OK
     stdc.puts("\n\u001b[32;1mOK\u001b[0m"z)
 
-    // fixme
+    # fixme
     int p = 1
     int* pp = &p
     if(1) {

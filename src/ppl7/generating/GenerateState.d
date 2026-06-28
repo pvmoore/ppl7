@@ -6,6 +6,8 @@ final class GenerateState {
 public:
     this(Module mod, LLVMContextRef context) {
         this.mod = mod;
+        this.project = mod.project;
+        this.options = mod.project.options;
         this.context = context;
         this.normalBuilder = LLVMCreateBuilderInContext(context);
         this.initFunctionBuilder = LLVMCreateBuilderInContext(context);
@@ -77,6 +79,8 @@ public:
 
     // Static state
     Module mod;
+    Project project;
+    CompilerOptions options;
     LLVMContextRef context;
     LLVMBuilderRef normalBuilder;
     LLVMBuilderRef initFunctionBuilder;

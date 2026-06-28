@@ -18,7 +18,7 @@ public fn main() {
     structIsStruct()
     visibility()
 
-    // Struct values
+    # Struct values
     Apple apple
 
     apple.a = '@';              assert apple.a is '@'
@@ -27,12 +27,12 @@ public fn main() {
     int z = apple.a;            assert z is '@'
     int* z2 = &apple.a;         assert *z2 is '@'
 
-    // Struct pointers
+    # Struct pointers
     Apple* applePtr;            assert applePtr is null
 
-    // todo - dereferencing null pointer.
-    // This should trigger the null check assert if options.enableNullChecks is true
-    //applePtr.a = '#'
+    # todo - dereferencing null pointer.
+    # This should trigger the null check assert if options.enableNullChecks is true
+    #applePtr.a = '#'
 
     Apple* applePtr2 = &apple;  assert applePtr2 is &apple
 
@@ -42,7 +42,7 @@ public fn main() {
 
 
 
-    // Struct within Struct
+    # Struct within Struct
     Apple applez1
     Apple applez2
     Pear pear
@@ -83,7 +83,7 @@ fn defaultInitialisation() {
     assert g_pear.apple.c is true
     assert g_pear.applePtr is null
 
-    // Set default values
+    # Set default values
     Apple apple4a = {a:1}
     assert apple4a.a is 1
     assert apple4a.b is 0.0
@@ -98,8 +98,8 @@ fn defaultInitialisation() {
     assert @alignOf(fig.e) is 1
     assert @alignOf(fig.f) is 8
 
-    //assert @offsetOf(fig) is 0 // error - not a struct member
-    //assert @offsetOf(Fig) is 0   // error - not a struct member
+    #assert @offsetOf(fig) is 0     # error - not a struct member
+    #assert @offsetOf(Fig) is 0     # error - not a struct member
 
     assert @offsetOf(fig.a) is 0
     assert @offsetOf(fig.b) is 4
@@ -115,7 +115,7 @@ fn defaultInitialisation() {
     assert @offsetOf(Fig.e) is 12
     assert @offsetOf(Fig.f) is 16
 
-    // nested struct members
+    # nested struct members
     Gnat gnat
     assert @sizeOf(gnat) is 1
     assert @alignOf(gnat) is 1
@@ -139,7 +139,7 @@ fn defaultInitialisation() {
     assert @offsetOf(egg.b.b) is 4
     assert @offsetOf(egg.b.c) is 6
 
-    // Packed structs
+    # Packed structs
     Blueberry blueberry
     assert @sizeOf(blueberry) is 15
     assert blueberry.a is 7
@@ -159,18 +159,18 @@ fn defaultInitialisation() {
 }
 
 fn structLiterals() {
-    // Struct literal containing struct literal
+    # Struct literal containing struct literal
     Pear pear2 = { apple: { a: 1, b: 1.0 } }
     assert pear2.apple.a is 1
     assert pear2.apple.b is 1.0
     assert pear2.apple.c is true
     assert pear2.applePtr is null
 
-    // Struct literal containing null pointer
+    # Struct literal containing null pointer
     Pear pear3 = { applePtr: null }
     assert pear3.applePtr is null
 
-    // Set default values
+    # Set default values
     Apple apple7 = {c: false}
     assert apple7.a is 0
     assert apple7.b is 0.0
@@ -180,12 +180,12 @@ fn structLiterals() {
     assert orange.x is 7
     assert orange.y is 3.0
 
-    // Struct literals (unnamed arguments)
+    # Struct literals (unnamed arguments)
     Apple apple4 = {a:'p', b:1.0}
     assert apple4.a is 'p'
     assert apple4.b is 1.0
 
-    // Struct literals (named arguments)
+    # Struct literals (named arguments)
     Apple apple5 = {a: 1, b: 1.0}
     assert apple5.a is 1
     assert apple5.b is 1.0
@@ -194,14 +194,14 @@ fn structLiterals() {
     assert apple6.a is 2
     assert apple6.b is 3.14
 
-    // error - Cannot implicitly convert float to int
-    //Apple apple4a = {1.0, 1.1}
+    #error - Cannot implicitly convert float to int
+    #pple apple4a = {1.0, 1.1}
 
-    // error - Mixing named and unnamed arguments
-    //Apple apple4b = {a: 'p', 1.0}
+    # error - Mixing named and unnamed arguments
+    #Apple apple4b = {a: 'p', 1.0}
 
-    // error - too many arguments
-    //Apple apple4c = {'p', 1.0, 2.0}
+    # error - too many arguments
+    #Apple apple4c = {'p', 1.0, 2.0}
 }
 
 fn opaque() -> void {
@@ -211,14 +211,14 @@ fn opaque() -> void {
 }
 
 fn arrayOfStructs() {
-    // Array of structs
+    # Array of structs
     Small[2] smallArray
     assert @sizeOf(smallArray) is 2
     assert @alignOf(smallArray) is 1
 }
 
 fn structIsStruct() {
-    // Struct is Struct
+    # Struct is Struct
     Apple applez1
     Apple applez2
     Apple applez3
@@ -252,15 +252,15 @@ fn withConsts() {
 }
 
 struct Green {
-    int a           // private
-    public int b    // public
-    int c           // private
+    int a           # private
+    public int b    # public
+    int c           # private
 public:
-    int d           // public
-    private int e   // private
-    int f           // public
+    int d           # public
+    private int e   # private
+    int f           # public
 private:
-    int g           // private
+    int g           # private
 }
 
 fn visibility() {
@@ -281,7 +281,7 @@ fn visibility() {
     assert @isPublic(Green.f)
     assert @isPublic(Green.g) is false
 
-    // Local private struct members should be visible here
+    # Local private struct members should be visible here
     green.a = 1
     green.b = 1
     green.c = 1
@@ -309,17 +309,17 @@ fn visibility() {
     assert @isPublic(qual.QualGreen.f)
     assert @isPublic(qual.QualGreen.g) is false
 
-    // External module private struct members are not visible here
-    //qg.a = 1    // error - not visible
+    # External module private struct members are not visible here
+    #qg.a = 1    // error - not visible
     qg.b = 1
-    //qg.c = 1    // error - not visible
+    #qg.c = 1    // error - not visible
     qg.d = 1
-    //qg.e = 1    // error - not visible
+    #qg.e = 1    // error - not visible
     qg.f = 1
-    //qg.g = 1    // error - not visible
+    #qg.g = 1    // error - not visible
 
-    // error - some of these members are not visible
-    //qual.QualGreen qg2 = { b:1, d:1, f:1, g:1 }
+    # error - some of these members are not visible
+    #qual.QualGreen qg2 = { b:1, d:1, f:1, g:1 }
 
     UnqualGreen ug
     assert @isPublic(ug.a) is false
@@ -338,7 +338,7 @@ fn visibility() {
     assert @isPublic(UnqualGreen.f)
     assert @isPublic(UnqualGreen.g) is false
 
-    //ug = { a:1, b:1, d:1, e:1, f:1 }   // error - some of these members are not visible
+    #ug = { a:1, b:1, d:1, e:1, f:1 }   # error - some of these members are not visible
 }
 
 struct TNSOpaque {}
@@ -359,8 +359,8 @@ struct Orange {
     short x = 7
     float y = 8
 }
-#(packed)
-struct Blueberry { // size = 15 (would be 8 without packed)
+[[packed]]
+struct Blueberry { # size = 15 (would be 8 without packed)
     int a = 7
     byte b
     double c

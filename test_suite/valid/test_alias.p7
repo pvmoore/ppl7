@@ -26,7 +26,7 @@ struct TAS {
 }
 
 public fn main() {
-    // Test local aliases
+    # Test local aliases
     myint a = 1
     assert @typeOf(a) is int
     assert @typeOf(a) is myint
@@ -93,11 +93,11 @@ fn ta_qualified() {
     assert @typeOf(a) is int
     assert @typeOf(a) is ta2.QualInt
 
-    // error - must be qualified
-    //QualInt b
+    # error - must be qualified
+    #QualInt b
 
-    // error - not public
-    //ta2.QualShort b
+    # error - not public
+    #ta2.QualShort b
 }
 
 fn ta_unqualified() {
@@ -105,6 +105,6 @@ fn ta_unqualified() {
     assert @typeOf(a) is int
     assert @typeOf(a) is UnqualInt
 
-    // error - not public
-    //UnqualShort b
+    # error - not public
+    #UnqualShort b
 }

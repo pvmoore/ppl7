@@ -10,83 +10,114 @@ void resolveBuiltin(Builtin n, ResolveState state) {
     Expression[] arguments = n.arguments();
     Expression arg0 = arguments[0];
 
-    if("@property" == n.name) {
-        handleProperty(state, n);
-    } else if("@debug" == n.name) {
-        // Output the Expression to the console
-        auto expr = n.first().as!Expression;
-        string s = expr.isA!StringLiteral ? expr.as!StringLiteral.stringValue : expr.toString();
-        consoleLog("DEBUG: %s", s);
+    switch(n.name) {
+        case "@debug":
+            // Output the Expression to the console
+            auto expr = n.first().as!Expression;
+            string s = expr.isA!StringLiteral ? expr.as!StringLiteral.stringValue : expr.toString();
+            consoleLog("DEBUG: %s", s);
 
-        rewriteToBool(state, n, true);
-    } else if("@isArray" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto result = expr.getType().isA!Array;
-        rewriteToBool(state, n, result);
-    } else if("@isBool" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto result = expr.getType().isBool();
-        rewriteToBool(state, n, result);
-    } else if("@isConst" == n.name) {
-        auto expr = n.first().as!Expression;
-        rewriteToBool(state, n, getIsConst(n, expr));
-    } else if("@isEnum" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto result = expr.getType().isEnum();
-        rewriteToBool(state, n, result);
-    } else if("@isFunction" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto result = expr.getType().isFunction();
-        rewriteToBool(state, n, result);
-    } else if("@isInteger" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto result = expr.getType().isInteger();
-        rewriteToBool(state, n, result);
-    } else if("@isPacked" == n.name) {
-        auto expr = n.first().as!Expression;
-        if(Struct st = expr.getType().extract!Struct) {
-            rewriteToBool(state, n, st.isPacked);
-        } else {
-            rewriteToBool(state, n, false);
-        }
-    } else if("@isPointer" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto result = expr.getType().isPointer();
-        rewriteToBool(state, n, result);
-    } else if("@isPublic" == n.name) {
-        auto expr = n.first().as!Expression;
-        rewriteToBool(state, n, getIsPublic(n, expr));
-    } else if("@isReal" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto result = expr.getType().isReal();
-        rewriteToBool(state, n, result);
-    } else if("@isStruct" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto result = expr.getType().isStruct();
-        rewriteToBool(state, n, result);
-    } else if("@isUnion" == n.name) {
-        todo("implement me");
-    } else if("@isValue" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto result = !expr.getType().isPointer();
-        rewriteToBool(state, n, result);
-    } else if("@isVoid" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto result = expr.getType().isVoidValue();
-        rewriteToBool(state, n, result);
-
-    } else if("@alignOf" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto align_ = expr.getType().alignment();
-        rewriteToInt(state, n, align_);
-    } else if("@initOf" == n.name) {
-        todo("implement me");
-    } else if("@offsetOf" == n.name) {
-        handleOffsetOf(state, n, arg0);
-    } else if("@sizeOf" == n.name) {
-        auto expr = n.first().as!Expression;
-        auto size = expr.getType().size();
-        rewriteToInt(state, n, size);
+            rewriteToBool(state, n, true);
+            break;
+        case "@shr":
+            rewriteToBinary(state, n, Operator.SHR, arguments[0], arguments[1]);
+            break;
+        case "@ushr":
+            rewriteToBinary(state, n, Operator.USHR, arguments[0], arguments[1]);
+            break;
+        case "@shl":
+            rewriteToBinary(state, n, Operator.SHL, arguments[0], arguments[1]);
+            break;
+        case "@isArray":
+            auto expr = n.first().as!Expression;
+            auto result = expr.getType().isA!Array;
+            rewriteToBool(state, n, result);
+            break;
+        case "@isBool":
+            auto expr = n.first().as!Expression;
+            auto result = expr.getType().isBool();
+            rewriteToBool(state, n, result);
+            break;
+        case "@isConst":
+            auto expr = n.first().as!Expression;
+            rewriteToBool(state, n, getIsConst(n, expr));
+            break;
+        case "@isEnum":
+            auto expr = n.first().as!Expression;
+            auto result = expr.getType().isEnum();
+            rewriteToBool(state, n, result);
+            break;
+        case "@isFunction":
+            auto expr = n.first().as!Expression;
+            auto result = expr.getType().isFunction();
+            rewriteToBool(state, n, result);
+            break;
+        case "@isInteger":
+            auto expr = n.first().as!Expression;
+            auto result = expr.getType().isInteger();
+            rewriteToBool(state, n, result);
+            break;
+        case "@isPacked":
+            auto expr = n.first().as!Expression;
+            if(Struct st = expr.getType().extract!Struct) {
+                rewriteToBool(state, n, st.isPacked);
+            } else {
+                rewriteToBool(state, n, false);
+            }
+            break;
+        case "@isPointer":
+            auto expr = n.first().as!Expression;
+            auto result = expr.getType().isPointer();
+            rewriteToBool(state, n, result);
+            break;
+        case "@isPublic":
+            auto expr = n.first().as!Expression;
+            rewriteToBool(state, n, getIsPublic(n, expr));
+            break;
+        case "@isReal":
+            auto expr = n.first().as!Expression;
+            auto result = expr.getType().isReal();
+            rewriteToBool(state, n, result);
+            break;
+        case "@isStruct":
+            auto expr = n.first().as!Expression;
+            auto result = expr.getType().isStruct();
+            rewriteToBool(state, n, result);
+            break;
+        case "@isUnion":
+            todo("implement me");
+            break;
+        case "@isValue":
+            auto expr = n.first().as!Expression;
+            auto result = !expr.getType().isPointer();
+            rewriteToBool(state, n, result);
+            break;
+        case "@isVoid":
+            auto expr = n.first().as!Expression;
+            auto result = expr.getType().isVoidValue();
+            rewriteToBool(state, n, result);
+            break;
+        case "@alignOf":
+            auto expr = n.first().as!Expression;
+            auto align_ = expr.getType().alignment();
+            rewriteToInt(state, n, align_);
+            break;
+        case "@initOf":
+            todo("implement me");
+            break;
+        case "@offsetOf":
+            handleOffsetOf(state, n, arg0);
+            break;
+        case "@sizeOf":
+            auto expr = n.first().as!Expression;
+            auto size = expr.getType().size();
+            rewriteToInt(state, n, size);
+            break;
+        case "@property":
+            handleProperty(state, n);
+            break;
+        default:
+            break;
     }
 }
 

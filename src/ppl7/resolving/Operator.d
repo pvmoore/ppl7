@@ -14,9 +14,9 @@ enum Operator {
     BIT_XOR,        // ^
     BIT_AND,        // &
     BIT_OR,         // |
-    SHL,            // shl
-    SHR,            // shr
-    USHR,           // ushr
+    SHL,            // <<
+    SHR,            // >>
+    USHR,           // <<<
 
     // Assignment operators
     ASSIGN,         // =
@@ -35,8 +35,8 @@ enum Operator {
     USHR_ASSIGN,    // ushr=
 
     // Boolean operators
-    EQUAL,          // ==
-    NOT_EQUAL,      // !=
+    EQUAL,          // ==   these are only used internally by the compiler
+    NOT_EQUAL,      // !=   these are only used internally by the compiler
     LT,             // <
     GT,             // >
     LTE,            // <=
@@ -48,11 +48,11 @@ enum Operator {
     UGT,            // >>
     ULTE,           // <<=
     UGTE,           // >>=
-    
+
     // Unary operators
-    BOOL_NOT,       // not 
-    BIT_NOT,        // ~ 
-    NEG,            // - 
+    BOOL_NOT,       // not
+    BIT_NOT,        // ~
+    NEG,            // -
 }
 
 string stringOf(Operator op) {
@@ -107,7 +107,7 @@ string stringOf(Operator op) {
 
         case Operator.NEG: return "-";
     }
-    assert(false);  
+    assert(false);
 }
 
 Operator toOperator(EToken tk) {
@@ -150,7 +150,7 @@ Operator toOperator(EToken tk) {
         // ushr, udiv, umod, ugt, ult, ugte, ulte
         // ushr=, udiv=, umod=
 
-        default: 
+        default:
             throwIf(true, "Implement toOperator(%s)", tk);
     }
     assert(false);
@@ -185,7 +185,7 @@ int precedenceOf(Operator op) {
         case Operator.UDIV: return 6;
         case Operator.MOD: return 6;
         case Operator.UMOD: return 6;
-        
+
         case Operator.ADD: return 7;
         case Operator.SUB: return 7;
         case Operator.BIT_XOR: return 7;

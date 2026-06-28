@@ -52,7 +52,8 @@ public:
                 case ENode.IS:
                     // Ignore these. Assume there will be something else that is also unresolved
                     continue;
-                default: throwIf(true, "convertUnresolvedNodesToErrors: %s", n.enode());
+                default:
+                    throwIf(true, "convertUnresolvedNodesToErrors: %s", n.enode());
             }
             resolutionError(n.as!Statement, ek);
         }
@@ -81,7 +82,7 @@ public:
                 // No information available
                 break;
             case ENode.IS:
-                return parent.as!Is.oppositeSideType(n);   
+                return parent.as!Is.oppositeSideType(n);
             case ENode.UNARY: {
                 Unary u = parent.as!Unary;
                 Type t = u.getType();
@@ -129,7 +130,7 @@ public:
      *  n - The statement that contains the string literal
      *  s - The string literal starting at the character to resolve
      * Returns the character value and the number of characters consumed from the string literal
-     * 
+     *
      * f  \n  \x12 \u1234 \U12345678
      */
     Tuple!(uint, uint) resolveChar(Statement n, string s) {
@@ -152,7 +153,7 @@ public:
                 case 'u' : len = 6; value = to!uint(s[2..6], 16); break;
                 //case 'U' : len = 10; value = to!ulong(s[2..10], 16);
                 default:
-                    syntaxError(n.getModule(), n.startToken, "Invalid escape sequence in string literal"); 
+                    syntaxError(n.getModule(), n.startToken, "Invalid escape sequence in string literal");
                     break;
             }
         } else {

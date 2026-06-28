@@ -18,14 +18,14 @@ fn qual_f1() -> int {
 
 fn qual_f2(int a) -> int {
     console.print("qual_f2 ")
-    console.println(a); 
+    console.println(a);
     return 2
 }
 
-// Function ptr
-fn()->int qual_v1 = qual_f1 
+# Function ptr
+fn()->int qual_v1 = qual_f1
 
-// Function ptr
+# Function ptr
 fn(int)->int qual_v2 = qual_f2
 
 struct QualGreen {
@@ -42,9 +42,9 @@ private:
 
 private:
 
-//-------------------------------------------------------- private symbols:
+#-------------------------------------------------------- private symbols:
 
-alias QualShort = short 
+alias QualShort = short
 
 enum QualEnum2 {
     A

@@ -33,7 +33,7 @@ public:
         state.skipSemicolons();
 
         // Consume Attributes
-        while(state.etoken() == EToken.HASH) {
+        while(state.etoken() == EToken.LSQUARE2) {
             attributes ~= parseAttribute(state);
             state.skipSemicolons();
         }
@@ -49,16 +49,16 @@ private:
 private:
 
 /**
- *  { '#' '(' name [ '=' value ] ')' }
+ *  { '[[' name [ '=' value ] ']]' }
  */
 Attribute parseAttribute(ParseState state) {
 
-    if(state.etoken() == EToken.HASH) {
+    if(state.etoken() == EToken.LSQUARE2) {
 
         Attribute attr;
+        bool legacy;
 
-        state.skip(EToken.HASH);
-        state.skip(EToken.LPAREN);
+        state.skip(EToken.LSQUARE2);
 
         attr.name = state.text();
 
@@ -77,7 +77,11 @@ Attribute parseAttribute(ParseState state) {
             attr.value = state.text(); state.next();
         }
 
-        state.skip(EToken.RPAREN);
+        if(legacy) {
+            state.skip(EToken.RPAREN);
+        } else {
+            state.skip(EToken.RSQUARE2);
+        }
 
         return attr;
     }

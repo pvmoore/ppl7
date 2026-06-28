@@ -23,7 +23,7 @@ public fn main() {
     int b = 0xffffffff; assert b is -1              ; assert @sizeOf(b) is 4
     bool c              assert @sizeOf(c) is 1
 
-    // >> ushr
+    # >> ushr
     assert a >> 1 is 4
     assert a ushr 1 is 4
     assert a << 1 is 16
@@ -31,7 +31,7 @@ public fn main() {
     assert b >> 1 is 0xffffffff
     assert b ushr 1 is 0x7fffffff
 
-    // >>= ushr=
+    # >>= ushr=
     a >>= 1; assert a is 4
     a <<= 1; assert a is 8
     b >>= 1; assert b is 0xffffffff
@@ -40,56 +40,54 @@ public fn main() {
     b = 0xffffffff
     b ushr= 1; assert b is 0x7fffffff
 
-    // /, udiv
+    # /, udiv
     int d = 0xffffffff
     int e = -1
     assert d udiv 2 is 0x7fffffff
     assert e / 2 is 0
 
-    // /=, udiv=
+    # /=, udiv=
     d udiv= 2
     e /= 2
     assert d is 0x7fffffff
     assert e is 0
 
-    // %, umod
+    # %, umod
     d = 0xffffffff
     e = -1
     assert d umod 2 is 1
     assert e % 2 is -1
 
-    // %=, umod=
+    # %=, umod=
     d umod= 2
     e %= 2
     assert d is 1
     assert e is -1
 
-    // <, ult
+    # <, ult
     assert 1 < 10
     assert -10 < 1
     assert 1 ult 10
     assert -10 ult 1 is false
 
-    // >, ugt
+    # >, ugt
     assert 10 > 1
     assert 1 > -10
     assert 10 ugt 1
     assert 1 ugt -10 is false
 
-    // <=, ulte
+    # <=, ulte
     assert 1 <= 10
     assert -10 <= 1
     assert 1 ulte 10
     assert -10 ulte 1 is false
 
-    // >=, ugte
+    # >=, ugte
     assert 10 >= 1
     assert 1 >= -10
     assert 10 ugte 1
     assert 1 ugte -10 is false
 
-    // unsigned vs real is not allowed
-    //assert 1.0 ult 10.0
-
-
+    # unsigned vs real is not allowed
+    #assert 1.0 ult 10.0
 }

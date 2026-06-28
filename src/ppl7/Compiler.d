@@ -6,7 +6,7 @@ final class Compiler {
 public:
     enum versionMajor = 0;
     enum versionMinor = 2;
-    enum versionPatch = 17;
+    enum versionPatch = 18;
 
     this(CompilerOptions options) {
         this.options = options;
@@ -163,6 +163,8 @@ private:
             foreach(state; resolveStates) {
                 if(state.hasUnresolvedNodes()) {
                     state.convertUnresolvedNodesToErrors();
+
+                    assert(project.hasErrors(), "There are unresolved nodes but we don't have any errors");
                 }
             }
             return false;

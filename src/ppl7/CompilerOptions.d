@@ -34,7 +34,7 @@ public:
     bool writeObj       = false;
     bool writeLL        = false;
     bool writeAST       = false;
-    bool cleanTarget    = true;    // Remove existing files in the target directory
+    bool cleanTarget    = false;    // Remove existing files in the target directory
 
     // built-in properties and properties passed in by the user
     // eg. -Dmy_property=1

@@ -11,7 +11,7 @@ public:
     Attributes attributes;
     bool insidePublicScopeModule;
     bool insidePublicScopeStruct;
-    
+
     this(Project project, Module mod) {
         this.project = project;
         this.mod = mod;
@@ -48,17 +48,17 @@ public:
         pos++;
         return this;
     }
-    auto skip(string t) {
+    auto skip(string t, string msg = null) {
         if(text() != t) {
-            syntaxError(mod, token(), "Expected %s but found %s".format(t, text()));
+            syntaxError(mod, token(), "Expected %s but found %s%s".format(t, text(), msg ? ": %s".format(msg) : ""));
         }
         return next();
     }
-    auto skip(EToken tk) {
+    auto skip(EToken tk, string msg = null) {
         if(token().etoken != tk) {
             string found = token().etoken.stringOf();
             if(found.length == 0) found = text();
-            syntaxError(mod, token(), "Expected %s but found %s".format(tk.stringOf(), found));
+            syntaxError(mod, token(), "Expected %s but found %s%s".format(tk.stringOf(), found, msg ? ": %s".format(msg) : ""));
         }
         return next();
     }
@@ -77,10 +77,10 @@ public:
         return true;
     }
     /**
-     * Find the offset of the closing bracket. Assumes the current token is the opening bracket. 
+     * Find the offset of the closing bracket. Assumes the current token is the opening bracket.
      * If the opening bracket is not found then returns -1.
      */
-    int findOffsetOfClosing(int startOffset, EToken open, EToken close) 
+    int findOffsetOfClosing(int startOffset, EToken open, EToken close)
         in(token(startOffset).etoken == open)
         out(r; r == -1 || peek(r).etoken == close)
     {
@@ -98,12 +98,12 @@ public:
         return -1;
     }
     /**
-     * Find the offset of tok within the current scope. Assumes the current token is the opening bracket. 
-     * The current scope is defined as the tokens between the opening and closing bracket 
+     * Find the offset of tok within the current scope. Assumes the current token is the opening bracket.
+     * The current scope is defined as the tokens between the opening and closing bracket
      * and excludes nested scopes.
      * If the opening bracket is not found then returns -1.
      */
-    // int findWithinScope(EToken open, EToken close, EToken tok) 
+    // int findWithinScope(EToken open, EToken close, EToken tok)
     //     in(token().kind == open)
     //     out(r; r == -1 || peek(r).kind == tok)
     // {

@@ -7,12 +7,12 @@
  */
 
 public fn main() {
-    // Values
+    # Values
     int a1 = '1';       assert @isValue(a1)    ; assert @isPointer(a1) is false
     int a2 = '2';       assert @isValue(a2)
     int a3 = '3';       assert @isValue(a3)
 
-    // Pointers
+    # Pointers
     int* b0;            assert b0 is null       ; assert @isPointer(b0) ; assert @isValue(b0) is false
 
     int* b1 = &a3;      assert b1 is not null   ; assert *b1 is a3
@@ -27,7 +27,7 @@ public fn main() {
 
     *b4 = '4';          assert a1 is '4'
 
-    // Pointers to pointers
+    # Pointers to pointers
     int** d1;           assert d1 is null       ; assert @isPointer(d1)     ; assert @isValue(d1) is false
     int** d2 = &b1;     assert d2 is not d1     ; assert d2 is not null     ; assert *d2 is b1
     int** d3 = d2;      assert d3 is d2         ; assert *d3 is b1

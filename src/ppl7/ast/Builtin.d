@@ -8,27 +8,32 @@ import ppl7.all;
  *
  * @debug(Expression)
  *
- * @isArray(Expression)     
- * @isBool(Expression)      
+ * @isArray(Expression)
+ * @isBool(Expression)
  * @isConst(Expression)     *todo add @isMutable(xxx)
- * @isEnum(Expression)      
- * @isFunction(Expression)  
- * @isInteger(Expression)   
- * @isPacked(Type)         
- * @isPointer(Expression)   
- * @isPublic(Expression)    
- * @isReal(Expression)      
- * @isStruct(Expression)    
+ * @isEnum(Expression)
+ * @isFunction(Expression)
+ * @isInteger(Expression)
+ * @isPacked(Type)
+ * @isPointer(Expression)
+ * @isPublic(Expression)
+ * @isReal(Expression)
+ * @isStruct(Expression)
  * @isUnion(Expression)     *todo
- * @isValue(Expression)     
- * @isVoid(Expression)    
- *  
- * @alignOf(Expression)     
- * @initOf(Expression)      *todo
- * @offsetOf(Expression)   
- * @sizeOf(Expression)   
+ * @isValue(Expression)
+ * @isVoid(Expression)
  *
- * @property(Type, StringLiteral, [StringLiteral])   
+ * @alignOf(Expression)
+ * @initOf(Expression)      *todo
+ * @offsetOf(Expression)
+ * @sizeOf(Expression)
+ *
+ * @property(Type, StringLiteral, [StringLiteral])
+ *
+ * @ushr(Expression, Expression)
+ * @shr(Expression, Expression)
+ * @shl(Expression, Expression)
+ *
  */
 final class Builtin : Expression {
 public:

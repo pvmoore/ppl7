@@ -1,0 +1,11 @@
+/**
+ * magic!!
+ * name "number literals"
+ * tags [number,expression]
+ * args []
+ * errors []
+ */
+ public fn main() {
+    int a = 1
+    int b = 0b0000_1100 ; assert b is 12
+ }

@@ -5,10 +5,10 @@ public:
 
 alias UnqualInt = int
 
-enum UnqualEnum {   
-    A            
-    B 
-    C 
+enum UnqualEnum {
+    A
+    B
+    C
 }
 
 fn unqual_f1() -> int {
@@ -18,14 +18,14 @@ fn unqual_f1() -> int {
 
 fn unqual_f2(int a) -> int {
     console.print("unqual_f2 ")
-    console.println(a); 
+    console.println(a);
     return 4
 }
 
-// Function ptr
+# Function ptr
 fn()->int unqual_v1 = unqual_f1
 
-// Function ptr
+# Function ptr
 fn(int)->int unqual_v2 = unqual_f2
 
 struct UnqualGreen {
@@ -42,13 +42,13 @@ private:
 
 private:
 
-//-------------------------------------------------------- private symbols:
+#-------------------------------------------------------- private symbols:
 
 alias UnqualShort = short
 
-enum UnqualEnum2 {   
-    A            
-    B 
+enum UnqualEnum2 {
+    A
+    B
 }
 
 fn unqual_f3() -> int {

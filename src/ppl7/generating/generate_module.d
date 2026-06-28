@@ -4,7 +4,7 @@ import ppl7.all;
 
 /**
  * Generate the IR for the given module.
- * 
+ *
  * Return true if the module is valid.
  */
 bool generateModule(GenerateState state) {
@@ -14,14 +14,14 @@ bool generateModule(GenerateState state) {
 
     state.mod.log("Generating module");
 
-    addModuleInitFunction(state); 
+    addModuleInitFunction(state);
 
     // Not sure if this is necessary given that the target machine already has this information
     //LLVMSetTarget(state.currentModule, mod.project.targetTriple.toStringz());
 
     // We need to generate Module scope Variables first because they might be referenced from
     // within a function and we will need the LLVMValueRef of the Variable to be non-null
-    
+
     // Add StringLiterals as global constants
     addStringLiteralGlobals(state);
 
@@ -79,7 +79,7 @@ bool generateModule(GenerateState state) {
 
     //state.log("Generating local Function bodies");
 
-    // Generate Module scope functions 
+    // Generate Module scope functions
     foreach(n; mod.children) {
         if(Function f = n.as!Function) {
             generateFunctionBody(f, state);
@@ -91,7 +91,7 @@ bool generateModule(GenerateState state) {
     finishModuleInitFunction(state);
 
     // Dump the LL to file if we are in debug mode
-    debug writeLLToFile(mod, mod.project.getTargetFilename(mod, "ll", "", "ll"));
+    writeLLToFile(mod, mod.project.getTargetFilename(mod, "ll", "", "ll"));
 
     // Verify the generated IR and return the result. If we are in release mode this will be a no-op
     return state.verifyModule();
@@ -151,19 +151,19 @@ void addModuleInitFunction(GenerateState state) {
     state.switchToNormalBuilder();
 
     // Add @llvm.global_ctors to the module
-    LLVMTypeRef structType = LLVMStructTypeInContext(state.context, 
+    LLVMTypeRef structType = LLVMStructTypeInContext(state.context,
         [state.INT32_TYPE, state.VOID_PTR_TYPE, state.VOID_PTR_TYPE].ptr, 3, 0);
     LLVMTypeRef globalType = LLVMArrayType2(structType, 1);
 
-    LLVMValueRef globalCtors = LLVMAddGlobal(state.currentModule, globalType, "llvm.global_ctors"); 
+    LLVMValueRef globalCtors = LLVMAddGlobal(state.currentModule, globalType, "llvm.global_ctors");
     LLVMSetLinkage(globalCtors, LLVMLinkage.LLVMAppendingLinkage);
 
     LLVMValueRef[] structElements = [
-        state.createConstI32Value(65535), 
+        state.createConstI32Value(65535),
         state.initFunctionValue,
         LLVMConstPointerNull(state.VOID_PTR_TYPE)
     ];
-    
+
     LLVMValueRef structValue = state.createConstStructValue(structElements);
 
     LLVMSetInitializer(globalCtors, LLVMConstArray2(structType, &structValue, 1));

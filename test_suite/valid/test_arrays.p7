@@ -9,17 +9,17 @@
 public fn main() {
     initialisation()
 
-    // Create an array variable
+    # Create an array variable
     int[2] a;               assert a is [0, 0]
 
 
-    // Get a value
+    # Get a value
     int e1 = a[1];          assert e1 is 0
 
-    // Set a value
+    # Set a value
     a[0] = 33;              assert a is [33, 0]
 
-    // copy the array
+    # copy the array
     int[2] f2 = a;          assert f2 is [33, 0]
 
     assert @typeOf(a) is int[2]
@@ -27,7 +27,7 @@ public fn main() {
     f2[0] = 34;             assert f2 is [34, 0]
                             assert a is [33, 0]
 
-    // Get pointer to array
+    # Get pointer to array
     int* ptr  = &f2
     int* ptr2 = &f2[0]
     int* ptr3 = &f2[1]
@@ -36,9 +36,9 @@ public fn main() {
 
     ptr[1] = 35;            assert f2 is [34, 35]
 
-    //float[2] f2 = a           // variable initialiser type mismatch
-    //int[2] g = [1, 2, 3]      // too many elements
-    //int[2] h = [1, 2.0]       // element type mismatch
+    #float[2] f2 = a           # variable initialiser type mismatch
+    #int[2] g = [1, 2, 3]      # too many elements
+    #int[2] h = [1, 2.0]       # element type mismatch
 }
 
 fn initialisation() {
@@ -48,7 +48,7 @@ fn initialisation() {
     int[3]* d;              assert d is null
     int[3] e = [1, 2, 3];   assert e is [1, 2, 3]
 
-    // array of structs
+    # array of structs
     Red[2] red;
 
     assert red[0].a is 1
@@ -61,10 +61,10 @@ fn initialisation() {
 
     assert red is [{a:1, b:2, c:3}, {a:1, b:2, c:3}]
 
-    // array of enums
+    # array of enums
     E1[3] blue;             assert blue is [E1.A, E1.A, E1.A]
 
-    // array of struct enums
+    # array of struct enums
     E2[3] green
     assert green[0].a is 10
     assert green[0].b is 20
@@ -80,10 +80,10 @@ fn initialisation() {
 
     assert green is [E2.A, E2.A, E2.A]
 
-    // global array
+    # global array
     assert g_red is [{a:1, b:2, c:3}, {a:1, b:2, c:3}, {a:1, b:2, c:3}]
 
-    // call function with array parameter
+    # call function with array parameter
     int[3] f = [1, 2, 3]
     arrayParam([1, 2, 3])
     arrayParam(f)
@@ -103,7 +103,7 @@ struct Red {
 
 enum E1 : byte {
     A = 1
-    B       // = 2
+    B       # = 2
 }
 
 enum E2 : Red {

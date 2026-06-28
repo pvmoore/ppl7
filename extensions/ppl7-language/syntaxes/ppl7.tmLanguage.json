@@ -1,6 +1,7 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "ppl7",
+	"scopeName": "source.ppl7",
 	"patterns": [
 		{
 			"include": "#keywords"
@@ -138,7 +139,7 @@
 		"line-comment": {
 			"patterns": [
 				{
-					"match": "//.*$",
+					"match": "#.*$",
 					"name": "comment.line.ppl7"
 				}
 			]
@@ -215,20 +216,22 @@
 			]
 		},
 		"attributes": {
+			"begin": "\\[\\[",
+			"end": "\\]\\]",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation"
+				}
+			},
+			"endCaptures": {
+				"0": {
+					"name": "punctuation"
+				}
+			},
 			"patterns": [
 				{
-					"captures": {
-						"1": {
-							"name": "entity.name.tag.attribute.ppl7"
-						},
-						"2": {
-							"name": "entity.name.tag.attribute.ppl7"
-						},
-						"3": {
-							"name": "entity.name.tag.attribute.ppl7"
-						}
-					},
-					"match": "(#)(\\w+)?\\((.+)\\)"
+					"name": "entity.name.tag.attribute.ppl7",
+					"match": ".+"
 				}
 			]
 		},
@@ -245,6 +248,5 @@
 			]
 		}
 
-	},
-	"scopeName": "source.ppl7"
+	}
 }

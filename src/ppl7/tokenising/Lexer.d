@@ -26,15 +26,16 @@ public:
                     lexChar();
                     break;
                 case '/':
-                    if(peek(1)=='/') {
-                        lexLineComment();
-                    } else if(peek(1)=='*') {
+                    if(peek(1)=='*') {
                         lexMultiLineComment();
                     } else if(peek(1)=='=') {
                         addToken(EToken.SLASH_EQUAL);
                     } else {
                         addToken(EToken.SLASH);
                     }
+                    break;
+                case '#':
+                    lexLineComment();
                     break;
                 case '+':
                     if(peek(1) == '=') {
@@ -104,14 +105,25 @@ public:
                 case ')': addToken(EToken.RPAREN); break;
                 case '{': addToken(EToken.LBRACE); break;
                 case '}': addToken(EToken.RBRACE); break;
-                case '[': addToken(EToken.LSQUARE); break;
-                case ']': addToken(EToken.RSQUARE); break;
+                case '[':
+                    if(peek(1) == '[') {
+                        addToken(EToken.LSQUARE2);
+                    } else {
+                        addToken(EToken.LSQUARE);
+                    }
+                    break;
+                case ']':
+                    if(peek(1) == ']') {
+                        addToken(EToken.RSQUARE2);
+                    } else {
+                        addToken(EToken.RSQUARE);
+                    }
+                    break;
 
                 case ';': addToken(EToken.SEMICOLON); break;
                 case ',': addToken(EToken.COMMA); break;
                 case '?': addToken(EToken.QUESTION); break;
                 case '@': addToken(EToken.AT); break;
-                case '#': addToken(EToken.HASH); break;
                 case '$': addToken(EToken.DOLLAR); break;
 
                 case ':':
@@ -286,6 +298,7 @@ private:
         tokenStart = pos;
     }
     void lexLineComment() {
+        if(peek() == '/') writefln("legacy line comment in file %s at line %s", mod.relFilename, line+1);
         addToken();
         while(pos < source.length) {
             if(isEol()) {

@@ -145,9 +145,9 @@ void parseInfix(Node parent, ParseState state) {
             case EToken.STRING:
             case EToken.QUESTION:
             case EToken.AT:
-            case EToken.HASH:
             case EToken.DOLLAR:
             case EToken.COLON2:
+            case EToken.LSQUARE2:
                 return;
             case EToken.IDENTIFIER:
                 switch(state.text()) {
@@ -350,10 +350,25 @@ void parseBuiltin(Node parent, ParseState state) {
         case "@initOf":
 
         case "@debug":
+            // These must have 1 argument
             state.skip(EToken.LPAREN);
             parseExpressionWithUpperBound(b, state);
-            state.skip(EToken.RPAREN);
+            state.skip(EToken.RPAREN, "Too many arguments provided?");
             break;
+
+        case "@ushr":
+        case "@shr":
+        case "@shl":
+            // These must have 2 arguments
+            state.skip(EToken.LPAREN);
+
+            parseExpressionWithUpperBound(b, state);
+            state.skip(EToken.COMMA);
+            parseExpressionWithUpperBound(b, state);
+
+            state.skip(EToken.RPAREN, "Did you provide too many arguments?");
+            break;
+
         case "@property":
             // This must have 2 or 3 arguments
 
@@ -372,7 +387,7 @@ void parseBuiltin(Node parent, ParseState state) {
                 parseExpressionWithUpperBound(b, state);
             }
 
-            state.skip(EToken.RPAREN);
+            state.skip(EToken.RPAREN, "Did you provide too many arguments?");
             break;
         default:
             syntaxError(state, "Unknown builtin function %s".format(b.name));

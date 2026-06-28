@@ -19,6 +19,7 @@ enum EToken {
     TILDE,              // ~
     LANGLE2,            // <<
     RANGLE2,            // >>
+    //RANGLE3,            // >>>
 
     EQUAL,              // =
 
@@ -46,10 +47,12 @@ enum EToken {
     LBRACE,             // {
     RBRACE,             // }
     LSQUARE,            // [
+    LSQUARE2,           // [[
     RSQUARE,            // ]
+    RSQUARE2,           // ]]
 
-    BANG,               // !    
-    RARROW,             // ->   
+    BANG,               // !
+    RARROW,             // ->
 
     DOT,                // .
     COMMA,              // ,
@@ -58,49 +61,47 @@ enum EToken {
     SEMICOLON,          // ;
 
     ELLIPSIS,           // ...
-    
+
     QUESTION,           // ?
     AT,                 // @
-    HASH,               // #
     DOLLAR,             // $
 }
 int lengthOf(EToken t) {
     final switch(t) with(EToken) {
         case NONE:
-        case IDENTIFIER: 
-        case NUMBER: 
-        case STRING: 
+        case IDENTIFIER:
+        case NUMBER:
+        case STRING:
             return 0;
         case PLUS:
-        case MINUS:        
-        case STAR:     
-        case SLASH:        
-        case PERCENT:      
-        case HAT:        
-        case AMPERSAND:    
-        case PIPE:         
-        case TILDE:        
-        case EQUAL:        
-        case LANGLE:         
+        case MINUS:
+        case STAR:
+        case SLASH:
+        case PERCENT:
+        case HAT:
+        case AMPERSAND:
+        case PIPE:
+        case TILDE:
+        case EQUAL:
+        case LANGLE:
         case RANGLE:
-        case LPAREN:     
-        case RPAREN:     
-        case LBRACE:       
-        case RBRACE:       
-        case LSQUARE:  
-        case RSQUARE:  
-        case DOT:          
-        case COMMA:        
-        case COLON:        
+        case LPAREN:
+        case RPAREN:
+        case LBRACE:
+        case RBRACE:
+        case LSQUARE:
+        case RSQUARE:
+        case DOT:
+        case COMMA:
+        case COLON:
         case SEMICOLON:
         case BANG:
         case QUESTION:
         case AT:
-        case HASH:
         case DOLLAR:
             return 1;
-        case PLUS_EQUAL:  
-        case MINUS_EQUAL: 
+        case PLUS_EQUAL:
+        case MINUS_EQUAL:
         case STAR_EQUAL:
         case SLASH_EQUAL:
         case PERCENT_EQUAL:
@@ -108,14 +109,16 @@ int lengthOf(EToken t) {
         case AMPERSAND_EQUAL:
         case PIPE_EQUAL:
         case TILDE_EQUAL:
-        case LANGLE_EQUAL:   
+        case LANGLE_EQUAL:
         case RANGLE_EQUAL:
-        case EQUAL2:  
-        case BANG_EQUAL:    
+        case EQUAL2:
+        case BANG_EQUAL:
         case LANGLE2:
         case RANGLE2:
         case RARROW:
         case COLON2:
+        case LSQUARE2:
+        case RSQUARE2:
             return 2;
         case LANGLE2_EQUAL:
         case RANGLE2_EQUAL:
@@ -164,8 +167,10 @@ string stringOf(EToken t) {
         case LBRACE: return "{";
         case RBRACE: return "}";
         case LSQUARE: return "[";
+        case LSQUARE2: return "[[";
         case RSQUARE: return "]";
-        case RARROW: return "->";   
+        case RSQUARE2: return "]]";
+        case RARROW: return "->";
         case DOT: return ".";
         case COMMA: return ",";
         case COLON: return ":";
@@ -175,7 +180,6 @@ string stringOf(EToken t) {
         case COLON2: return "::";
         case QUESTION: return "?";
         case AT: return "@";
-        case HASH: return "#";
         case DOLLAR: return "$";
-    }   
+    }
 }

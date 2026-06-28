@@ -7,7 +7,7 @@ import std.string   : toLower;
 /**
  * true
  * false
- * 
+ *
  * 123      (int)
  * 123L
  *
@@ -18,8 +18,8 @@ import std.string   : toLower;
  * 123d     (double)
  *
  * 123.4e5  *todo
- * 
- * 'c', '\n', '\x12', '\u1234', '\U12345678' (uint)  we will turn chars into uint 
+ *
+ * 'c', '\n', '\x12', '\u1234', '\U12345678' (uint)  we will turn chars into uint
  */
 void resolveNumber(Number n, ResolveState state) {
 
@@ -41,7 +41,7 @@ void resolveNumber(Number n, ResolveState state) {
         return;
     }
 
-    string s = n.stringValue.toLower();
+    string s = n.stringValue.toLower().replace("_", "");
 
     if(s.contains(".") || s.endsWith("d")) {
         resolveReal(n, s);
@@ -70,7 +70,7 @@ void resolveReal(Number n, string s) {
 }
 
 void resolveInteger(Number n, string s) {
-    uint size = 1;          
+    uint size = 1;
 
     if(s.endsWith("l")) {
         size = 8;

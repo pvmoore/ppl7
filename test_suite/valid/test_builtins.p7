@@ -1,15 +1,15 @@
 /**
  * magic!!
  * name "test builtins"
- * tags [builtin]
+ * tags [builtin, pete]
  * args []
  * errors []
  */
 
-//  @isConst(Expression)
+#  @isConst(Expression)
 
-//  @isUnion(Expression)     *todo - not yet implemented
-//  @initOf(Expression)      *todo - not yet implemented
+#  @isUnion(Expression)     *todo - not yet implemented
+#  @initOf(Expression)      *todo - not yet implemented
 public fn main() {
     int a = 1
     byte b = 2
@@ -43,7 +43,7 @@ public fn main() {
     assert @isArray([1,2,3])
     assert @isArray([])
 
-    // @sizeOf
+    # @sizeOf
     assert @sizeOf(int) is 4
     assert @sizeOf(byte) is 1
     assert @sizeOf(bool) is 1
@@ -52,7 +52,7 @@ public fn main() {
     assert @sizeOf(long) is 8
     assert @sizeOf(a) is 4
 
-    // @isFunction
+    # @isFunction
     fn()->void fptr
     int notf
 
@@ -61,19 +61,19 @@ public fn main() {
     assert @isFunction(int) is false
     assert @isFunction(notf) is false
 
-    // @isVoid
+    # @isVoid
     assert @isVoid(void)
     assert @isVoid(int) is false
     assert @isVoid(notf) is false
 
-    // @isEnum
+    # @isEnum
     TB_1 en
     assert @isEnum(TB_1)
     assert @isEnum(en)
     assert @isEnum(int) is false
     assert @isEnum(notf) is false
 
-    // @isPublic
+    # @isPublic
     assert @isPublic(a) is false
     assert @isPublic(main)
     assert @isPublic(g_public)
@@ -82,7 +82,7 @@ public fn main() {
     assert @isPublic(BI_3)
     assert @isPublic(int) is false
 
-    // @alignOf
+    # @alignOf
     assert @alignOf(int) is 4
     assert @alignOf(byte) is 1
     assert @alignOf(bool) is 1
@@ -91,11 +91,11 @@ public fn main() {
     assert @alignOf(long) is 8
     assert @alignOf(a) is 4
 
-    // @offsetOf
+    # @offsetOf
     assert @offsetOf(s.a) is 0
     assert @offsetOf(s.b) is 4
 
-    // @isConst
+    # @isConst
     const int cint = 1
     const float cfloat = 1.0
     assert @isConst(cint)
@@ -103,7 +103,7 @@ public fn main() {
     assert @isConst(a) is false
     assert @isConst(j) is false
 
-    // @typeOf
+    # @typeOf
     assert @typeOf(a) is int
     assert @typeOf(b) is byte
     assert @typeOf(c) is bool
@@ -116,6 +116,34 @@ public fn main() {
     assert @typeOf(s) is struct { int a, int b }
     assert @typeOf(j) is int[2]
 
+    shl()
+    shr()
+    ushr_() # todo - rename this once we have removed the ushr operator
+}
+
+fn shl() {
+    int a = 1
+    int b = @shl(a, 1)  ; assert b is 0b10
+    int c = @shl(b, 1)  ; assert c is 0b100
+    int d = @shl(c, 2)  ; assert d is 0b10000
+    byte e = @shl(3, 2) ; assert e is 12; assert e is @shl(3,2)
+    byte f = 0xff       ; assert @shl(f, 1) is 0xfe
+}
+fn shr() {
+    int a = 0xffffffff
+    int b = @shr(a, 1)  ; assert b is 0xffffffff
+    int c = @shr(1, 1)  ; assert c is 0
+    int d = @shr(7, c)  ; assert d is 7
+    assert @ushr(3, 1) is 1
+    assert @shr(1, 1) is 0
+}
+fn ushr_() {
+    int a = 0xffffffff
+    int b = @ushr(a, 1)  ; assert b is 0x7fffffff
+    int c = @ushr(1, 1)  ; assert c is 0
+    int d = @ushr(7, c)  ; assert d is 7
+    assert @ushr(3, 1) is 1
+    assert @ushr(1, 1) is 0
 }
 
 enum TB_1 {
@@ -128,7 +156,7 @@ struct BI_1 {
     bool b
 }
 
-#(packed)
+[[packed]]
 struct BI_2 {
     int a
     bool b

@@ -1,5 +1,11 @@
 # Version History
 
+## 0.2.18
+
+- [x] Allow underscore in number literals eg 0b1000_0000
+- [x] Change attribute syntax to [[name]] so that hash can be reused
+- [x] Change line comment syntax from // to # to free up the // token for unsigned division
+
 ## 0.2.17
 
 - Remove ABI attribute. Assume calling convention depends on the OS and not the function.
