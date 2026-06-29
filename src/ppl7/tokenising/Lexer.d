@@ -28,6 +28,10 @@ public:
                 case '/':
                     if(peek(1)=='*') {
                         lexMultiLineComment();
+                    } else if(peek(1) == '/' && peek(2) == '=') {
+                        addToken(EToken.SLASH2_EQUAL);
+                    } else if(peek(1) == '/') {
+                        addToken(EToken.SLASH2);
                     } else if(peek(1)=='=') {
                         addToken(EToken.SLASH_EQUAL);
                     } else {
@@ -66,7 +70,11 @@ public:
                     }
                     break;
                 case '%':
-                    if(peek(1) == '=') {
+                    if(peek(1) == '%' && peek(2) == '=') {
+                        addToken(EToken.PERCENT2_EQUAL);
+                    } else if(peek(1) == '%') {
+                        addToken(EToken.PERCENT2);
+                    } else if(peek(1) == '=') {
                         addToken(EToken.PERCENT_EQUAL);
                     } else {
                         addToken(EToken.PERCENT);
@@ -87,7 +95,15 @@ public:
                     }
                     break;
                 case '|':
-                    if(peek(1) == '=') {
+                    if(matches("|>=|")) {
+                        addToken(EToken.UGTE);
+                    } else if(matches("|<=|")) {
+                        addToken(EToken.ULTE);
+                    } else if(matches("|>|")) {
+                        addToken(EToken.UGT);
+                    } else if(matches("|<|")) {
+                        addToken(EToken.ULT);
+                    } else if(matches("|=")) {
                         addToken(EToken.PIPE_EQUAL);
                     } else {
                         addToken(EToken.PIPE);
@@ -172,6 +188,10 @@ public:
                 case '>':
                     if(peek(1)=='=') {
                         addToken(EToken.RANGLE_EQUAL);
+                    } else if(peek(1) == '>' && peek(2)=='>' && peek(3)=='=') {
+                        addToken(EToken.RANGLE3_EQUAL);
+                    } else if(peek(1) == '>' && peek(2)=='>') {
+                        addToken(EToken.RANGLE3);
                     } else if(peek(1) == '>' && peek(2)=='=') {
                         addToken(EToken.RANGLE2_EQUAL);
                     } else if(peek(1)=='>') {
@@ -199,6 +219,12 @@ private:
     int lineStart;
     Token[] tokens;
 
+    bool matches(string s) {
+        foreach(i, ch; s) {
+            if(peek(i.as!int) != ch) return false;
+        }
+        return true;
+    }
     char peek(int offset = 0) {
         return pos + offset < source.length ? source[pos + offset] : 0;
     }

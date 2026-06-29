@@ -8,9 +8,9 @@ enum Operator {
     SUB,            // -
     MUL,            // *
     DIV,            // /
-    UDIV,           // udiv
+    UDIV,           // //
     MOD,            // %
-    UMOD,           // umod
+    UMOD,           // %%
     BIT_XOR,        // ^
     BIT_AND,        // &
     BIT_OR,         // |
@@ -24,15 +24,15 @@ enum Operator {
     SUB_ASSIGN,     // -=
     MUL_ASSIGN,     // *=
     DIV_ASSIGN,     // /=
-    UDIV_ASSIGN,    // udiv=
+    UDIV_ASSIGN,    // //=
     MOD_ASSIGN,     // %=
-    UMOD_ASSIGN,    // umod=
+    UMOD_ASSIGN,    // %%=
     BIT_XOR_ASSIGN, // ^=
     BIT_AND_ASSIGN, // &=
     BIT_OR_ASSIGN,  // |=
-    SHL_ASSIGN,     // shl=
-    SHR_ASSIGN,     // shr=
-    USHR_ASSIGN,    // ushr=
+    SHL_ASSIGN,     // <<=
+    SHR_ASSIGN,     // >>=
+    USHR_ASSIGN,    // >>>=
 
     // Boolean operators
     EQUAL,          // ==   these are only used internally by the compiler
@@ -61,32 +61,32 @@ string stringOf(Operator op) {
         case Operator.SUB: return "-";
         case Operator.MUL: return "*";
         case Operator.DIV: return "/";
-        case Operator.UDIV: return "udiv";
+        case Operator.UDIV: return "//";
         case Operator.MOD: return "%";
-        case Operator.UMOD: return "umod";
+        case Operator.UMOD: return "%%";
         case Operator.BIT_XOR: return "^";
         case Operator.BIT_AND: return "&";
         case Operator.BIT_OR: return "|";
         case Operator.BIT_NOT: return "~";
         case Operator.SHL: return "<<";
         case Operator.SHR: return ">>";
-        case Operator.USHR: return "ushr";
+        case Operator.USHR: return ">>>";
 
         case Operator.ASSIGN: return "=";
         case Operator.ADD_ASSIGN: return "+=";
         case Operator.SUB_ASSIGN: return "-=";
         case Operator.MUL_ASSIGN: return "*=";
         case Operator.DIV_ASSIGN: return "/=";
-        case Operator.UDIV_ASSIGN: return "udiv=";
+        case Operator.UDIV_ASSIGN: return "//=";
         case Operator.MOD_ASSIGN: return "%=";
-        case Operator.UMOD_ASSIGN: return "umod=";
+        case Operator.UMOD_ASSIGN: return "%%=";
         case Operator.BIT_XOR_ASSIGN: return "^=";
         case Operator.BIT_AND_ASSIGN: return "&=";
         case Operator.BIT_OR_ASSIGN: return "|=";
 
         case Operator.SHL_ASSIGN: return "<<=";
         case Operator.SHR_ASSIGN: return ">>=";
-        case Operator.USHR_ASSIGN: return "ushr=";
+        case Operator.USHR_ASSIGN: return ">>>=";
 
         case Operator.EQUAL: return "==";
         case Operator.NOT_EQUAL: return "!=";
@@ -96,10 +96,10 @@ string stringOf(Operator op) {
         case Operator.LTE: return "<=";
         case Operator.GTE: return ">=";
 
-        case Operator.ULT: return "ult";
-        case Operator.UGT: return "ugt";
-        case Operator.ULTE: return "ulte";
-        case Operator.UGTE: return "ugte";
+        case Operator.ULT: return "|<|";
+        case Operator.UGT: return "|>|";
+        case Operator.ULTE: return "|<=|";
+        case Operator.UGTE: return "|>=|";
 
         case Operator.BOOL_AND: return "and";
         case Operator.BOOL_OR: return "or";
@@ -117,14 +117,22 @@ Operator toOperator(EToken tk) {
         case EToken.MINUS: return Operator.SUB;
         case EToken.STAR: return Operator.MUL;
         case EToken.SLASH: return Operator.DIV;
+        case EToken.SLASH2: return Operator.UDIV;
         case EToken.PERCENT: return Operator.MOD;
+        case EToken.PERCENT2: return Operator.UMOD;
         case EToken.HAT: return Operator.BIT_XOR;
         case EToken.AMPERSAND: return Operator.BIT_AND;
         case EToken.PIPE: return Operator.BIT_OR;
         case EToken.TILDE: return Operator.BIT_NOT;
 
+        case EToken.UGTE: return Operator.UGTE;
+        case EToken.UGT: return Operator.UGT;
+        case EToken.ULTE: return Operator.ULTE;
+        case EToken.ULT: return Operator.ULT;
+
         case EToken.LANGLE2: return Operator.SHL;
         case EToken.RANGLE2: return Operator.SHR;
+        case EToken.RANGLE3: return Operator.USHR;
 
         case EToken.EQUAL2: return Operator.EQUAL;
         case EToken.BANG_EQUAL: return Operator.NOT_EQUAL;
@@ -137,18 +145,16 @@ Operator toOperator(EToken tk) {
         case EToken.MINUS_EQUAL: return Operator.SUB_ASSIGN;
         case EToken.STAR_EQUAL: return Operator.MUL_ASSIGN;
         case EToken.SLASH_EQUAL: return Operator.DIV_ASSIGN;
+        case EToken.SLASH2_EQUAL: return Operator.UDIV_ASSIGN;
         case EToken.PERCENT_EQUAL: return Operator.MOD_ASSIGN;
+        case EToken.PERCENT2_EQUAL: return Operator.UMOD_ASSIGN;
         case EToken.HAT_EQUAL: return Operator.BIT_XOR_ASSIGN;
         case EToken.AMPERSAND_EQUAL: return Operator.BIT_AND_ASSIGN;
         case EToken.PIPE_EQUAL: return Operator.BIT_OR_ASSIGN;
 
         case EToken.LANGLE2_EQUAL: return Operator.SHL_ASSIGN;
         case EToken.RANGLE2_EQUAL: return Operator.SHR_ASSIGN;
-
-        // Handled elsewhere:
-        // and, or
-        // ushr, udiv, umod, ugt, ult, ugte, ulte
-        // ushr=, udiv=, umod=
+        case EToken.RANGLE3_EQUAL: return Operator.USHR_ASSIGN;
 
         default:
             throwIf(true, "Implement toOperator(%s)", tk);

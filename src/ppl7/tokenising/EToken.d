@@ -12,14 +12,16 @@ enum EToken {
     MINUS,              // -
     STAR,               // *
     SLASH,              // /
+    SLASH2,             // //
     PERCENT,            // %
+    PERCENT2,           // %%
     HAT,                // ^
     AMPERSAND,          // &
     PIPE,               // |
     TILDE,              // ~
     LANGLE2,            // <<
     RANGLE2,            // >>
-    //RANGLE3,            // >>>
+    RANGLE3,            // >>>
 
     EQUAL,              // =
 
@@ -27,18 +29,26 @@ enum EToken {
     MINUS_EQUAL,        // -=
     STAR_EQUAL,         // *=
     SLASH_EQUAL,        // /=
+    SLASH2_EQUAL,       // //=
     PERCENT_EQUAL,      // %=
+    PERCENT2_EQUAL,     // %%=
     HAT_EQUAL,          // ^=
     AMPERSAND_EQUAL,    // &=
     PIPE_EQUAL,         // |=
     TILDE_EQUAL,        // ~=
     LANGLE2_EQUAL,      // <<=
     RANGLE2_EQUAL,      // >>=
+    RANGLE3_EQUAL,      // >>>=
 
     LANGLE_EQUAL,       // <=
     RANGLE_EQUAL,       // >=
     EQUAL2,             // ==
     BANG_EQUAL,         // !=
+
+    ULT,                // |<|
+    UGT,                // |>|
+    ULTE,               // |<=|
+    UGTE,               // |>=|
 
     LANGLE,             // <
     RANGLE,             // >
@@ -119,11 +129,22 @@ int lengthOf(EToken t) {
         case COLON2:
         case LSQUARE2:
         case RSQUARE2:
+        case SLASH2:
+        case PERCENT2:
             return 2;
+        case SLASH2_EQUAL:
+        case PERCENT2_EQUAL:
         case LANGLE2_EQUAL:
         case RANGLE2_EQUAL:
+        case RANGLE3:
         case ELLIPSIS:
+        case ULT:
+        case UGT:
             return 3;
+        case RANGLE3_EQUAL:
+        case ULTE:
+        case UGTE:
+            return 4;
     }
 }
 string stringOf(EToken t) {
@@ -137,24 +158,30 @@ string stringOf(EToken t) {
         case MINUS: return "-";
         case STAR: return "*";
         case SLASH: return "/";
+        case SLASH2: return "//";
         case PERCENT: return "%";
+        case PERCENT2: return "%%";
         case HAT: return "^";
         case AMPERSAND: return "&";
         case PIPE: return "|";
         case TILDE: return "~";
         case LANGLE2: return "<<";
         case RANGLE2: return ">>";
+        case RANGLE3: return ">>>";
         case PLUS_EQUAL: return "+=";
         case MINUS_EQUAL: return "-=";
         case STAR_EQUAL: return "*=";
         case SLASH_EQUAL: return "/=";
+        case SLASH2_EQUAL: return "//=";
         case PERCENT_EQUAL: return "%=";
+        case PERCENT2_EQUAL: return "%%=";
         case HAT_EQUAL: return "^=";
         case AMPERSAND_EQUAL: return "&=";
         case PIPE_EQUAL:  return "|=";
         case TILDE_EQUAL: return "~=";
         case LANGLE2_EQUAL: return "<<=";
         case RANGLE2_EQUAL: return ">>=";
+        case RANGLE3_EQUAL: return ">>>=";
         case EQUAL: return "=";
         case LANGLE: return "<";
         case RANGLE: return ">";
@@ -181,5 +208,9 @@ string stringOf(EToken t) {
         case QUESTION: return "?";
         case AT: return "@";
         case DOLLAR: return "$";
+        case ULT: return "|<|";
+        case UGT: return "|>|";
+        case ULTE: return "|<=|";
+        case UGTE: return "|>=|";
     }
 }

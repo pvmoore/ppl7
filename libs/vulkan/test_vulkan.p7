@@ -12,10 +12,10 @@ fn testVulkan() {
 	int version
 	VkResult r = vkEnumerateInstanceVersion(&version)
 
-	int major = version ushr 22
-	int minor = (version ushr 12) & 0x3ff
+	int major = version >>> 22
+	int minor = (version >>> 12) & 0x3ff
 	int patch = version & 0xfff
-	int variant = version ushr 29
+	int variant = version >>> 29
 
 	console.println(major)
 	console.println(minor)

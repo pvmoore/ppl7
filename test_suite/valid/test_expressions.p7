@@ -33,7 +33,7 @@ public fn main() {
     short c2 = 5 - 2            ; assert c2 is 3
     float c3 = 96.14 * 2        ; assert c3 is 192.28
     double c4 = 123.45 / 2.0    ; assert c4 is 61.725
-    int c5 = 0xffff umod 2      ; assert c5 is 1
+    int c5 = 0xffff %% 2        ; assert c5 is 1
 
     # Pointer expressions
     int* y1 = null

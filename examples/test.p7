@@ -1,6 +1,7 @@
 import stdc = core:stdc
 import vk   = vulkan:test_vulkan
 import cstr = core:string
+import core:console
 
 public fn main() -> int {
     vk.testVulkan()
@@ -14,6 +15,9 @@ public fn main() -> int {
     if(1) {
         stdc.puts(""z)
     }
+
+    int a = 0b1100_1100
+    println(a)
 
     return 0
 }

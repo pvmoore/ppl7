@@ -13,7 +13,7 @@ void main(string[] args) {
         runTestSuite();
         return;
     }
-    
+
     auto options = new CompilerOptions();
     options.writeLL = true;
     options.writeAST = true;
@@ -22,7 +22,7 @@ void main(string[] args) {
     options.subsystem = "console";
 
     options.targetName = "test.exe";
-    
+
     options.verboseLogging = true;
     options.isDebug = true;
 
@@ -107,7 +107,7 @@ void main(string[] args) {
         byte a;
     }
     static struct Chicken { // size = 8
-        int a;      // 0 
+        int a;      // 0
         bool b;     // 4
         short c;    // 6
     }
@@ -159,5 +159,18 @@ void main(string[] args) {
     // TE1C te1c;
 
     // writefln("te1c = %s", te1c.a);
+
+    int a = -13 / 3;
+    int b = -13 % 3;
+    writefln("a = %s", a);
+    writefln("b = %s", b);
+
+    uint c = -13u / 3u;
+    uint d = -13u % 3u;
+    uint e = -13u % 7u;
+    writefln("-13u = %s", -13u);
+    writefln("c = %s", c);
+    writefln("d = %s", d);
+    writefln("e = %s", e);
 }
 

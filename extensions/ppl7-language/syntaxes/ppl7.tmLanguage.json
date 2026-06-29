@@ -95,7 +95,7 @@
 		"keywords": {
 			"patterns": [
 				{
-					"match": "\\b(const|if|while|return|import|not|is|as|and|or|else|break|continue|select|ushr|udiv|umod|ult|ugt|ulte|ugte)\\b",
+					"match": "\\b(const|if|while|return|import|not|is|as|and|or|else|break|continue|select)\\b",
 					"name": "keyword.control.ppl7"
 				},
 				{

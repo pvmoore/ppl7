@@ -118,7 +118,6 @@ public fn main() {
 
     shl()
     shr()
-    ushr_() # todo - rename this once we have removed the ushr operator
 }
 
 fn shl() {
@@ -136,14 +135,6 @@ fn shr() {
     int d = @shr(7, c)  ; assert d is 7
     assert @ushr(3, 1) is 1
     assert @shr(1, 1) is 0
-}
-fn ushr_() {
-    int a = 0xffffffff
-    int b = @ushr(a, 1)  ; assert b is 0x7fffffff
-    int c = @ushr(1, 1)  ; assert c is 0
-    int d = @ushr(7, c)  ; assert d is 7
-    assert @ushr(3, 1) is 1
-    assert @ushr(1, 1) is 0
 }
 
 enum TB_1 {

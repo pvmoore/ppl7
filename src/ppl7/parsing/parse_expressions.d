@@ -162,14 +162,7 @@ void parseInfix(Node parent, ParseState state) {
                         break;
                     }
                     case "and":
-                    case "or":
-                    case "udiv":
-                    case "umod":
-                    case "ult":
-                    case "ugt":
-                    case "ulte":
-                    case "ugte":
-                    case "ushr": {
+                    case "or": {
                         auto b = parseAndReturnBinary(state);
                         parent = attachAndRead(parent, b, state, true);
                         break;
@@ -189,10 +182,17 @@ void parseInfix(Node parent, ParseState state) {
             case EToken.MINUS:
             case EToken.STAR:
             case EToken.SLASH:
+            case EToken.SLASH2:
             case EToken.PERCENT:
+            case EToken.PERCENT2:
             case EToken.HAT:
             case EToken.AMPERSAND:
             case EToken.PIPE:
+
+            case EToken.UGTE:
+            case EToken.UGT:
+            case EToken.ULTE:
+            case EToken.ULT:
 
             case EToken.EQUAL:
             case EToken.LANGLE:
@@ -201,14 +201,18 @@ void parseInfix(Node parent, ParseState state) {
             case EToken.RANGLE_EQUAL:
             case EToken.LANGLE2:
             case EToken.RANGLE2:
+            case EToken.RANGLE3:
             case EToken.LANGLE2_EQUAL:
             case EToken.RANGLE2_EQUAL:
+            case EToken.RANGLE3_EQUAL:
 
             case EToken.PLUS_EQUAL:
             case EToken.MINUS_EQUAL:
             case EToken.STAR_EQUAL:
             case EToken.SLASH_EQUAL:
+            case EToken.SLASH2_EQUAL:
             case EToken.PERCENT_EQUAL:
+            case EToken.PERCENT2_EQUAL:
             case EToken.HAT_EQUAL:
             case EToken.AMPERSAND_EQUAL:
             case EToken.PIPE_EQUAL:
@@ -670,34 +674,6 @@ Binary parseAndReturnBinary(ParseState state) {
     string text = state.text();
 
     switch(text) {
-        case "ushr":
-            if(state.peek(1).etoken == EToken.EQUAL) {
-                b.op = Operator.USHR_ASSIGN;
-                state.next();
-            } else {
-                b.op = Operator.USHR;
-            }
-            break;
-        case "udiv":
-            if(state.peek(1).etoken == EToken.EQUAL) {
-                b.op = Operator.UDIV_ASSIGN;
-                state.next();
-            } else {
-                b.op = Operator.UDIV;
-            }
-            break;
-        case "umod":
-            if(state.peek(1).etoken == EToken.EQUAL) {
-                b.op = Operator.UMOD_ASSIGN;
-                state.next();
-            } else {
-                b.op = Operator.UMOD;
-            }
-            break;
-        case "ult": b.op = Operator.ULT; break;
-        case "ugt": b.op = Operator.UGT; break;
-        case "ulte": b.op = Operator.ULTE; break;
-        case "ugte": b.op = Operator.UGTE; break;
         case "and": b.op = Operator.BOOL_AND; break;
         case "or": b.op = Operator.BOOL_OR; break;
         default: b.op = toOperator(state.etoken()); break;

@@ -1,5 +1,22 @@
 # Version History
 
+## 0.2.19
+
+- [x] Remove ushr, udiv and umod.
+- [x] Add new syntax for unsigned operations:
+```
+    - unsigned shr     >>>
+    - unsigned divide  //
+    - unsigned mod     %%
+    - unsigned shr=    >>>=
+    - unsigned div =   //=
+    - unsigned mod =   %%=
+    - unsigned >       |>|
+    - unsigned <       |<|
+    - unsigned >=      |>=|
+    - unsigned <=      |<=|
+```
+
 ## 0.2.18
 
 - [x] Allow underscore in number literals eg 0b1000_0000

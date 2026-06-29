@@ -112,9 +112,9 @@ void resolveInteger(Number n, string s) {
         else if(v < byte.min || v > byte.max) size = maxOf(size, 2);
     } else {
         ulong v = s.to!long;
-        if(v < uint.min || v > uint.max) size = maxOf(size, 8);
-        else if(v < ushort.min || v > ushort.max) size = maxOf(size, 4);
-        else if(v < ubyte.min || v > ubyte.max) size = maxOf(size, 2);
+        if(v > uint.max) size = maxOf(size, 8);
+        else if(v > ushort.max) size = maxOf(size, 4);
+        else if(v > ubyte.max) size = maxOf(size, 2);
     }
     //log("number %s (%s, %s) size = %s", s, s.to!long, s.to!long.as!ulong, size);
 
