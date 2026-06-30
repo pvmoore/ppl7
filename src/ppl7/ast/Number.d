@@ -44,11 +44,11 @@ public:
             case EType.DOUBLE: return value.doubleValue == 0.0;
             default: assert(false, "We shouldn't get here. type is %s".format(_type.etype()));
         }
-        assert(false);  
+        assert(false);
     }
 
     void setType(Type type) { this._type = type; }
-    
+
     override string toString() {
         string[] info;
         if(!isResolved()) info ~= "UNRESOLVED"; else info ~= "%s".format(_type);
@@ -110,7 +110,7 @@ public:
             case EType.FLOAT:  value.floatValue = v.as!float; break;
             case EType.DOUBLE: value.doubleValue = v.as!double; break;
             default: assert(false);
-        }   
+        }
     }
 private:
     Type _type;

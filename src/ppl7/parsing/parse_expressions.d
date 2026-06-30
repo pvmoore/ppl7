@@ -216,7 +216,6 @@ void parseInfix(Node parent, ParseState state) {
             case EToken.HAT_EQUAL:
             case EToken.AMPERSAND_EQUAL:
             case EToken.PIPE_EQUAL:
-            case EToken.TILDE_EQUAL:
                 // exit if this token is on the next line
                 if(!state.isOnSameLine()) return;
 

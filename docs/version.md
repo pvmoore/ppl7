@@ -1,5 +1,10 @@
 # Version History
 
+## 0.2.20
+
+- Tidy up Lexer
+- Remove EToken.TILDE_EQUAL
+
 ## 0.2.19
 
 - [x] Remove ushr, udiv and umod.

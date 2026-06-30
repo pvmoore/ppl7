@@ -35,7 +35,6 @@ enum EToken {
     HAT_EQUAL,          // ^=
     AMPERSAND_EQUAL,    // &=
     PIPE_EQUAL,         // |=
-    TILDE_EQUAL,        // ~=
     LANGLE2_EQUAL,      // <<=
     RANGLE2_EQUAL,      // >>=
     RANGLE3_EQUAL,      // >>>=
@@ -118,7 +117,6 @@ int lengthOf(EToken t) {
         case HAT_EQUAL:
         case AMPERSAND_EQUAL:
         case PIPE_EQUAL:
-        case TILDE_EQUAL:
         case LANGLE_EQUAL:
         case RANGLE_EQUAL:
         case EQUAL2:
@@ -178,7 +176,6 @@ string stringOf(EToken t) {
         case HAT_EQUAL: return "^=";
         case AMPERSAND_EQUAL: return "&=";
         case PIPE_EQUAL:  return "|=";
-        case TILDE_EQUAL: return "~=";
         case LANGLE2_EQUAL: return "<<=";
         case RANGLE2_EQUAL: return ">>=";
         case RANGLE3_EQUAL: return ">>>=";

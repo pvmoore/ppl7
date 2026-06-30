@@ -25,181 +25,177 @@ public:
                 case '\'':
                     lexChar();
                     break;
-                case '/':
+                case '/': {
                     if(peek(1)=='*') {
                         lexMultiLineComment();
-                    } else if(peek(1) == '/' && peek(2) == '=') {
-                        addToken(EToken.SLASH2_EQUAL);
-                    } else if(peek(1) == '/') {
-                        addToken(EToken.SLASH2);
-                    } else if(peek(1)=='=') {
-                        addToken(EToken.SLASH_EQUAL);
-                    } else {
-                        addToken(EToken.SLASH);
+                        break;
                     }
+                    Match[] m = [
+                        {EToken.SLASH2_EQUAL,   "//="},
+                        {EToken.SLASH2,         "//"},
+                        {EToken.SLASH_EQUAL,    "/="},
+                        {EToken.SLASH,          "/"}
+                    ];
+                    matchFirst(m);
                     break;
+                }
                 case '#':
                     lexLineComment();
                     break;
-                case '+':
-                    if(peek(1) == '=') {
-                        addToken(EToken.PLUS_EQUAL);
-                    } else {
-                        addToken(EToken.PLUS);
-                    }
+                case '+': {
+                    Match[] m = [
+                        {EToken.PLUS_EQUAL,     "+="},
+                        {EToken.PLUS,           "+"},
+                    ];
+                    matchFirst(m);
                     break;
-                case '-':
+                }
+                case '-': {
                     if(tokenStart==pos && peek(1).isDigit()) {
                         // This is a negative number
                         pos++;
                         break;
                     }
-                    if(peek(1) == '=') {
-                        addToken(EToken.MINUS_EQUAL);
-                    } else if(peek(1) == '>') {
-                        addToken(EToken.RARROW);
-                    } else {
-                        addToken(EToken.MINUS);
-                    }
+                    Match[] m = [
+                        {EToken.MINUS_EQUAL,     "-="},
+                        {EToken.RARROW,          "->"},
+                        {EToken.MINUS,           "-"},
+                    ];
+                    matchFirst(m);
                     break;
-                case '*':
-                    if(peek(1) == '=') {
-                        addToken(EToken.STAR_EQUAL);
-                    } else {
-                        addToken(EToken.STAR);
-                    }
+                }
+                case '*': {
+                    Match[] m = [
+                        {EToken.STAR_EQUAL,     "*="},
+                        {EToken.STAR,           "*"},
+                    ];
+                    matchFirst(m);
                     break;
-                case '%':
-                    if(peek(1) == '%' && peek(2) == '=') {
-                        addToken(EToken.PERCENT2_EQUAL);
-                    } else if(peek(1) == '%') {
-                        addToken(EToken.PERCENT2);
-                    } else if(peek(1) == '=') {
-                        addToken(EToken.PERCENT_EQUAL);
-                    } else {
-                        addToken(EToken.PERCENT);
-                    }
+                }
+                case '%': {
+                    Match[] m = [
+                        {EToken.PERCENT2_EQUAL, "%%="},
+                        {EToken.PERCENT2,       "%%"},
+                        {EToken.PERCENT_EQUAL,  "%="},
+                        {EToken.PERCENT,        "%"}
+                    ];
+                    matchFirst(m);
                     break;
-                case '^':
-                    if(peek(1) == '=') {
-                        addToken(EToken.HAT_EQUAL);
-                    } else {
-                        addToken(EToken.HAT);
-                    }
+                }
+                case '^': {
+                    Match[] m = [
+                        {EToken.HAT_EQUAL,  "^="},
+                        {EToken.HAT,        "^"}
+                    ];
+                    matchFirst(m);
                     break;
-                case '&':
-                    if(peek(1) == '=') {
-                        addToken(EToken.AMPERSAND_EQUAL);
-                    } else {
-                        addToken(EToken.AMPERSAND);
-                    }
+                }
+                case '&': {
+                    Match[] m = [
+                        {EToken.AMPERSAND_EQUAL,  "&="},
+                        {EToken.AMPERSAND,        "&"}
+                    ];
+                    matchFirst(m);
                     break;
-                case '|':
-                    if(matches("|>=|")) {
-                        addToken(EToken.UGTE);
-                    } else if(matches("|<=|")) {
-                        addToken(EToken.ULTE);
-                    } else if(matches("|>|")) {
-                        addToken(EToken.UGT);
-                    } else if(matches("|<|")) {
-                        addToken(EToken.ULT);
-                    } else if(matches("|=")) {
-                        addToken(EToken.PIPE_EQUAL);
-                    } else {
-                        addToken(EToken.PIPE);
-                    }
+                }
+                case '|': {
+                    Match[] m = [
+                        {EToken.UGTE,       "|>=|"},
+                        {EToken.ULTE,       "|<=|"},
+                        {EToken.ULT,        "|<|"},
+                        {EToken.UGT,        "|>|"},
+                        {EToken.PIPE_EQUAL, "|="},
+                        {EToken.PIPE,       "|"}
+                    ];
+                    matchFirst(m);
                     break;
-                case '~':
-                    if(peek(1) == '=') {
-                        addToken(EToken.TILDE_EQUAL);
-                    } else {
-                        addToken(EToken.TILDE);
-                    }
-                    break;
-
+                }
+                case '~': addToken(EToken.TILDE); break;
                 case '(': addToken(EToken.LPAREN); break;
                 case ')': addToken(EToken.RPAREN); break;
                 case '{': addToken(EToken.LBRACE); break;
                 case '}': addToken(EToken.RBRACE); break;
-                case '[':
-                    if(peek(1) == '[') {
-                        addToken(EToken.LSQUARE2);
-                    } else {
-                        addToken(EToken.LSQUARE);
-                    }
+                case '[': {
+                    Match[] m = [
+                        {EToken.LSQUARE2, "[["},
+                        {EToken.LSQUARE,  "["}
+                    ];
+                    matchFirst(m);
                     break;
-                case ']':
-                    if(peek(1) == ']') {
-                        addToken(EToken.RSQUARE2);
-                    } else {
-                        addToken(EToken.RSQUARE);
-                    }
+                }
+                case ']': {
+                    Match[] m = [
+                        {EToken.RSQUARE2, "]]"},
+                        {EToken.RSQUARE,  "]"},
+                    ];
+                    matchFirst(m);
                     break;
-
+                }
                 case ';': addToken(EToken.SEMICOLON); break;
                 case ',': addToken(EToken.COMMA); break;
                 case '?': addToken(EToken.QUESTION); break;
                 case '@': addToken(EToken.AT); break;
                 case '$': addToken(EToken.DOLLAR); break;
 
-                case ':':
-                    if(peek(1)==':') {
-                        addToken(EToken.COLON2);
-                    } else {
-                        addToken(EToken.COLON);
-                    }
+                case ':': {
+                    Match[] m = [
+                        {EToken.COLON2, "::"},
+                        {EToken.COLON,  ":"}
+                    ];
+                    matchFirst(m);
                     break;
-                case '.':
+                }
+                case '.': {
                     if(isDigit(peek(-1)) && isDigit(peek(1))) {
                         // Assume this is a real number
                         pos++;
-                    } else if(peek(1)=='.' && peek(2)=='.') {
-                        addToken(EToken.ELLIPSIS);
-                    } else {
-                        addToken(EToken.DOT);
+                        break;
                     }
+                    Match[] m = [
+                        {EToken.ELLIPSIS, ".."},
+                        {EToken.DOT,      "."}
+                    ];
+                    matchFirst(m);
                     break;
-
-                case '!':
-                    if(peek(1)=='=') {
-                        addToken(EToken.BANG_EQUAL);
-                    } else {
-                        addToken(EToken.BANG);
-                    }
+                }
+                case '!': {
+                    Match[] m = [
+                        {EToken.BANG_EQUAL, "!="},
+                        {EToken.BANG,       "!"}
+                    ];
+                    matchFirst(m);
                     break;
-                case '=':
-                    if(peek(1)=='=') {
-                        addToken(EToken.EQUAL2);
-                    } else {
-                        addToken(EToken.EQUAL);
-                    }
+                }
+                case '=': {
+                    Match[] m = [
+                        {EToken.EQUAL2, "=="},
+                        {EToken.EQUAL,  "="}
+                    ];
+                    matchFirst(m);
                     break;
-                case '<':
-                    if(peek(1)=='=') {
-                        addToken(EToken.LANGLE_EQUAL);
-                    } else if(peek(1) == '<' && peek(2)=='=') {
-                        addToken(EToken.LANGLE2_EQUAL);
-                    } else if(peek(1)=='<') {
-                        addToken(EToken.LANGLE2);
-                    } else {
-                        addToken(EToken.LANGLE);
-                    }
+                }
+                case '<': {
+                    Match[] m = [
+                        {EToken.LANGLE2_EQUAL,  "<<="},
+                        {EToken.LANGLE2,        "<<"},
+                        {EToken.LANGLE_EQUAL,   "<="},
+                        {EToken.LANGLE,         "<"},
+                    ];
+                    matchFirst(m);
                     break;
-                case '>':
-                    if(peek(1)=='=') {
-                        addToken(EToken.RANGLE_EQUAL);
-                    } else if(peek(1) == '>' && peek(2)=='>' && peek(3)=='=') {
-                        addToken(EToken.RANGLE3_EQUAL);
-                    } else if(peek(1) == '>' && peek(2)=='>') {
-                        addToken(EToken.RANGLE3);
-                    } else if(peek(1) == '>' && peek(2)=='=') {
-                        addToken(EToken.RANGLE2_EQUAL);
-                    } else if(peek(1)=='>') {
-                        addToken(EToken.RANGLE2);
-                    } else {
-                        addToken(EToken.RANGLE);
-                    }
+                }
+                case '>': {
+                    Match[] m = [
+                        {EToken.RANGLE3_EQUAL,  ">>>="},
+                        {EToken.RANGLE3,        ">>>"},
+                        {EToken.RANGLE2_EQUAL,  ">>="},
+                        {EToken.RANGLE2,        ">>"},
+                        {EToken.RANGLE_EQUAL,   ">="},
+                        {EToken.RANGLE,         ">"},
+                    ];
+                    matchFirst(m);
                     break;
+                }
 
                 default:
                     pos++;
@@ -219,12 +215,31 @@ private:
     int lineStart;
     Token[] tokens;
 
-    bool matches(string s) {
-        foreach(i, ch; s) {
-            if(peek(i.as!int) != ch) return false;
-        }
-        return true;
+    struct Match {
+        EToken tk;
+        string str;
     }
+
+    void matchFirst(Match[] matches) {
+        assert(matches.length > 0);
+
+        bool isMatch(string s) {
+            if(s.length < 2) return true;
+            foreach(i; 1..s.length) {
+                if(peek(i.as!int) != s[i]) return false;
+            }
+            return true;
+        }
+
+        foreach(m; matches) {
+            if(isMatch(m.str)) {
+                addToken(m.tk);
+                return;
+            }
+        }
+        assert(false, "Nothing matched");
+    }
+
     char peek(int offset = 0) {
         return pos + offset < source.length ? source[pos + offset] : 0;
     }
