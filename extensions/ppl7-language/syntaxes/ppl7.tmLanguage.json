@@ -163,15 +163,15 @@
 					"name": "constant.numeric.float"
 				},
 				{
-					"match": "\\b[\\d_]+\\b",
+					"match": "\\b[\\d_]+(l|L)?\\b",
 					"name": "constant.numeric"
 				},
 				{
-					"match": "\\b0b[0-1_]+\\b",
+					"match": "\\b0b[0-1_]+(l|L)?\\b",
 					"name": "constant.numeric.binary"
 				},
 				{
-					"match": "\\b0x[\\d_a-fA-F]+\\b",
+					"match": "\\b0x[\\d_a-fA-F]+(l|L)?\\b",
 					"name": "constant.numeric.hex"
 				}
 			]

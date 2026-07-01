@@ -7,21 +7,9 @@
  */
 
 public fn main() {
-    assert @sizeOf(0) is 1
-    assert @sizeOf(0xff) is 1
-    assert @sizeOf(0x1ff) is 2
-    assert @sizeOf(0xffffffff) is 4
-    assert @sizeOf(0x1ffffffff) is 8
-    assert @sizeOf(-128) is 1
-    assert @sizeOf(-129) is 2
-    assert @sizeOf(-32768) is 2
-    assert @sizeOf(-32769) is 4
-    assert @sizeOf(-2147483648) is 4
-    assert @sizeOf(-2147483649) is 8
-
-    int a = 8           assert @sizeOf(a) is 4
-    int b = 0xffffffff; assert b is -1              ; assert @sizeOf(b) is 4
-    bool c              assert @sizeOf(c) is 1
+    int a = 8           ; assert @sizeOf(a) is 4
+    int b = 0xffffffff  ; assert b is -1              ; assert @sizeOf(b) is 4
+    bool c              ; assert @sizeOf(c) is 1
 
     # >>, >>>
     assert a >> 1 is 4

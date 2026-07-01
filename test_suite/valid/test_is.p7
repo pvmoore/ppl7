@@ -8,7 +8,7 @@
 
 public fn main() {
     int a  = 1
-    byte b = 2
+    byte b = 2 as byte
 
     int* bb;      assert bb is null
     #assert bb is not not null # double negation is not allowed

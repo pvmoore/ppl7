@@ -70,7 +70,9 @@ void resolveReal(Number n, string s) {
 }
 
 void resolveInteger(Number n, string s) {
-    uint size = 1;
+
+    // Assume the number is an int unless it is definitely a long
+    uint size = 4;
 
     if(s.endsWith("l")) {
         size = 8;
@@ -81,12 +83,6 @@ void resolveInteger(Number n, string s) {
         s = s[2..$];
         if(s.length > 8) {
             size = 8;
-        } else if(s.length > 4) {
-            size = maxOf(size, 4);
-        } else if(s.length > 2) {
-            size = maxOf(size, 2);
-        } else {
-            size = maxOf(size, 1);
         }
         s = s.to!ulong(16).to!string;
 
@@ -94,38 +90,42 @@ void resolveInteger(Number n, string s) {
         s = s[2..$];
         if(s.length > 32) {
             size = 8;
-        } else if(s.length > 16) {
-            size = maxOf(size, 4);
-        } else if(s.length > 8) {
-            size = maxOf(size, 2);
-        } else {
-            size = maxOf(size, 1);
         }
         s = s.to!ulong(2).to!string;
     }
 
-    // Make sure size is large enough to hold the value
+    // int.min  = -2147483648
+    // int.max  = 2147483647
+    // long.min = -9223372036854775808
+    // long.max = 9223372036854775807
+
+    EType tk;
+
     if(s.startsWith("-")) {
         long v = s.to!long;
+
+        // Only allow negative integers above int.min before switching to long
         if(v < int.min || v > int.max) size = maxOf(size, 8);
-        else if(v < short.min || v > short.max) size = maxOf(size, 4);
-        else if(v < byte.min || v > byte.max) size = maxOf(size, 2);
+
+        switch(size) {
+            case 4: n.value.intValue  = v.as!int;  tk = EType.INT; break;
+            case 8: n.value.longValue = v.as!long; tk = EType.LONG; break;
+            default: assert(false);
+        }
     } else {
-        ulong v = s.to!long;
+        ulong v = s.to!ulong;
+
+        // Allow positive integers up to uint.max before switching to long
         if(v > uint.max) size = maxOf(size, 8);
-        else if(v > ushort.max) size = maxOf(size, 4);
-        else if(v > ubyte.max) size = maxOf(size, 2);
+
+        switch(size) {
+            case 4: n.value.intValue  = v.as!int;  tk = EType.INT; break;
+            case 8: n.value.longValue = v.as!long; tk = EType.LONG; break;
+            default: assert(false);
+        }
     }
     //log("number %s (%s, %s) size = %s", s, s.to!long, s.to!long.as!ulong, size);
 
-    EType tk;
-    switch(size) {
-        case 1: n.value.byteValue = s.to!long.as!byte; tk = EType.BYTE; break;
-        case 2: n.value.shortValue = s.to!long.as!short; tk = EType.SHORT; break;
-        case 4: n.value.intValue = s.to!long.as!int; tk = EType.INT; break;
-        case 8: n.value.longValue = s.to!long; tk = EType.LONG; break;
-        default: assert(false);
-    }
     n.setType(makeSimpleType(tk));
 }
 

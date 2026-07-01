@@ -4,6 +4,8 @@ import ppl7.all;
 
 /**
  * Number
+ *
+ * Todo - Use makeNumber instead of makeXNumber variations.
  */
 final class Number : Expression {
 public:
@@ -55,18 +57,18 @@ public:
         return "%s %s".format(stringValue, info.join(", "));
     }
 
-    bool getValueAsBool() {
-        switch(_type.etype()) {
-            case EType.BOOL:   return value.byteValue != 0;
-            case EType.BYTE:   return value.byteValue != 0;
-            case EType.SHORT:  return value.shortValue != 0;
-            case EType.INT:    return value.intValue != 0;
-            case EType.LONG:   return value.longValue != 0;
-            case EType.FLOAT:  return value.floatValue != 0.0;
-            case EType.DOUBLE: return value.doubleValue != 0.0;
-            default: assert(false, "We shouldn't get here. type is %s".format(_type.etype()));
-        }
-    }
+    // bool getValueAsBool() {
+    //     switch(_type.etype()) {
+    //         case EType.BOOL:   return value.byteValue != 0;
+    //         case EType.BYTE:   return value.byteValue != 0;
+    //         case EType.SHORT:  return value.shortValue != 0;
+    //         case EType.INT:    return value.intValue != 0;
+    //         case EType.LONG:   return value.longValue != 0;
+    //         case EType.FLOAT:  return value.floatValue != 0.0;
+    //         case EType.DOUBLE: return value.doubleValue != 0.0;
+    //         default: assert(false, "We shouldn't get here. type is %s".format(_type.etype()));
+    //     }
+    // }
     int getValueAsInt() {
         switch(_type.etype()) {
             case EType.BYTE:   return value.byteValue;
@@ -78,28 +80,28 @@ public:
             default: assert(false);
         }
     }
-    float getValueAsFloat() {
-        switch(_type.etype()) {
-            case EType.BYTE:   return value.byteValue;
-            case EType.SHORT:  return value.shortValue;
-            case EType.INT:    return value.intValue;
-            case EType.LONG:   return value.longValue;
-            case EType.FLOAT:  return value.floatValue;
-            case EType.DOUBLE: return value.doubleValue.as!float;
-            default: assert(false);
-        }
-    }
-    double getValueAsDouble() {
-        switch(_type.etype()) {
-            case EType.BYTE:   return value.byteValue;
-            case EType.SHORT:  return value.shortValue;
-            case EType.INT:    return value.intValue;
-            case EType.LONG:   return value.longValue;
-            case EType.FLOAT:  return value.floatValue;
-            case EType.DOUBLE: return value.doubleValue;
-            default: assert(false);
-        }
-    }
+    // float getValueAsFloat() {
+    //     switch(_type.etype()) {
+    //         case EType.BYTE:   return value.byteValue;
+    //         case EType.SHORT:  return value.shortValue;
+    //         case EType.INT:    return value.intValue;
+    //         case EType.LONG:   return value.longValue;
+    //         case EType.FLOAT:  return value.floatValue;
+    //         case EType.DOUBLE: return value.doubleValue.as!float;
+    //         default: assert(false);
+    //     }
+    // }
+    // double getValueAsDouble() {
+    //     switch(_type.etype()) {
+    //         case EType.BYTE:   return value.byteValue;
+    //         case EType.SHORT:  return value.shortValue;
+    //         case EType.INT:    return value.intValue;
+    //         case EType.LONG:   return value.longValue;
+    //         case EType.FLOAT:  return value.floatValue;
+    //         case EType.DOUBLE: return value.doubleValue;
+    //         default: assert(false);
+    //     }
+    // }
     void setValue(int v) {
         stringValue = "%s".format(v);
         switch(_type.etype()) {
@@ -115,6 +117,8 @@ public:
 private:
     Type _type;
 }
+
+//──────────────────────────────────────────────────────────────────────────────────────────────────
 
 Number makeNumber(string value, Type type) {
     auto n = makeNode!Number(0);
@@ -172,10 +176,10 @@ Number makeDoubleNumber(double value) {
     n.setType(makeDoubleType());
     return n;
 }
-Number makeRealNumber(double value, Type type) {
-    auto n = makeNode!Number(0);
-    n.stringValue = "%.8f".format(value);
-    n.value.doubleValue = value;
-    n.setType(type);
-    return n;
-}
+// Number makeRealNumber(double value, Type type) {
+//     auto n = makeNode!Number(0);
+//     n.stringValue = "%.8f".format(value);
+//     n.value.doubleValue = value;
+//     n.setType(type);
+//     return n;
+// }

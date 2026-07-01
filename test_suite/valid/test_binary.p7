@@ -84,9 +84,9 @@ fn udiv_() {
     int a = 13 // 3  ; assert a is 4
 
     # note this needs to be cast to an int otherwise it will be a (byte)-13
-    # -13 as int = 4294967283
+    # -13            = 4294967283
     # 4294967283 / 3 = 1431655761
-    int b = -13 as int // 3     ; assert b is 1431655761
+    int b = -13 // 3            ; assert b is 1431655761
     int M_THIRTEEN = -13
     int c = M_THIRTEEN // 3     ; assert b is 1431655761
 }
@@ -99,9 +99,8 @@ fn umod_() {
 
     # 4294967283 % 3 = 0
     # 4294967283 % 7 = 5
-    int b = -13 as int %% 3     ; assert b is 0
-    int c = -13 as int %% 7     ; assert c is 5
-
+    int b = -13 %% 3            ; assert b is 0
+    int c = -13 %% 7            ; assert c is 5
 }
 fn bit_xor() {
     int a = 0b1111_0000
@@ -220,20 +219,21 @@ fn bit_or_assign() {
 fn shl_assign() {
     int a = 0b1100_1100
     int b = 0b1100
-    a <<= 1             ; assert a is 0b1001_1000
+    a <<= 1             ; assert a is 0b000000001_10011000
     b <<= 2             ; assert b is 0b0011_0000
 }
 fn shr_assign() {
     int a = 0b1100_1100
     int b = 0xff00_0000
-
-    # fixme - Number
-    #a >>= 1             ; assert a is 0b0110_0110
+    a >>= 1             ; assert a is 0b0110_0110
+    b >>= 1             ; assert b is 0xff80_0000
 }
 fn ushr_assign() {
     int a = 8
-    a>>>= 1     ; assert a is 4
-    a>>>= 2     ; assert a is 1
+    int b = 0xff00_0000
+    a >>>= 1            ; assert a is 4
+    a >>>= 2            ; assert a is 1
+    b >>>= 1            ; assert b is 0x7f80_0000
 }
 
 ###############################################################################################
@@ -284,8 +284,13 @@ fn unsigned_greater_than_equal() {
     assert -1 |>=| -1
 }
 fn bool_and() {
-
+    assert true and true
+    assert (true and false) is false
+    assert (false and true) is false
+    assert (false and false) is false
 }
 fn bool_or() {
-
+    assert true or false
+    assert false or true
+    assert (false or false) is false
 }

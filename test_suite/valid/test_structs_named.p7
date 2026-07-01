@@ -356,7 +356,7 @@ struct Pear {
     Apple* applePtr
 }
 struct Orange {
-    short x = 7
+    short x = 7 as short
     float y = 8
 }
 [[packed]]

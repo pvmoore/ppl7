@@ -1,5 +1,14 @@
 # Version History
 
+## 0.2.21
+
+- Integer number literals default to int. Cast to byte or short if required
+```
+int a   = 1             # ok, 1 is an int
+short b = 1 as short
+byte c  = 1 as byte
+```
+
 ## 0.2.20
 
 - Tidy up Lexer

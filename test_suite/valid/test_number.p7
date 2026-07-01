@@ -5,7 +5,34 @@
  * args []
  * errors []
  */
- public fn main() {
+public fn main() {
+    assert @sizeOf(0) is 4
+    assert @sizeOf(0xff) is 4
+    assert @sizeOf(0x1ff) is 4
+    assert @sizeOf(0xffffffff) is 4
+    assert @sizeOf(0x1_ffffffff) is 8
+    assert @sizeOf(-128) is 4
+    assert @sizeOf(-129) is 4
+    assert @sizeOf(-32768) is 4
+    assert @sizeOf(-32769) is 4
+    assert @sizeOf(-2147483648) is 4
+    assert @sizeOf(-2147483649) is 8    # int.min-1
+
     int a = 1
-    int b = 0b0000_1100 ; assert b is 12
- }
+    int b = 0b0000_1100   ; assert b is 12
+    int b1 = 0xff         ; assert b1 is 255
+    #int c = 0b10000000_00000000_00000000_00000000_00000000_00000000_00000000    ; assert c is 0x80000000
+
+    int c = -2147483648 # int min
+    int d = 2147483647  # int max
+    int e = 0xffffffff
+
+    # int e = -2147483649   # long negative integer
+    # int f = 0x1ffffffff   # long positive integer
+
+    assert 0b0 is 0
+    assert 0b1111 is 15
+    assert 0b11111111_00000000 is 0xff00
+    assert 0b11111111_00000000_11111111_00000000 is 0xff00ff00
+    assert 0b11111111_00000000_11111111_00000000_11111111_00000000_11111111_00000000 is 0xff00ff00_ff00ff00
+}

@@ -21,6 +21,15 @@ string getSummaryMessage(CompilationError error) {
             return "Cannot implicitly convert %s to the array element type %s".format(ele.getType(), at.elementType());
         }
 
+        case BINARY_REQUIRES_PARENTHESES:
+            return "Add parentheses to this expression to resolve ambiguity";
+        case BINARY_UNSIGNED_WITH_REAL:
+            return "Cannot use unsigned operator with real numbers";
+        case BINARY_ASSIGNMENT_TYPE_MISMATCH:
+            return "Cannot assign %s to %s".format(error.stmt.as!Binary.rightType().shortName(), error.stmt.as!Binary.leftType().shortName());
+        case BINARY_MODIFYING_CONSTANT:
+            return "Constant is modified";
+
         case BUILTIN_PROPERTY_MISSING_TYPE:
             return "@property() first argument must be a type";
         case BUILTIN_PROPERTY_MISSING_KEY:
@@ -140,12 +149,7 @@ string getSummaryMessage(CompilationError error) {
         case STRUCT_LITERAL_UNNAMED_ARGUMENT:
             return "Named struct literals require all arguments to be named";
 
-        case BINARY_UNSIGNED_WITH_REAL:
-            return "Cannot use unsigned operator with real numbers";
-        case BINARY_ASSIGNMENT_TYPE_MISMATCH:
-            return "Cannot assign %s to %s".format(error.stmt.as!Binary.rightType().shortName(), error.stmt.as!Binary.leftType().shortName());
-        case BINARY_MODIFYING_CONSTANT:
-            return "Constant is modified";
+
 
 
         case STRUCT_MEMBER_UNNAMED:

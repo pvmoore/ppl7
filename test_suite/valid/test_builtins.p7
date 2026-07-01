@@ -12,13 +12,13 @@
 #  @initOf(Expression)      *todo - not yet implemented
 public fn main() {
     int a = 1
-    byte b = 2
+    byte b = 2 as byte
     bool c = true
     float d = 3.14
     double e = 3.14159
     long f = 1234567890
     long g = 1234567890
-    short h = 123
+    short h = 123 as short
     int* i = null
     struct { int a, int b } s
     int[2] j
@@ -122,11 +122,11 @@ public fn main() {
 
 fn shl() {
     int a = 1
-    int b = @shl(a, 1)  ; assert b is 0b10
-    int c = @shl(b, 1)  ; assert c is 0b100
-    int d = @shl(c, 2)  ; assert d is 0b10000
-    byte e = @shl(3, 2) ; assert e is 12; assert e is @shl(3,2)
-    byte f = 0xff       ; assert @shl(f, 1) is 0xfe
+    int b = @shl(a, 1)          ; assert b is 0b10
+    int c = @shl(b, 1)          ; assert c is 0b100
+    int d = @shl(c, 2)          ; assert d is 0b10000
+    byte e = @shl(3, 2) as byte ; assert e is 12                ; assert e is @shl(3,2)
+    int f = 0xff                ; assert @shl(f, 1) is 0x1fe
 }
 fn shr() {
     int a = 0xffffffff

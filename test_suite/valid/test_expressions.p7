@@ -16,21 +16,21 @@ public fn main() {
     bool a6 = 1 > 2                 ; assert a6 is false
     bool a7 = 1 <= 2                ; assert a7
     bool a8 = 1 >= 2                ; assert a8 is false
-    bool a9 = 1 is 1 and 2 is 2     ; assert a9
-    bool a10 = 1 is 1 or 2 is 3     ; assert a10
-    bool a11 = 1 is 2 or 3 is 3     ; assert a11
+    bool a9 = (1 is 1) and (2 is 2) ; assert a9
+    bool a10 = (1 is 1) or (2 is 3) ; assert a10
+    bool a11 = (1 is 2) or (3 is 3) ; assert a11
     bool a12 = (1 is 2) is false    ; assert a12
 
     # bitwise expressions
-    byte b1 = 0b111 & 0b10  ; assert b1 is 0b10
-    byte b2 = 0b01 | 0b10   ; assert b2 is 0b11
-    byte b3 = 0b11 ^ 0b10   ; assert b3 is 0b01
-    byte b4 = 0b11 << 2     ; assert b4 is 0b1100
-    byte b5 = 0b1100 >> 2   ; assert b5 is 0b11
+    int b1 = 0b111 & 0b10  ; assert b1 is 0b10
+    int b2 = 0b01 | 0b10   ; assert b2 is 0b11
+    int b3 = 0b11 ^ 0b10   ; assert b3 is 0b01
+    int b4 = 0b11 << 2     ; assert b4 is 0b1100
+    int b5 = 0b1100 >> 2   ; assert b5 is 0b11
 
     # arithmetic expressions
     int c1 = 2 + 3              ; assert c1 is 5
-    short c2 = 5 - 2            ; assert c2 is 3
+    short c2 = (5 - 2) as short ; assert c2 is 3
     float c3 = 96.14 * 2        ; assert c3 is 192.28
     double c4 = 123.45 / 2.0    ; assert c4 is 61.725
     int c5 = 0xffff %% 2        ; assert c5 is 1
@@ -39,9 +39,9 @@ public fn main() {
     int* y1 = null
 
     # unary
-    int u1 = -3             # not a unary. this should just be a Number
-    byte u3 = ~0b101    ; assert u3 is 0b11111010 # 250
-    int u4 = -u3;           #assert u4 is -250        !!fixme
+    int u1 = -3                 # not a unary. this should just be a Number
+    byte u3 = ~0b101 as byte    ; assert u3 is 0b1111_1010 as byte
+    int u4 = -u3;               #assert u4 is -250        !!fixme
 
     # Assignment
     int p1 = 1

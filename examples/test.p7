@@ -16,8 +16,6 @@ public fn main() -> int {
         stdc.puts(""z)
     }
 
-    int a = 0b1100_1100
-    println(a)
 
     return 0
 }

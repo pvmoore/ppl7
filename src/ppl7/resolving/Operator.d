@@ -175,7 +175,7 @@ enum Precedence : int {
     ADD         = 7,
     EQUAL       = 9,
     IS          = 9,
-    BOOL_AND    = 11,
+    //BOOL_AND    = 11,
     ASSIGN      = 14,
     LOWEST      = 15
 }

@@ -172,5 +172,10 @@ void main(string[] args) {
     writefln("c = %s", c);
     writefln("d = %s", d);
     writefln("e = %s", e);
+
+    writefln("int.min = %s", int.min);
+    writefln("int.max = %s", int.max);
+    writefln("long.min = %s", long.min);
+    writefln("long.max = %s", long.max);
 }
 
