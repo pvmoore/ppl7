@@ -1,5 +1,9 @@
 # Version History
 
+## 0.2.22
+
+- Refactor the test suite to allow more granular error testing.
+
 ## 0.2.21
 
 - Integer number literals default to int. Cast to byte or short if required

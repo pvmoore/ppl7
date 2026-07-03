@@ -40,6 +40,8 @@ public:
     // eg. -Dmy_property=1
     string[string] properties;
 
+    ISourceProvider sourceProvider;
+
     this() {
         // Add built-in libraries
         CompilerOptions.Lib coreLib = {
@@ -59,6 +61,8 @@ public:
         addLib(coreLib);
         addLib(commonLib);
     }
+
+
 
     Lib[] getLibs() { return libs; }
 
@@ -104,6 +108,13 @@ public:
                 writeLL,
                 writeAST,
                 libs);
+    }
+//──────────────────────────────────────────────────────────────────────────────────────────────────
+package:
+    void prepareForUse() {
+        if(!sourceProvider) {
+            sourceProvider = new FileSourceProvider();
+        }
     }
 //──────────────────────────────────────────────────────────────────────────────────────────────────
 private:

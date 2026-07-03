@@ -3,7 +3,6 @@
  * name "binary expressions"
  * tags [binary,expression,operator]
  * args []
- * errors []
  */
  public fn main() {
     # arithmetic

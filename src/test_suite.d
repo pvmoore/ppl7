@@ -6,11 +6,12 @@ import std.file      : read, dirEntries, SpanMode, exists, remove;
 import std.array     : replace, join;
 import std.string    : indexOf, split, strip, toLower;
 import std.format    : format;
-import std.algorithm : map;
-import std.range     : array;
+import std.algorithm : map, uniq;
+import std.range     : array, chain;
+import std.traits    : isSomeString;
 import std.datetime.stopwatch : StopWatch, AutoStart;
 
-import ppl7;
+import ppl7.all;
 
 __gshared {
     uint g_testIndex;
@@ -70,17 +71,109 @@ enum {
 void runTestDirectory(string suiteName, string directory) {
     writefln("[%s%s%s]", WHITE_BOLD, suiteName, RESET);
     foreach(e; dirEntries(directory, "**.p7", SpanMode.breadth)) {
-        runTest(e.name);
+        runTestFile(e.name);
     }
     writefln("");
 }
 
-void runTest(string filename) {
+struct Variation {
+    string name;
+    string src;
+    string[] errors;
+    bool moreToCome;
+}
+
+void runTestFile(string filename) {
     filename = filename.buildNormalizedPath().replace("\\", "/");
 
+    // Split the source file if it contains #begin and #end blocks
+    Variation[] getSourceVariations() {
+        char[] original = cast(char[])read(filename);
+        Variation[] variations;
+
+        Variation getVariation(int variation) {
+            bool found = variation == 0;
+            long pos = original.indexOf("#error");
+            if(pos == -1) {
+                return Variation(null, found ? cast(string)original : null);
+            }
+            Variation var;
+            int section = -1;
+            char[] s = original.dup;
+
+            while(true) {
+                section++;
+
+                auto start = s.indexOf("#error", pos); if(start == -1) break;
+                auto end   = s.indexOf("#end", start); if(end == -1) break;
+
+                end += 4;
+
+                // This variation is the one we want
+                if(section == variation) {
+                    var.moreToCome = true;
+                    pos = start+6;
+                    auto line = s[pos..s.indexOf("\n", pos)];
+
+                    var.name = getBetween(line, null, "\"", "\"");
+
+                    var.errors = getBetween(line, null, "[", "]")
+                                    .split(",")
+                                    .map!(it=>it.strip())
+                                    .map!(it=>it.toLower())
+                                    .map!((it)=>(it.length > 0 && it[0] == '"') ? it[1..$-1] : it)
+                                    .array();
+                    pos = end;
+                    continue;
+                }
+
+                // Blank out this unwanted section
+                foreach(n; start..end) {
+                    if(s[n] != '\n' && s[n] != '\r') {
+                        s[n] = ' ';
+                    }
+                }
+            }
+            var.src = cast(string)s;
+            return var;
+        }
+
+        int v;
+        while(true) {
+            auto var = getVariation(v++);
+            variations ~= var;
+            if(!var.moreToCome) break;
+        }
+
+        return variations;
+    }
+
+    auto sourceProvider = new class ISourceProvider {
+        string src;
+        override bool sourceAvailable(string filename) {
+            return exists(filename);
+        }
+        override string getSource(string fn) {
+            if(fn == filename) return src;
+            return cast(string)read(fn);
+        }
+    };
+
+    auto variations = getSourceVariations();
+    foreach(i, v; variations) {
+        sourceProvider.src = v.src;
+        runTest(filename, sourceProvider, v);
+    }
+}
+void runTest(string filename, ISourceProvider sourceProvider, Variation variation) {
+
+    string contents = cast(string)read(filename);
+
     // Read the test file and extract the test metadata
-    Meta meta = Meta.readFrom(filename);
+    Meta meta = Meta.readFromString(contents);
     if(!meta.isTest) return;
+
+    meta.errors = variation.errors;
 
     if(meta.args.length > 0) {
         throw new Exception("Implement test suite args");
@@ -116,6 +209,8 @@ void runTest(string filename) {
     options.properties["myBoolean"] = "true";
     options.properties["myInteger"] = "3";
     options.properties["myFloat"]   = "3.14";
+
+    options.sourceProvider = sourceProvider;
 
     if(exists(".target/test.exe")) {
         remove(".target/test.exe");
@@ -166,7 +261,9 @@ void runTest(string filename) {
         }
     }
 
-    writef("[%s] %s'%s' %s %s", g_testIndex, CYAN, meta.name, filename, RESET);
+    string variationNameStr = variation.name ? "(%s)".format(variation.name) : "";
+
+    writef("[%s] %s'%s' %s %s%s", g_testIndex, CYAN, meta.name, filename, variationNameStr, RESET);
 
     if(pass) {
         g_numPassed++;
@@ -223,30 +320,22 @@ struct Meta {
      * name "01_basic_variables"
      * tags [ variables, locals, globals ]
      * args []
-     * errors []
      */
-    static Meta readFrom(string filename) {
-        string s = cast(string)read(filename);
+    static Meta readFromString(string s) {
 
         // Skip if this is not a test suite main file
         if(s.indexOf("magic!!") == -1) {
             return Meta();
         }
 
-        s = between(s, null, "/*", "*/");
+        s = getBetween(s, null, "/*", "*/");
 
         Meta meta = {
             isTest: true
         };
-        meta.name   = between(s, "name", "\"", "\"");
-        meta.tags   = between(s, "tags", "[", "]").split(",").map!(it=>it.strip()).array();
-        meta.args   = between(s, "args", "[", "]").split(",").map!(it=>it.strip()).array();
-        meta.errors = between(s, "errors", "[", "]")
-            .split(",")
-            .map!(it=>it.strip())
-            .map!(it=>it.toLower())
-            .map!((it)=>(it.length > 0 && it[0] == '"') ? it[1..$-1] : it)
-            .array();
+        meta.name   = getBetween(s, "name", "\"", "\"");
+        meta.tags   = getBetween(s, "tags", "[", "]").split(",").map!(it=>it.strip()).array();
+        meta.args   = getBetween(s, "args", "[", "]").split(",").map!(it=>it.strip()).array();
 
         return meta;
     }
@@ -258,11 +347,12 @@ struct Meta {
             "  errors %s\n}"
         ).format(name, tags, args, errors);
     }
-private:
-    static string between(string s, string skipTo, string start, string end) {
-        auto fromIdx  = skipTo is null ? 0 : s.indexOf(skipTo) + skipTo.length;
-        auto startIdx = s.indexOf(start, fromIdx) + start.length;
-        auto endIdx   = s.indexOf(end, startIdx);
-        return s[startIdx..endIdx];
-    }
+}
+
+string getBetween(T)(T s, string skipTo, string start, string end) if(isSomeString!T) {
+    auto fromIdx  = skipTo is null ? 0 : s.indexOf(skipTo) + skipTo.length;
+    auto startIdx = s.indexOf(start, fromIdx); if(startIdx == -1) return null;
+    startIdx += start.length;
+    auto endIdx   = s.indexOf(end, startIdx); if(endIdx == -1) return null;
+    return cast(string)s[startIdx..endIdx];
 }

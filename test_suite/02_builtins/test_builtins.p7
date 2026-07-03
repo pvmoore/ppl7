@@ -3,7 +3,6 @@
  * name "test builtins"
  * tags [builtin, pete]
  * args []
- * errors []
  */
 
 #  @isConst(Expression)

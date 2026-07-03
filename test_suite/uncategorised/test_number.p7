@@ -3,7 +3,6 @@
  * name "number literals"
  * tags [number,expression]
  * args []
- * errors []
  */
 public fn main() {
     assert @sizeOf(0) is 4

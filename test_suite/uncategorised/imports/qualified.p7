@@ -28,17 +28,7 @@ fn()->int qual_v1 = qual_f1
 # Function ptr
 fn(int)->int qual_v2 = qual_f2
 
-struct QualGreen {
-    int a
-    public int b
-    int c
-public:
-    int d
-    private int e
-    int f
-private:
-    int g
-}
+
 
 private:
 

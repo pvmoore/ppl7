@@ -29,6 +29,8 @@ string getSummaryMessage(CompilationError error) {
             return "Cannot assign %s to %s".format(error.stmt.as!Binary.rightType().shortName(), error.stmt.as!Binary.leftType().shortName());
         case BINARY_MODIFYING_CONSTANT:
             return "Constant is modified";
+        case BINARY_SHIFT_REQUIRES_INTEGER:
+            return "Cannot shift a non-integer type";
 
         case BUILTIN_PROPERTY_MISSING_TYPE:
             return "@property() first argument must be a type";

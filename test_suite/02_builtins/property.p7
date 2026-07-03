@@ -1,11 +1,11 @@
 /**
  * magic!!
- * name "builtin property"
- * tags [builtin]
+ * name "property"
+ * tags [builtin, property]
  * args []
- * errors []
  */
- public fn main() {
+public fn main() -> int {
+
     # All of these builtin properties should be true
     bool isDebug        = @property(bool, "__DEBUG__")
     bool isBoundsChecks = @property(bool, "__BOUNDS_CHECKS__")
@@ -30,4 +30,14 @@
     } else {
         assert false
     }
- }
+
+    #error "unsupported property type" [@property() type must be one of]
+    bool g = @property(void, "sdfsds")
+    #end
+
+    #error "property not found" [not defined and no default was provided]
+    bool e = @property(bool, "blah")
+    #end
+
+    return 0
+}

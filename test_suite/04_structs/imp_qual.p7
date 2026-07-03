@@ -1,0 +1,14 @@
+
+public:
+
+struct QualGreen {
+    int a
+    public int b
+    int c
+public:
+    int d
+    private int e
+    int f
+private:
+    int g
+}

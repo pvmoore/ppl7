@@ -6,9 +6,10 @@ final class Compiler {
 public:
     enum versionMajor = 0;
     enum versionMinor = 2;
-    enum versionPatch = 21;
+    enum versionPatch = 22;
 
     this(CompilerOptions options) {
+        options.prepareForUse();
         this.options = options;
         if(!options.verboseLogging) {
             g_loggingEnabled = false;

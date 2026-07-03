@@ -3,9 +3,7 @@
  * name "test addressof and valueof"
  * tags [addressof, valueof]
  * args []
- * errors []
  */
-
 public fn main() {
     # Values
     int a1 = '1';       assert @isValue(a1)    ; assert @isPointer(a1) is false

@@ -3,7 +3,6 @@
  * name "test casting"
  * tags [cast]
  * args []
- * errors []
  */
 
 public fn main() {

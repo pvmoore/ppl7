@@ -3,7 +3,6 @@
  * name "test alias"
  * tags [alias]
  * args []
- * errors []
  */
 
 import ta2 = imports/qualified

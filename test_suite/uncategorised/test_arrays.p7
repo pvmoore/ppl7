@@ -3,7 +3,6 @@
  * name "test array"
  * tags [array]
  * args []
- * errors []
  */
 
 public fn main() {

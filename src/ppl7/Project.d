@@ -85,7 +85,7 @@ public:
     }
 
     Module processMainSourceFile(string relFilename) {
-        if(!exists(directory ~ relFilename)) {
+        if(!options.sourceProvider.sourceAvailable(directory ~ relFilename)) {
             throw new Exception("Main source file not found: %s".format(directory ~ relFilename));
         }
         return processSourceFile(directory, relFilename);
@@ -174,8 +174,7 @@ private:
         if(relFilename in modulesByFilename) return modulesByFilename[relFilename];
 
         // Read the source
-        import std.file : read;
-        string source = read(baseDirectory ~ relFilename).as!string;
+        string source = options.sourceProvider.getSource(baseDirectory ~ relFilename);
 
         // Create and initialise the Module instance
         Module mod        = makeNode!Module(0);

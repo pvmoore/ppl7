@@ -28,17 +28,6 @@ fn()->int unqual_v1 = unqual_f1
 # Function ptr
 fn(int)->int unqual_v2 = unqual_f2
 
-struct UnqualGreen {
-    int a
-    public int b
-    int c
-public:
-    int d
-    private int e
-    int f
-private:
-    int g
-}
 
 private:
 

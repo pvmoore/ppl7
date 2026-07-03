@@ -3,7 +3,6 @@
  * name "test anonymous structs"
  * tags [struct]
  * args []
- * errors []
  */
 
 public fn main() {

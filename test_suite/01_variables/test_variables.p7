@@ -3,7 +3,6 @@
  * name "test variables"
  * tags [variable]
  * args []
- * errors []
  */
 
 import console = core:console
@@ -13,7 +12,9 @@ public fn main() {
     globals()
     consts()
 
-
+    #error "variable not found" [cannot be resolved]
+    a = 0
+    #end
 }
 
 fn locals() {

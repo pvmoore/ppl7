@@ -3,7 +3,6 @@
  * name "test call"
  * tags [call]
  * args []
- * errors []
  */
 
 import tc2 = imports/qualified

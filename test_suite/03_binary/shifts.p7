@@ -1,0 +1,28 @@
+/**
+ * magic!!
+ * name "shift"
+ * tags [binary, shl, shr, ushr]
+ * args []
+ */
+public fn main() -> int {
+
+    float a = 1
+
+    #error "shl float" [Cannot shift a non-integer type]
+    float b = a << 1
+    #end
+
+    #error "shl double" [Cannot shift a non-integer type]
+    double b = a << 1
+    #end
+
+    #error "shr float" [Cannot shift a non-integer type]
+    float b = a >> 1
+    #end
+
+    #error "ushr float" [Cannot shift a non-integer type]
+    float b = a >>> 1
+    #end
+
+    return 0
+}

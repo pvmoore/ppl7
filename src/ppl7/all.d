@@ -66,6 +66,7 @@ import ppl7.ast.types.TypeOf;
 import ppl7.ast.types.TypeRef;
 
 import ppl7.checking.check;
+import ppl7.checking.check_binary;
 import ppl7.checking.check_function;
 import ppl7.checking.check_identifier;
 import ppl7.checking.check_variable;
