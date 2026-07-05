@@ -41,6 +41,9 @@
 		},
 		{
 			"include": "#lhs"
+		},
+		{
+			"include": "#error-block"
 		}
 	],
 	"repository": {
@@ -136,10 +139,18 @@
 				}
 			]
 		},
+		"error-block": {
+			"patterns": [
+				{
+					"match": "#(error|end|todo|fixme).*$",
+					"name": "comment.error.ppl7"
+				}
+			]
+		},
 		"line-comment": {
 			"patterns": [
 				{
-					"match": "#.*$",
+					"match": "#(?!error|end|todo|fixme).*$",
 					"name": "comment.line.ppl7"
 				}
 			]

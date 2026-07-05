@@ -1,5 +1,10 @@
 # Version History
 
+## 0.2.23
+
+- Refactor resolution
+- Add more tests
+
 ## 0.2.22
 
 - Refactor the test suite to allow more granular error testing.

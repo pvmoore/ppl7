@@ -10,6 +10,7 @@ public:
     abstract Type getType();
 
     Token startToken() { return getModule().tokens[tokenIndex]; }
-    
-protected:    
+    int line() { return startToken().line; }
+
+protected:
 }

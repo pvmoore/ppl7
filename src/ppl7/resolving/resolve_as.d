@@ -3,7 +3,8 @@ module ppl7.resolving.resolve_as;
 import ppl7.all;
 
 void resolveAs(As n, ResolveState state) {
-    
+    if(n.isResolved()) return;
+
     Type lt = n.leftType();
     Type rt = n.rightType();
     assert(lt);

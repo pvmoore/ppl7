@@ -101,18 +101,6 @@ import ppl7.parsing.parse_types;
 import ppl7.parsing.ParseState;
 
 import ppl7.resolving.Operator;
-import ppl7.resolving.resolve_array_literal;
-import ppl7.resolving.resolve_as;
-import ppl7.resolving.resolve_builtin;
-import ppl7.resolving.resolve_call;
-import ppl7.resolving.resolve_const;
-import ppl7.resolving.resolve_identifier;
-import ppl7.resolving.resolve_is;
-import ppl7.resolving.resolve_if;
-import ppl7.resolving.resolve_number;
-import ppl7.resolving.resolve_struct_literal;
-import ppl7.resolving.resolve_type;
-import ppl7.resolving.resolve_variable;
 import ppl7.resolving.resolve;
 import ppl7.resolving.ResolveState;
 import ppl7.resolving.rewriter;

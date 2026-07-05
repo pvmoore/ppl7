@@ -28,7 +28,7 @@ string getSummaryMessage(CompilationError error) {
         case BINARY_ASSIGNMENT_TYPE_MISMATCH:
             return "Cannot assign %s to %s".format(error.stmt.as!Binary.rightType().shortName(), error.stmt.as!Binary.leftType().shortName());
         case BINARY_MODIFYING_CONSTANT:
-            return "Constant is modified";
+            return "Cannot modify const";
         case BINARY_SHIFT_REQUIRES_INTEGER:
             return "Cannot shift a non-integer type";
 

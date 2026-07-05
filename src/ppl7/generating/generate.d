@@ -2,6 +2,7 @@ module ppl7.generating.generate;
 
 import ppl7.all;
 
+
 void generateAddressOf(AddressOf n, GenerateState state) {
     state.generate(n.expr());
 
@@ -14,11 +15,11 @@ void generateAddressOf(AddressOf n, GenerateState state) {
 }
 void generateValueOf(ValueOf n, GenerateState state) {
     state.generate(n.expr());
-    
+
     assert(state.rhs.isPointer());
     state.lhs = LLVMBuildInBoundsGEP2(state.builder, state.getLLVMType(n.getType()), state.rhs, [LLVMConstInt(state.INT32_TYPE, 0, 0)].ptr, 1, "address");
     //state.lhs = state.rhs;
-    
+
     state.rhs = LLVMBuildLoad2(state.builder, state.getLLVMType(n.getType()), state.rhs, "value_of");
 }
 
@@ -55,7 +56,7 @@ void generateNumber(Number n, GenerateState state) {
     LLVMTypeRef numType = state.getLLVMType(n.getType());
     LLVMValueRef value;
     switch(n.getType().etype()) {
-        case EType.BOOL:   
+        case EType.BOOL:
         case EType.BYTE:   value = LLVMConstInt(numType, n.value.byteValue, 1); break;
         case EType.SHORT:  value = LLVMConstInt(numType, n.value.shortValue, 1); break;
         case EType.INT:    value = LLVMConstInt(numType, n.value.intValue, 1); break;
@@ -89,7 +90,7 @@ void generateStringLiteral(StringLiteral n, GenerateState state) {
 void generateUnary(Unary n, GenerateState state) {
     // Generate the expression
     state.generate(n.expr());
-    
+
     if(n.op is Operator.BOOL_NOT) {
         state.rhs = LLVMBuildNot(state.builder, state.rhs, "not");
     } else if(n.op is Operator.BIT_NOT) {

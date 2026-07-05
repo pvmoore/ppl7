@@ -2,6 +2,20 @@ module ppl7.resolving.resolve;
 
 import ppl7.all;
 
+import ppl7.resolving.resolve_array_literal;
+import ppl7.resolving.resolve_as;
+import ppl7.resolving.resolve_binary;
+import ppl7.resolving.resolve_builtin;
+import ppl7.resolving.resolve_call;
+import ppl7.resolving.resolve_const;
+import ppl7.resolving.resolve_identifier;
+import ppl7.resolving.resolve_is;
+import ppl7.resolving.resolve_if;
+import ppl7.resolving.resolve_number;
+import ppl7.resolving.resolve_struct_literal;
+import ppl7.resolving.resolve_type;
+import ppl7.resolving.resolve_variable;
+
 void resolve(ResolveState state) {
     updateLoggingContext(state.mod, LoggingStage.Resolving);
     state.mod.log("Resolving module (pass %s)", state.numIterations+1);
@@ -17,9 +31,10 @@ void resolveChildren(Node parent, ResolveState state) {
         }
 
         // Always resolve Variable in case it needs to rewrite its initialiser
-        bool alwaysResolve = n.isA!Variable;
+        //bool alwaysResolve = n.isA!Variable;
+        //if(!alwaysResolve && n.isResolved()) continue;
 
-        if(!alwaysResolve && n.isResolved()) continue;
+        if(!n.parent) continue;
 
         switch(n.enode()) {
             case ENode.ADDRESS_OF: resolveAddressOf(n.as!AddressOf, state); break;
@@ -46,6 +61,7 @@ void resolveChildren(Node parent, ResolveState state) {
             case ENode.PARENS: break;
             case ENode.POINTER_TYPE: break;
             case ENode.RETURN: break;
+            case ENode.SIMPLE_TYPE: resolveSimpleType(n.as!SimpleType, state); break;
             case ENode.STRING_LITERAL: resolveStringLiteral(n.as!StringLiteral, state); break;
             case ENode.STRUCT: break;
             case ENode.STRUCT_LITERAL: resolveStructLiteral(n.as!StructLiteral, state); break;
@@ -66,19 +82,68 @@ void resolveChildren(Node parent, ResolveState state) {
     }
 }
 
+struct CallResolveHistory {
+    Call call;
+    TargetOfCall match;
+    TargetOfCall[] nameCandidates;              // All Functions and Variables with the same name
+
+    TargetOfCall[] paramNumCandidates;          // Subset of above where num params is correct
+    TargetOfCall[] exactTypeCandidates;         // Subset of above where the argument types exactly match the parameter types
+    TargetOfCall[] implicitTypeCandidates;      // Subset of above where the argument types can be implicitly cast to the parameter types
+    TargetOfCall[] duplicates;                  // Subset of exact/implicit where the function is an extern(C) and is defined multiple times
+
+    void reset() {
+        match = NO_TARGET_OF_CALL;
+        nameCandidates.length = 0;
+        paramNumCandidates.length = 0;
+        exactTypeCandidates.length = 0;
+        implicitTypeCandidates.length = 0;
+        duplicates.length = 0;
+    }
+    string toString() {
+        return "CallResolveInfo {\n" ~
+            "  match             %s\n" ~
+            "  nameCandidates    %s\n" ~
+            "  paramNumCandidates  %s\n" ~
+            "  exactTypeCandidates %s\n" ~
+            "  implicitTypeCandidates %s\n" ~
+            "  duplicates        %s\n}"
+            .format(match != NO_TARGET_OF_CALL ? match.toString() : "none",
+                nameCandidates, paramNumCandidates, exactTypeCandidates, implicitTypeCandidates, duplicates);
+    }
+}
+
 //──────────────────────────────────────────────────────────────────────────────────────────────────
 private:
 
 void resolveAddressOf(AddressOf n, ResolveState state) {
     if(!n.expr().isResolved()) return;
 
-
-
+    // Add explicit cast for &array if not already done
     if(n.expr().getType().isArray()) {
-        // Add explicit cast for &array
         Array at = n.expr().getType().extract!Array;
         PointerType ptr = makePointerType(at.elementType());
-        rewriteToAs(state, n, n, ptr);
+
+        // Check our parent for existing as
+        bool requireRewrite = true;
+        if(auto a = n.parent.as!As) {
+            if(a.getType().exactlyMatches(ptr)) {
+                requireRewrite = false;
+            }
+        }
+
+        if(requireRewrite) {
+            rewriteToAs(state, n, n, ptr);
+        }
+    }
+
+    // Check for taking the address of a const
+    if(n.isResolved()) {
+        if(auto id = n.expr().as!Identifier) {
+            if(id.target.isVariable() && id.target.var.isConst) {
+                semanticError(n, EError.ADDRESS_OF_CONSTANT);
+            }
+        }
     }
 
     n.setResolveEvaluated();
@@ -110,29 +175,6 @@ void resolveAssert(Assert n, ResolveState state) {
     }
 
     rewriteToCall(state, n, "ppl_assert", [condition, moduleName, moduleFilename, line]);
-}
-
-void resolveBinary(Binary n, ResolveState state) {
-    if(!n.type.isResolved()) {
-        // Resolve the Type
-
-        auto leftType = n.left().getType();
-        auto rightType = n.right().getType();
-
-        if(!leftType.isResolved() || !rightType.isResolved()) return;
-
-        if(n.op.isAssign()) {
-            n.type = leftType;
-            return;
-        }
-
-        if(n.op.isBool()) {
-            n.type = makeBoolType();
-            return;
-        }
-
-        n.type = selectCommonType(n.left().getType(), n.right().getType());
-    }
 }
 
 void resolveNull(Null n, ResolveState state) {

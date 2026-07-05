@@ -1,5 +1,9 @@
 # PPL7 ToDo List
 
+## Const
+
+- const should be part of the Type rather than a property of Variable
+
 ## Unions
 
 Implement unions

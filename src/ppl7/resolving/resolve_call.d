@@ -53,7 +53,7 @@ void resolveCall(Call n, ResolveState state) {
     n.resolveHistory.exactTypeCandidates = deDuplicateExternCFunctions(n, n.resolveHistory.exactTypeCandidates);
     n.resolveHistory.implicitTypeCandidates = deDuplicateExternCFunctions(n, n.resolveHistory.implicitTypeCandidates);
 
-    // A single exact match 
+    // A single exact match
     if(n.resolveHistory.exactTypeCandidates.length == 1) {
         return match(n, n.resolveHistory.exactTypeCandidates[0]);
     }
@@ -85,37 +85,6 @@ void resolveCall(Call n, ResolveState state) {
     }
 
     resolutionError(n, EError.CALL_AMBIGUOUS_FUNCTION);
-}
-
-struct CallResolveHistory {
-    Call call;
-    TargetOfCall match;
-    TargetOfCall[] nameCandidates;              // All Functions and Variables with the same name
-    
-    TargetOfCall[] paramNumCandidates;          // Subset of above where num params is correct
-    TargetOfCall[] exactTypeCandidates;         // Subset of above where the argument types exactly match the parameter types
-    TargetOfCall[] implicitTypeCandidates;      // Subset of above where the argument types can be implicitly cast to the parameter types
-    TargetOfCall[] duplicates;                  // Subset of exact/implicit where the function is an extern(C) and is defined multiple times
-
-    void reset() {
-        match = NO_TARGET_OF_CALL;
-        nameCandidates.length = 0;
-        paramNumCandidates.length = 0;
-        exactTypeCandidates.length = 0;
-        implicitTypeCandidates.length = 0;
-        duplicates.length = 0;
-    }
-    string toString() {
-        return "CallResolveInfo {\n" ~
-            "  match             %s\n" ~
-            "  nameCandidates    %s\n" ~
-            "  paramNumCandidates  %s\n" ~
-            "  exactTypeCandidates %s\n" ~
-            "  implicitTypeCandidates %s\n" ~
-            "  duplicates        %s\n}"
-            .format(match != NO_TARGET_OF_CALL ? match.toString() : "none", 
-                nameCandidates, paramNumCandidates, exactTypeCandidates, implicitTypeCandidates, duplicates);
-    }
 }
 
 //──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -194,7 +163,7 @@ void collectModuleRefNameCandidates(Call n, ModuleRef mr, ResolveState state) {
     }
 }
 
-/** 
+/**
  * Remove any duplicate extern(C) Functions from the candidates list.
  */
 TargetOfCall[] deDuplicateExternCFunctions(Call n, TargetOfCall[] candidates) {
@@ -213,7 +182,7 @@ TargetOfCall[] deDuplicateExternCFunctions(Call n, TargetOfCall[] candidates) {
             assert(sf);
 
             if(f.exactlyMatches(sf)) {
-                foundDupe = true; 
+                foundDupe = true;
                 log(mod, "  Removing duplicate function %s", f.name);
                 n.resolveHistory.duplicates ~= TargetOfCall.make(n, f);
                 break;
@@ -244,7 +213,7 @@ bool selectParamNumCandidates(Call n, TargetOfCall[] candidates) {
             n.resolveHistory.paramNumCandidates ~= c;
         } else if(hasVarargParam) {
             assert(numParams > 0);
-            // One of the Function parameters will be the ... vararg so the call must have at least 
+            // One of the Function parameters will be the ... vararg so the call must have at least
             // one less argument than the function has parameters
             if(callNumArgs >= numParams-1)  {
                 n.resolveHistory.paramNumCandidates ~= c;
@@ -275,7 +244,7 @@ bool selectParamTypeCandidates(Call n, TargetOfCall[] candidates) {
             foreach(i; 0..paramTypes.length-1) {
                 if(!argTypes[i].exactlyMatches(paramTypes[i])) {
                     exact = false;
-                }  
+                }
                 if(!argTypes[i].canImplicitlyCastTo(paramTypes[i])) {
                     implicit = false;
                 }
@@ -294,7 +263,7 @@ bool selectParamTypeCandidates(Call n, TargetOfCall[] candidates) {
             // Check for exact matches first
             if(exactlyMatches(argTypes, paramTypes)) {
                 n.resolveHistory.exactTypeCandidates ~= c;
-            } else 
+            } else
 
             // Check that the argument types can be implicitly cast to the parameter types
             if(argTypes.canImplicitlyCastTo(paramTypes)) {
@@ -326,16 +295,16 @@ TargetOfCall selectByIntegerPromotion(Call n, TargetOfCall[] candidates) {
         assert(argTypes.length == paramTypes.length);
         bool exact = true;
         int numIntPromotions = 0;
-    
+
         foreach(i; 0.. numParams) {
             Type arg = argTypes[i];
             Type param = paramTypes[i];
 
             if(!arg.exactlyMatches(param)) {
                 // arg must implicitly match param here otherwise it would not be in the candidates list
-                
+
                 if(arg.isInteger() && param.isInteger()) {
-                    // arg size must be less than param size otherwise it would 
+                    // arg size must be less than param size otherwise it would
                     // be exact or the candidate would not be in the list
                     assert(arg.size() < param.size());
 
@@ -348,7 +317,7 @@ TargetOfCall selectByIntegerPromotion(Call n, TargetOfCall[] candidates) {
             }
         }
 
-        if(exact) {    
+        if(exact) {
             intPromotionCandidates ~= c;
         }
     }

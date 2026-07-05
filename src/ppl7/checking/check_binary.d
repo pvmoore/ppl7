@@ -15,6 +15,10 @@ void checkBinary(Binary n) {
             log(n.getModule(), "Binary: Cannot cast %s to %s", n.rightType(), n.leftType());
             semanticError(n, EError.BINARY_ASSIGNMENT_TYPE_MISMATCH);
         }
+
+        if(auto id = n.right().as!Identifier) {
+
+        }
     }
     // If this is a boolean and/or then check that the order of precendence is not ambiguous
     if(n.op.isOneOf(Operator.BOOL_AND, Operator.BOOL_OR)) {

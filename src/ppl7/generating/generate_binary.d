@@ -30,7 +30,8 @@ void generateBinary(Binary n, GenerateState state) {
             ty = n.leftType();
         }
         if(ty is null) {
-            assert(ty, "Could not find a common type for %s and %s".format(n.leftType(), n.rightType()));
+            writefln("%s", n.parent.dump());
+            assert(ty, "Could not find a common type for %s and %s [%s:%s]".format(n.leftType(), n.rightType(), n.getModule().name, n.line()));
         }
 
         leftValue = state.castType(leftValue, n.leftType(), ty);
@@ -53,10 +54,10 @@ void generateBinary(Binary n, GenerateState state) {
 
     switch(n.op) {
         // Boolean operations
-        case Operator.EQUAL: 
+        case Operator.EQUAL:
             state.rhs = genCmp(LLVMRealPredicate.LLVMRealOEQ, LLVMIntPredicate.LLVMIntEQ);
             break;
-        case Operator.NOT_EQUAL: 
+        case Operator.NOT_EQUAL:
             state.rhs = genCmp(LLVMRealPredicate.LLVMRealONE, LLVMIntPredicate.LLVMIntNE);
             break;
         case Operator.LT:
@@ -76,39 +77,39 @@ void generateBinary(Binary n, GenerateState state) {
             break;
         case Operator.UGT:
             state.rhs = genCmp(LLVMRealPredicate.LLVMRealOGT, LLVMIntPredicate.LLVMIntUGT);
-            break;    
+            break;
         case Operator.GTE:
             state.rhs = genCmp(LLVMRealPredicate.LLVMRealOGE, LLVMIntPredicate.LLVMIntSGE);
             break;
         case Operator.UGTE:
             state.rhs = genCmp(LLVMRealPredicate.LLVMRealOGE, LLVMIntPredicate.LLVMIntUGE);
-            break;    
+            break;
 
         // Arithmetic operations
-        case Operator.ADD: 
+        case Operator.ADD:
         case Operator.ADD_ASSIGN:
-            state.rhs = genOp(n.type.isReal() ? LLVMOpcode.LLVMFAdd : LLVMOpcode.LLVMAdd); 
+            state.rhs = genOp(n.type.isReal() ? LLVMOpcode.LLVMFAdd : LLVMOpcode.LLVMAdd);
             break;
-        case Operator.SUB: 
+        case Operator.SUB:
         case Operator.SUB_ASSIGN:
             state.rhs = genOp(n.type.isReal() ? LLVMOpcode.LLVMFSub : LLVMOpcode.LLVMSub);
             break;
-        case Operator.MUL: 
+        case Operator.MUL:
         case Operator.MUL_ASSIGN:
             state.rhs = genOp(n.type.isReal() ? LLVMOpcode.LLVMFMul : LLVMOpcode.LLVMMul);
             break;
         case Operator.DIV:
-        case Operator.DIV_ASSIGN: 
+        case Operator.DIV_ASSIGN:
             state.rhs = genOp(n.type.isReal() ? LLVMOpcode.LLVMFDiv : LLVMOpcode.LLVMSDiv);
             break;
         case Operator.UDIV:
         case Operator.UDIV_ASSIGN:
             state.rhs = genOp(LLVMOpcode.LLVMUDiv);
-            break;    
+            break;
         case Operator.MOD:
         case Operator.MOD_ASSIGN:
             state.rhs = genOp(n.type.isReal() ? LLVMOpcode.LLVMFRem : LLVMOpcode.LLVMSRem);
-            break;  
+            break;
         case Operator.UMOD:
         case Operator.UMOD_ASSIGN:
             state.rhs = genOp(LLVMOpcode.LLVMURem);
@@ -137,7 +138,7 @@ void generateBinary(Binary n, GenerateState state) {
         case Operator.USHR_ASSIGN:
             state.rhs = genOp(LLVMOpcode.LLVMLShr);
             break;
-    
+
         case Operator.ASSIGN:
             // Do this at the end of the function
             break;
@@ -195,7 +196,7 @@ void handleShortCircuit(Binary n, LLVMValueRef leftValue, GenerateState state) {
     state.castType(state.rhs, n.right().getType(), n.type);
     auto rightValue = state.rhs;
     auto rightBlock = LLVMGetInsertBlock(state.builder);
-    LLVMBuildBr(state.builder, afterRhsLabel);    
+    LLVMBuildBr(state.builder, afterRhsLabel);
 
 // after_rhs:
     LLVMPositionBuilderAtEnd(state.builder, afterRhsLabel);
@@ -206,7 +207,7 @@ void handleShortCircuit(Binary n, LLVMValueRef leftValue, GenerateState state) {
     LLVMValueRef phi = LLVMBuildPhi(state.builder, state.INT8_TYPE, "short_circuit");
     LLVMAddIncoming(phi, phiValues.ptr, phiBlocks.ptr, 2);
 
-    state.rhs = phi;        
+    state.rhs = phi;
 }
 /*
 void handleShortCircuitAlternative(Binary n, LLVMValueRef leftValue, GenerateState state) {
@@ -242,7 +243,7 @@ void handleShortCircuitAlternative(Binary n, LLVMValueRef leftValue, GenerateSta
     LLVMBuildBr(state.builder, afterRhsLabel);
 
 // after_rhs:
-    LLVMPositionBuilderAtEnd(state.builder, afterRhsLabel);   
-    state.rhs = LLVMBuildLoad2(state.builder, LLVMInt8TypeInContext(state.context), resultVal, "result");     
+    LLVMPositionBuilderAtEnd(state.builder, afterRhsLabel);
+    state.rhs = LLVMBuildLoad2(state.builder, LLVMInt8TypeInContext(state.context), resultVal, "result");
 }
 */

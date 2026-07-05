@@ -19,7 +19,7 @@ public:
 
     // Expression
     override int precedence() { return Precedence.LOWEST; }
-    
+
     override string toString() {
         return "%s %s".format(name, target);
     }

@@ -65,6 +65,19 @@
             "problemMatcher": []
         },
         {
+            "label": "[ Test Suite RELEASE 🚂🚃🚃🚃🚃 ]",
+            "type": "shell",
+            "windows": {
+                "command": "scripts/run_build.bat ldc2 release test test_suite",
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "**** ### Update extensions ### ****",
             "type": "shell",
             "windows": {

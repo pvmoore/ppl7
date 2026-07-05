@@ -23,11 +23,6 @@ public:
     this(CompilerOptions options, string mainFilename) {
         this.options = options;
 
-        options.properties["__BOUNDS_CHECKS__"] = "%s".format(options.enableBoundsChecks);
-        options.properties["__DEBUG__"]         = "%s".format(options.isDebug);
-        options.properties["__ASSERTS__"]       = "%s".format(options.enableAsserts);
-        options.properties["__NULL_CHECKS__"]   = "%s".format(options.enableNullChecks);
-
         string normalisedFilename = toCanonicalFilename(mainFilename, false);
 
         this.mainFilename = baseName(normalisedFilename);

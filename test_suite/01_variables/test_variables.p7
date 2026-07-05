@@ -42,28 +42,72 @@ fn globals() {
     assert tvFuncPtr is null
 }
 fn consts() {
-    int a = '#'                 assert @isConst(a) is false
-    const int aa = '#';         assert @isConst(aa)
+    #--------------------------------------------------------------------- integers
+    int a = 7           ; assert @isConst(a) is false
+    const int b = 8     ; assert @isConst(b)
 
-    int[2] b;                   assert @isConst(b) is false
-                                assert @isConst(b[0]) is false
+    int* ap = &a        # ok - pointer to int
 
-    const int[2] c = [1, 2];    assert @isConst(c)
-                                assert @isConst(c[0])
-                                assert @isConst(c[1])
+    # ok - modify
+    a = 9               ; assert a is 9
 
-    b[0] = 12
-    #c[0] = 12         # error - modifying a const
+    # ok - modify via a ptr
+    *ap = 10            ; assert a is 10
 
-    int* d = &a         # pointer to int
-    int* e = &aa        # pointer to const int
+    #error "modifying const" [Cannot modify const]
+    b = '4'
+    #end
 
-    # modifying a const through a pointer is allowed by the compiler but not recommended
-    *d = '@';           assert a is '@'
-    *e = '@';           assert aa is '@'
+    #error "taking address of const" [Cannot take the address of a constant]
+    int* bp = &b
+    #end
+
+    # const ptr to non-const ok
+    const int* ap2 = ap
+
+    #fixme - this should not be allowed
+    # point to const memory without a cast
+    int* ap3 = ap2
+
+    # ok - const* -> mutable with cast
+    int* ap4 = ap2 as int*
+
+    #--------------------------------------------------------------------- arrays
+
+    int[2] c;                   assert @isConst(c) is false
+                                assert @isConst(c[0]) is false
+
+    # const array variables also imply that the array elements are also const
+    const int[2] d = [1, 2];    assert @isConst(d)
+                                assert @isConst(d[0])
+                                assert @isConst(d[1])
+
+    c[0] = 12   # ok - modifying non const array
+
+    int[2] c2;
+    # ok - reassignment
+    c = c2
+
+    #error "modifying const variable" [Cannot modify const]
+    d = c2
+    #end
+
+    #error "modifying const variable" [Cannot modify const]
+    const int[2] d2 = [1,2]
+    d = d2
+    #end
+
+    #error "modifying const element" [Cannot modify const]
+    d[0] = 12
+    #end
+
+    #---------------------------------------------------------------------
 
     const E1 e1 = E1.A
-    #e1 = E1.B         # error - modifying a const
+
+    #error "modifying const enum var" [Cannot modify const]
+    e1 = E1.B
+    #end
 
     const struct{int a} g1 = { 1 }
     #g1 = { 2 }        # error - modifying a const

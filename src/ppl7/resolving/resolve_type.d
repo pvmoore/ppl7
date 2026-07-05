@@ -1,12 +1,21 @@
 module ppl7.resolving.resolve_type;
 
 import ppl7.all;
+import ppl7.resolving.resolve_const;
+
+void resolveSimpleType(SimpleType n, ResolveState state) {
+    // Nothing to do
+}
 
 void resolveArray(Array n, ResolveState state) {
+    if(n.isResolved()) return;
+
     resolveConstNumber(n.numElementsExpr(), state);
 }
 
 void resolveEnum(Enum n, ResolveState state) {
+    if(n.isResolved()) return;
+
     if(n.elementType().isResolved()) {
         // Update the member values (for integer or real enums)
         Type elementType = n.elementType();
@@ -55,6 +64,7 @@ void resolveEnum(Enum n, ResolveState state) {
 }
 
 void resolveTypeOf(TypeOf n, ResolveState state) {
+    if(n.isResolved()) return;
     if(!n.expr().isResolved()) return;
 
     Type type = n.expr().getType();
@@ -63,7 +73,7 @@ void resolveTypeOf(TypeOf n, ResolveState state) {
 }
 
 void resolveTypeRef(TypeRef n, ResolveState state) {
-    assert(!n.type.isResolved());
+    if(n.isResolved()) return;
 
     Module mod = state.mod;
     bool includeImports = true;

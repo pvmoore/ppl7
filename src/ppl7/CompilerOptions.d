@@ -42,28 +42,6 @@ public:
 
     ISourceProvider sourceProvider;
 
-    this() {
-        // Add built-in libraries
-        CompilerOptions.Lib coreLib = {
-            name: "core",
-            sourceDirectory: "libs/core",
-            libFile: null,
-            debugLibFile: null
-        };
-
-        CompilerOptions.Lib commonLib = {
-            name: "ppl",
-            sourceDirectory: "libs/ppl",
-            libFile: null,
-            debugLibFile: null
-        };
-
-        addLib(coreLib);
-        addLib(commonLib);
-    }
-
-
-
     Lib[] getLibs() { return libs; }
 
     Lib* getLib(string name) {
@@ -82,39 +60,37 @@ public:
 
         libs ~= lib;
     }
-
-    override string toString() {
-        return ("CompilerOptions {\n" ~
-            "  targetTriple: %s\n" ~
-            "  subsystem: %s\n" ~
-            "  isDebug: %s\n" ~
-            "  checkOnly: %s\n" ~
-            "  enableAsserts: %s\n" ~
-            "  enableNullChecks: %s\n" ~
-            "  enableBoundsChecks: %s\n" ~
-            "  writeObj: %s\n" ~
-            "  writeLL: %s\n" ~
-            "  writeAST: %s\n" ~
-            "  libs: %s\n" ~
-            "}").format(
-                targetTriple,
-                subsystem,
-                isDebug,
-                checkOnly,
-                enableAsserts,
-                enableNullChecks,
-                enableBoundsChecks,
-                writeObj,
-                writeLL,
-                writeAST,
-                libs);
-    }
 //──────────────────────────────────────────────────────────────────────────────────────────────────
 package:
     void prepareForUse() {
+        // Create the default source provider if none was provided
         if(!sourceProvider) {
             sourceProvider = new FileSourceProvider();
         }
+
+        // Add built-in properties
+        properties["__BOUNDS_CHECKS__"] = "%s".format(enableBoundsChecks);
+        properties["__DEBUG__"]         = "%s".format(isDebug);
+        properties["__ASSERTS__"]       = "%s".format(enableAsserts);
+        properties["__NULL_CHECKS__"]   = "%s".format(enableNullChecks);
+
+        // Add built-in libraries
+        CompilerOptions.Lib coreLib = {
+            name: "core",
+            sourceDirectory: "libs/core",
+            libFile: null,
+            debugLibFile: null
+        };
+
+        CompilerOptions.Lib commonLib = {
+            name: "ppl",
+            sourceDirectory: "libs/ppl",
+            libFile: null,
+            debugLibFile: null
+        };
+
+        addLib(coreLib);
+        addLib(commonLib);
     }
 //──────────────────────────────────────────────────────────────────────────────────────────────────
 private:

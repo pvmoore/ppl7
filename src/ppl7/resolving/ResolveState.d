@@ -53,7 +53,8 @@ public:
                     // Ignore these. Assume there will be something else that is also unresolved
                     continue;
                 default:
-                    throwIf(true, "convertUnresolvedNodesToErrors: %s", n.enode());
+                    writefln("%s", n.getModule().dump());
+                    throwIf(true, "convertUnresolvedNodesToErrors: module:%s node:%s", n.getModule().name, n.enode());
             }
             resolutionError(n.as!Statement, ek);
         }
@@ -63,9 +64,14 @@ public:
      */
     Type resolveTypeFromParent(Node n) {
         auto parent = n.parent;
-        assert(parent !is null);
+        assert(parent !is null, "parent is null. This should not happen");
 
         switch(parent.enode()) {
+            case ENode.ADDRESS_OF: {
+                AddressOf a = parent.as!AddressOf;
+                // What should we do here?
+                break;
+            }
             case ENode.ARRAY_LITERAL: {
                 ArrayLiteral al = parent.as!ArrayLiteral;
                 if(al.isResolved()) {
@@ -75,7 +81,7 @@ public:
             }
             case ENode.BINARY: {
                 Binary b = parent.as!Binary;
-                if(b.getType().isResolved()) return b.getType();
+                // if(b.getType().isResolved()) return b.getType();
                 return b.oppositeSideType(n);
             }
             case ENode.BUILTIN:
