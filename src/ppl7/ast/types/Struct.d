@@ -18,9 +18,9 @@ public:
 
     // Node
     override ENode enode() { return ENode.STRUCT; }
-    override bool isResolved() { 
+    override bool isResolved() {
         if(!resolved) {
-            resolved = members().areResolved(); 
+            resolved = members().areResolved();
             if(resolved) allChildrenAreResolved();
         }
         return resolved;
@@ -44,7 +44,7 @@ public:
         }
         return false;
     }
-    override string shortName() { 
+    override string shortName() {
         if(name) return name;
         return "struct{%s}".format(memberTypes.map!(v => v.shortName()).join(", "));
     }
@@ -90,8 +90,8 @@ public:
         foreach(i, t; types) {
             int align_    = t.alignment();
             int and       = (align_-1);
-            int newOffset = (offset + and) & ~and;
-            
+            int newOffset = isPacked ? offset : (offset + and) & ~and;
+
             if(i == memberIndex) return newOffset;
 
             offset = newOffset + t.size();

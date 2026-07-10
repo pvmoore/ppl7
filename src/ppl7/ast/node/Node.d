@@ -22,6 +22,23 @@ T makeNode(T)(int tokenIndex) if(is(T: Node)) {
     t.id = g_nodeId++;
     return t;
 }
+
+T extract(T)(Node t) if(is(T : Node)) {
+    if(t.isA!T) return t.as!T;
+
+    static if(is(T : Type)) {
+        if(TypeRef tr = t.as!TypeRef) return extract!T(tr.type);
+        if(Alias a = t.as!Alias) return extract!T(a.aliasedType());
+        if(PointerType pt = t.as!PointerType) return extract!T(pt.valueType());
+    } else {
+        if(auto nr = t.as!NodeRef) return extract!T(nr.node);
+        if(auto d = t.as!Dot) return extract!T(d.member());
+        if(auto idx = t.as!Index) return extract!T(idx.expr());
+        if(auto v = t.as!ValueOf) return extract!T(v.expr());
+    }
+    return null;
+}
+
 __gshared uint g_nodeId;
 
 //──────────────────────────────────────────────────────────────────────────────────────────────────

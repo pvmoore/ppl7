@@ -49,7 +49,7 @@ void checkChildren(Node parent) {
 void checkArrayLiteral(ArrayLiteral n) {
     //log(" Checking array literal");
 
-    assert(n.getType().isArray());
+    assert(n.getType().isArray(), "Expected array type but was %s".format(n.getType()));
     Array at = n.getType().as!Array;
 
     // Check that we have the correct number of elements

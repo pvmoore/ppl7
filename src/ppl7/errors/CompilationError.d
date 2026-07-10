@@ -88,7 +88,7 @@ void semanticError(Project project, Module mod, Node n, EError kind, ErrorExtraI
     Token t;
     auto stmt = n.as!Statement;
     if(stmt) {
-        t = stmt.startToken;
+        t = mod.tokens[stmt.tokenIndex];
     }
     project.addError(new CompilationError(mod, stmt, t.line, t.column, kind, extraInfo));
 }

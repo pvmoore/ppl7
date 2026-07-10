@@ -8,6 +8,8 @@ import ppl7.all;
  */
 final class PointerType : Type {
 public:
+    bool isImmutable;
+
     // Node
     override ENode enode() { return ENode.POINTER_TYPE; }
     override bool isResolved() { return valueExpr().isResolved(); }
@@ -27,23 +29,31 @@ public:
         if(PointerType o = other.extract!PointerType) {
             // Left and right are both pointers
 
+            if(this.isImmutable && !o.isImmutable) {
+                // Cast from immutable to mutable
+                return false;
+            }
+
             // Allow void* to cast to any other pointer type
             if(valueType().isVoidValue()) return true;
 
-            // Allow any pointer to cast to void* 
+            // Allow any pointer to cast to void*
             if(other.isVoidValue()) return true;
 
             return valueType().canImplicitlyCastTo(o.valueType());
         }
         if(Function f = other.as!Function) {
-            // Allow void* -> function ptr 
+            // Allow void* -> function ptr
             return this.valueType().isVoidValue();
         }
         // Allow pointer to be cast to bool
         if(other.isBool()) return true;
         return false;
     }
-    override string shortName() { return "%s*".format(valueType().shortName()); }
+    override string shortName() {
+        string istr = isImmutable ? "immutable " : "";
+        return "%s%s*".format(istr, valueType().shortName());
+    }
     override string mangledName() { return "P%s".format(valueType().mangledName()); }
 
     Expression valueExpr() { return hasChildren() ? first().as!Expression : type; }
@@ -51,7 +61,8 @@ public:
     Type valueType() { return valueExpr().as!Type; }
 
     override string toString() {
-        if(isResolved()) return "%s*".format(valueType());
+        string istr = isImmutable ? "immutable " : "";
+        if(isResolved()) return "%s%s*".format(istr, valueType());
         return "ptr";
     }
 private:

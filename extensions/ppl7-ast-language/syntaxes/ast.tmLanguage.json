@@ -29,7 +29,7 @@
 					"name": "entity.name.tag.ast"
 				},
 				{
-					"match": "\\b(const|if|while|return|import|assert|not|is|as|and|or|else|break|continue|loop|select|var)\\b",
+					"match": "\\b(const|immutable|if|while|return|import|assert|not|is|as|and|or|else|break|continue|loop|select|var)\\b",
 					"name": "keyword.control.ast"
 				},
 				{

@@ -9,6 +9,7 @@ import ppl7.all;
  */
 final class Array : Type {
 public:
+    bool isImmutable;
     LLVMTypeRef llvmType;
 
     // Node
@@ -16,7 +17,7 @@ public:
     override bool isResolved() {
         return elementType.isResolved() &&
                numElementsExpr().isResolved() &&
-               numElementsExpr().extractNumber() !is null;
+               numElementsExpr().extract!Number() !is null;
     }
 
     // Statement
@@ -39,7 +40,7 @@ public:
         return false;
     }
 
-    override string shortName() { return "%s[]".format(elementType().shortName()); }
+    override string shortName() { return "%s[%s]".format(elementType().shortName(), numElements()); }
     override string mangledName() { return "A%s[%s]".format(elementType().mangledName(), numElements()); }
 
     Type elementType() {
@@ -50,13 +51,14 @@ public:
     }
     int numElements() {
         assert(isResolved(), "Don't call this until the Array is resolved");
-        assert(numElementsExpr().extractNumber() !is null, "numElement is not a Number");
-        return numElementsExpr().extractNumber().value.intValue;
+        assert(numElementsExpr().extract!Number() !is null, "numElement is not a Number");
+        return numElementsExpr().extract!Number().value.intValue;
     }
 
     override string toString() {
         string numElementsStr = numElementsExpr().isA!Number ? numElementsExpr().as!Number.stringValue : "UNRESOLVED";
-        return "[%s x %s]".format(elementType(), numElementsStr);
+        string istr = isImmutable ? "immutable " : "";
+        return "%s[%s x %s]".format(istr, elementType(), numElementsStr);
     }
 }
 

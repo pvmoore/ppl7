@@ -52,6 +52,11 @@ void resolveBuiltin(Builtin n, ResolveState state) {
             auto result = expr.getType().isFunction();
             rewriteToBool(state, n, result);
             break;
+        case "@isImmutable":
+            auto expr = n.first().as!Expression;
+            auto result = expr.getType().isImmutable();
+            rewriteToBool(state, n, result);
+            break;
         case "@isInteger":
             auto expr = n.first().as!Expression;
             auto result = expr.getType().isInteger();
@@ -125,9 +130,8 @@ void resolveBuiltin(Builtin n, ResolveState state) {
 private:
 
 bool getIsConst(Builtin n, Node expr) {
-    if(Number num = expr.extractNumber()) return true;
-    if(Identifier id = expr.extractIdentifier()) return id.target.isConst();
-    if(Index idx = expr.as!Index) return getIsConst(n, idx.expr());
+    if(Index idx = expr.as!Index) return false;
+    if(Identifier id = expr.extract!Identifier()) return id.target.isConst();
     if(Dot d = expr.as!Dot) return getIsConst(n, d.member());
 
     semanticError(n, EError.BUILTIN_ISCONST_NOT_IDENTIFIER);
@@ -135,7 +139,7 @@ bool getIsConst(Builtin n, Node expr) {
 }
 
 bool getIsPublic(Builtin n, Node expr) {
-    if(Identifier id = expr.extractIdentifier()) return id.target.isPublic();
+    if(Identifier id = expr.extract!Identifier()) return id.target.isPublic();
     if(Index idx = expr.as!Index) return getIsPublic(n, idx.expr());
     if(Dot d = expr.as!Dot) return getIsPublic(n, d.member());
 

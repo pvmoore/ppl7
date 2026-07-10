@@ -13,6 +13,7 @@ import ppl7.all;
  * @isConst(Expression)     *todo add @isMutable(xxx)
  * @isEnum(Expression)
  * @isFunction(Expression)
+ * @isImmutable(Expression)
  * @isInteger(Expression)
  * @isPacked(Type)
  * @isPointer(Expression)

@@ -122,9 +122,11 @@ void resolveAddressOf(AddressOf n, ResolveState state) {
     // Add explicit cast for &array if not already done
     if(n.expr().getType().isArray()) {
         Array at = n.expr().getType().extract!Array;
-        PointerType ptr = makePointerType(at.elementType());
 
-        // Check our parent for existing as
+        PointerType ptr = makePointerType(at.elementType());
+        ptr.isImmutable = at.isImmutable;
+
+        // Check our parent for existing 'as'
         bool requireRewrite = true;
         if(auto a = n.parent.as!As) {
             if(a.getType().exactlyMatches(ptr)) {
@@ -134,15 +136,6 @@ void resolveAddressOf(AddressOf n, ResolveState state) {
 
         if(requireRewrite) {
             rewriteToAs(state, n, n, ptr);
-        }
-    }
-
-    // Check for taking the address of a const
-    if(n.isResolved()) {
-        if(auto id = n.expr().as!Identifier) {
-            if(id.target.isVariable() && id.target.var.isConst) {
-                semanticError(n, EError.ADDRESS_OF_CONSTANT);
-            }
         }
     }
 

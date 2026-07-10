@@ -24,16 +24,6 @@ public:
     override string toString() {
         return "NodeRef %s".format(node.enode());
     }
-}   
-
-Number extractNumber(Node n) {
-    if(n.isA!Number) return n.as!Number;
-    if(NodeRef nr = n.as!NodeRef) return extractNumber(nr.node);
-    return null;
 }
 
-Identifier extractIdentifier(Node n) {
-    if(n.isA!Identifier) return n.as!Identifier;
-    if(NodeRef nr = n.as!NodeRef) return extractIdentifier(nr.node);
-    return null;
-}
+

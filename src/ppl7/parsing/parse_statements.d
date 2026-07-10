@@ -407,7 +407,7 @@ void parseVariable(Node parent, ParseState state, bool isPublic) {
             return;
         }
 
-        syntaxError(state, -1, "Const variables must be initialised");
+        semanticError(v, EError.VARIABLE_CONST_NO_INITIALISER);
     }
 }
 

@@ -23,7 +23,7 @@ public fn main() {
     apple.a = '@';              assert apple.a is '@'
     apple.b = 2.0;              assert apple.b is 2.0
 
-    int z = apple.a;            assert z is '@'
+    int z   = apple.a;          assert z is '@'
     int* z2 = &apple.a;         assert *z2 is '@'
 
     # Struct pointers
@@ -38,8 +38,6 @@ public fn main() {
     applePtr2.a = '#';
     assert applePtr2.a is '#'
     assert apple.a is '#'
-
-
 
     # Struct within Struct
     Apple applez1
@@ -60,11 +58,22 @@ fn putchar(int) -> int
 
 fn defaultInitialisation() {
 
+    # struct Apple {
+    #     int a
+    #     float b
+    #     bool c = true
+    # }
+
     Apple apple8
 
     assert apple8.a is 0
     assert apple8.b is 0.0
     assert apple8.c is true
+
+    # struct Pear {
+    #     Apple apple
+    #     Apple* applePtr
+    # }
 
     Pear pear4
 
@@ -87,6 +96,15 @@ fn defaultInitialisation() {
     assert apple4a.a is 1
     assert apple4a.b is 0.0
     assert apple4a.c is true
+
+    # struct Fig {
+    #     int a
+    #     float b
+    #     bool c
+    #     short d
+    #     byte e
+    #     long f
+    # }
 
     Fig fig
     assert @alignOf(fig) is 8
@@ -114,11 +132,22 @@ fn defaultInitialisation() {
     assert @offsetOf(Fig.e) is 12
     assert @offsetOf(Fig.f) is 16
 
+    # struct Gnat {
+    #     byte a
+    # }
+
     # nested struct members
     Gnat gnat
     assert @sizeOf(gnat) is 1
     assert @alignOf(gnat) is 1
     assert @offsetOf(gnat.a) is 0
+
+    # struct Chicken {
+    #     int a
+    #     bool b
+    #     short c
+    #}
+
 
     Chicken chicken
     assert @sizeOf(chicken) is 8
@@ -126,6 +155,12 @@ fn defaultInitialisation() {
     assert @offsetOf(chicken.a) is 0
     assert @offsetOf(chicken.b) is 4
     assert @offsetOf(chicken.c) is 6
+
+    # struct Egg {
+    #     bool a
+    #     Chicken b
+    #     int c
+    # }
 
     Egg egg
     assert @sizeOf(egg) is 16
@@ -137,6 +172,14 @@ fn defaultInitialisation() {
     assert @offsetOf(egg.b.a) is 0
     assert @offsetOf(egg.b.b) is 4
     assert @offsetOf(egg.b.c) is 6
+
+    # [[packed]]
+    # struct Blueberry { # size = 15 (packed)
+    #     int a = 7
+    #     byte b
+    #     double c
+    #     short d
+    # }
 
     # Packed structs
     Blueberry blueberry
@@ -151,6 +194,28 @@ fn defaultInitialisation() {
     assert @alignOf(blueberry.b) is 1
     assert @alignOf(blueberry.c) is 8
     assert @alignOf(blueberry.d) is 2
+
+    assert @offsetOf(blueberry.a) is 0
+    assert @offsetOf(blueberry.b) is 4
+    assert @offsetOf(blueberry.c) is 5
+    assert @offsetOf(blueberry.d) is 13
+
+    # struct Blackberry { # size = 18 (not packed)
+    #     int a = 7
+    #     byte b
+    #     double c
+    #     short d
+    # }
+    Blackberry blackberry
+    assert @sizeOf(blackberry) is 24
+    assert @offsetOf(blackberry.a) is 0
+    assert @offsetOf(blackberry.b) is 4
+    assert @offsetOf(blackberry.c) is 8
+    assert @offsetOf(blackberry.d) is 16
+
+    # struct Small {
+    #     byte a
+    # }
 
     Small small
     assert @sizeOf(small) is 1
@@ -364,6 +429,13 @@ struct Blueberry { # size = 15 (would be 8 without packed)
     byte b
     double c
     short d
+}
+#not packed
+struct Blackberry { # size = 18
+    int a = 7   # 0
+    byte b      # 4
+    double c    # 8
+    short d     # 16
 }
 struct Small {
     byte a

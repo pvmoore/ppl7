@@ -337,6 +337,7 @@ void parseBuiltin(Node parent, ParseState state) {
         case "@isConst":
         case "@isEnum":
         case "@isFunction":
+        case "@isImmutable":
         case "@isInteger":
         case "@isPacked":
         case "@isPointer":

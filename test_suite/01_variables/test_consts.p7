@@ -1,0 +1,178 @@
+/**
+ * magic!!
+ * name "test const variables"
+ * tags [variable, const]
+ * args []
+ */
+public fn main() {
+    vars()
+    arrays()
+    enums()
+    anonStructs()
+    namedStructs()
+
+    constParam(10, 10)
+}
+
+fn vars() {
+    int a = 7
+    const int b = 8
+    assert @isConst(a) is false
+    assert @isConst(b)
+    assert a is 7
+    assert b is 8
+
+    # ok - initialise later
+    int aa
+
+    #error "const not initialised" [Const variables must be initialised]
+    const int bb
+    #end
+
+    #------------------------------- reassign
+
+    a = 9       # ok
+
+    #error "modifying const" [Cannot assign to a const variable]
+    b = 10
+    #end
+
+    #error "modifying const variable" [Cannot assign to a const variable]
+    b += 1
+    #end
+
+    #------------------------------- pointers
+
+    int* mptr       = &a        # ok - pointer to int
+    const int* cptr = &a        # ok - pointer to int
+    assert @isConst(mptr) is false
+    assert @isConst(cptr)
+
+    # ok - modify via ptr
+    *mptr = 10
+    assert a is 10
+
+    # ok - data is mutable
+    *cptr = 11
+    assert a is 11
+
+    # ok - take address of const
+    int* bp = &b
+
+    # ok
+    const int* ap2 = mptr
+
+    # ok - ap2 type is int*
+    int* ap4 = ap2
+    int* ap5 = ap2 as int*
+}
+fn constParam(const int a, int b) {
+    #error "modifying const param" [Cannot assign to a const variable]
+    a += 1  # error - modifying a const
+    #end
+
+    # ok
+    b += 1
+}
+fn arrays() {
+    int[2] c
+    assert @isConst(c) is false
+    assert @isConst(c[0]) is false
+
+    const int[2] d = [1, 2]
+    assert @isConst(d)
+
+    c[0] = 12   # ok - modifying non const array
+
+    int[2] c2;
+    # ok - reassignment
+    c = c2
+
+    #error "modifying const variable" [Cannot assign to a const variable]
+    d = c2
+    #end
+
+    #error "modifying const variable" [Cannot assign to a const variable]
+    const int[2] d2 = [1,2]
+    d = d2
+    #end
+
+    # ok - d is const but the data is mutable
+    d[0] = 12
+}
+
+enum E1 { A, B }
+
+fn enums() {
+    E1 me = E1.A
+    const E1 e1 = E1.A
+    assert @isConst(me) is false
+    assert @isConst(e1)
+
+    #error "modifying const enum var" [Cannot assign to a const variable]
+    e1 = E1.B
+    #end
+}
+fn anonStructs() {
+    const struct{int a} g1 = { 1 }
+
+    #error "const struct cannot be reassigned" [Cannot assign to a const variable]
+    g1 = { 2 }
+    #end
+
+    #error "anon struct with const members" [ Anonymous structs cannot have const members]
+    struct{const int a} g2
+    #end
+
+    #error "const struct members do not count" [Struct literal has too many arguments]
+    S1 e2 = { 1, 2 }    # (const members must be initialised internally)
+    #end
+
+    S1 e2
+    assert e2.b is 9
+    assert @isConst(e2.a) is false
+    assert @isConst(e2.b)
+}
+
+# S1 s = { 1 } or S1 s = {} a is set to 0
+struct S1 {
+    int a           # optional initialisation. defaults to 0
+    const int b = 9 # this must be initialised here
+}
+
+# Rules:
+#   1) Const members must be initialised at the point of declaration
+#   2) All initialisers must evaluate to compile time constants
+#   3) If any of the non-const members have a default initialiser then named args must be used in
+#      any struct literal
+#
+struct S2 {
+    const int A = 3
+    const int B = 5
+    const int C = 7
+    int b
+    int c = 8                   # ok - default value
+    #const int e                # not allowed - must be initialised
+    int f
+
+    #todo - implement constant folding
+    # int f = b + c             # not allowed - not compile time constants
+    #const int d = A + B * C    # ok - resolves to a compile time constant
+}
+
+#error "struct const member not initialised" [Const variable is not initialised]
+struct S3 {
+    const int A
+}
+#end
+
+fn namedStructs() {
+    S2 s2
+    assert s2.A is 3
+
+    #error "A is const" [Cannot assign to a const variable]
+    s2.A = 4
+    #end
+
+    s2.b = 4    # ok
+}

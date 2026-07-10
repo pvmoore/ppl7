@@ -6,8 +6,6 @@ string getSummaryMessage(CompilationError error) {
     Statement stmt = error.stmt;
 
     switch(error.eerror()) with(EError) {
-        case ADDRESS_OF_CONSTANT:
-            return "Cannot take the address of a constant";
 
         case ARRAY_LITERAL_NUM_ELEMENTS: {
             ArrayLiteral al = error.stmt.as!ArrayLiteral; assert(al);
@@ -27,10 +25,12 @@ string getSummaryMessage(CompilationError error) {
             return "Cannot use unsigned operator with real numbers";
         case BINARY_ASSIGNMENT_TYPE_MISMATCH:
             return "Cannot assign %s to %s".format(error.stmt.as!Binary.rightType().shortName(), error.stmt.as!Binary.leftType().shortName());
-        case BINARY_MODIFYING_CONSTANT:
-            return "Cannot modify const";
+        case BINARY_ASSIGNMENT_TO_CONST:
+            return "Cannot assign to a const variable";
         case BINARY_SHIFT_REQUIRES_INTEGER:
             return "Cannot shift a non-integer type";
+        case BINARY_ASSIGNMENT_TO_IMMUTABLE:
+            return "Cannot assign to immutable variable";
 
         case BUILTIN_PROPERTY_MISSING_TYPE:
             return "@property() first argument must be a type";
@@ -151,15 +151,15 @@ string getSummaryMessage(CompilationError error) {
         case STRUCT_LITERAL_UNNAMED_ARGUMENT:
             return "Named struct literals require all arguments to be named";
 
-
-
-
         case STRUCT_MEMBER_UNNAMED:
             return "Expecting this Struct member to be named";
 
-
         case SYNTAX:
             return error.extraInfo.as!StringErrorExtraInfo.msg;
+
+
+        case TYPE_CANNOT_BE_IMMUTABLE:
+            return "Only arrays or pointers can have immutable data";
 
         case VARIABLE_SHADOWING: {
             Variable v = error.stmt.as!Variable; assert(v);
@@ -171,6 +171,8 @@ string getSummaryMessage(CompilationError error) {
             return "Default parameter values are not allowed";
         case VARIABLE_ANON_STRUCT_CONST:
             return "Anonymous structs cannot have const members";
+        case VARIABLE_CONST_NO_INITIALISER:
+            return "Const variables must be initialised";
 
         default:
             return "Generic Error: %s".format(error.eerror());

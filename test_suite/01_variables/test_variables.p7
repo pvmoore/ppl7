@@ -10,7 +10,6 @@ import console = core:console
 public fn main() {
     locals()
     globals()
-    consts()
 
     #error "variable not found" [cannot be resolved]
     a = 0
@@ -18,149 +17,53 @@ public fn main() {
 }
 
 fn locals() {
-    bool a;         assert a is false; assert @typeOf(a) is bool
-    byte b;         assert b is 0;     assert @typeOf(b) is byte
-    short c;        assert c is 0;     assert @typeOf(c) is short
-    int d = 2;      assert d is 2;     assert @typeOf(d) is int
-    long e = 3;     assert e is 3;     assert @typeOf(e) is long
-    float f;        assert f is 0.0;   assert @typeOf(f) is float
-    double g = 5.0; assert g is 5.0;   assert @typeOf(g) is double
+    bool a          ; assert a is false ; assert @typeOf(a) is bool
+    byte b          ; assert b is 0     ; assert @typeOf(b) is byte
+    short c         ; assert c is 0     ; assert @typeOf(c) is short
+    int d = 2       ; assert d is 2     ; assert @typeOf(d) is int
+    long e = 3      ; assert e is 3     ; assert @typeOf(e) is long
+    float f         ; assert f is 0.0   ; assert @typeOf(f) is float
+    double g = 5.0  ; assert g is 5.0   ; assert @typeOf(g) is double
 
     int* h;         assert h is null;  assert @typeOf(h) is int*
 
     fn()->void f1;  assert f1 is null; assert @typeOf(f1) is fn()->void
 
+    #error "variable initialiser type mismatch" [Cannot implicitly convert float to int]
+    int b2 = 2.1
+    #end
 
-    #int b2 = 2.1   // error - variable initialiser type mismatch
-
-    # int a = 3    // error - variable shadowing
+    #error "shadowing local" [shadows another variable in the same scope]
+    int a = 3
+    #end
 }
 
 fn globals() {
     assert tv_g_a is false
     assert tv_g_b is 1
     assert tvFuncPtr is null
-}
-fn consts() {
-    #--------------------------------------------------------------------- integers
-    int a = 7           ; assert @isConst(a) is false
-    const int b = 8     ; assert @isConst(b)
 
-    int* ap = &a        # ok - pointer to int
-
-    # ok - modify
-    a = 9               ; assert a is 9
-
-    # ok - modify via a ptr
-    *ap = 10            ; assert a is 10
-
-    #error "modifying const" [Cannot modify const]
-    b = '4'
+    #error "shadowing global" [shadows another variable in the same scope]
+    int tv_g_a = 3
     #end
-
-    #error "taking address of const" [Cannot take the address of a constant]
-    int* bp = &b
-    #end
-
-    # const ptr to non-const ok
-    const int* ap2 = ap
-
-    #fixme - this should not be allowed
-    # point to const memory without a cast
-    int* ap3 = ap2
-
-    # ok - const* -> mutable with cast
-    int* ap4 = ap2 as int*
-
-    #--------------------------------------------------------------------- arrays
-
-    int[2] c;                   assert @isConst(c) is false
-                                assert @isConst(c[0]) is false
-
-    # const array variables also imply that the array elements are also const
-    const int[2] d = [1, 2];    assert @isConst(d)
-                                assert @isConst(d[0])
-                                assert @isConst(d[1])
-
-    c[0] = 12   # ok - modifying non const array
-
-    int[2] c2;
-    # ok - reassignment
-    c = c2
-
-    #error "modifying const variable" [Cannot modify const]
-    d = c2
-    #end
-
-    #error "modifying const variable" [Cannot modify const]
-    const int[2] d2 = [1,2]
-    d = d2
-    #end
-
-    #error "modifying const element" [Cannot modify const]
-    d[0] = 12
-    #end
-
-    #---------------------------------------------------------------------
-
-    const E1 e1 = E1.A
-
-    #error "modifying const enum var" [Cannot modify const]
-    e1 = E1.B
-    #end
-
-    const struct{int a} g1 = { 1 }
-    #g1 = { 2 }        # error - modifying a const
-
-    #struct{const int a} g2            # error - const members not allowed
-    #struct{const int a} g3 = { 1 }    # error - const members not allowed
-
-    #E2 e2 = { 1, 2 }    # error - initialising struct with wrong number of arguments (const members do not count)
-
-    E2 e2
-    assert e2.b is 9
-    assert @isConst(e2.a) is false
-    assert @isConst(e2.b)
-
-    #g_a += 1      # error - modifying a const
-    #aa += 1       # error - modifying a const
-    #const int a   # error - const not initialised
 }
 
-fn constParam(const int a) {
-    #a += 1  # error - modifying a const
-}
-
-struct E2 {
-    int a
-    #const int b # this must be initialised
-    const int b = 9
-}
-
-enum E1 { A, B }
-
-# error - duplicate parameter names
-#fn tvFoo2(int a, int b, int a) -> void {}
-
-# error - variable shadowing
-# fn tvFoo3(int a, int b, int c) -> void {
-#     int a = 3
-# }
-
-# error - variable shadowing
-# fn tvFoo4(int a, int b, int c) -> void {
-#     int tv_g_a = 3
-# }
-
+#--------------------------------------------------------------------------------------------
 # Global variables
+#--------------------------------------------------------------------------------------------
+
 bool tv_g_a
 int tv_g_b = 1
 
-#const int g_a # error - const not initialised
+#error "const not initialised" [Const variables must be initialised]
+const int g_z
+#end
+
 const int g_a = 7
 
-# error - variable shadowing
-#int tv_g_a = 2
+#error "shadowing global" [shadows another variable in the same scope]
+int tv_g_a = 2
+#end
 
 # Global variable function ptr
 fn()->void tvFuncPtr

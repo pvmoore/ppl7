@@ -16,7 +16,15 @@ public fn main() -> int {
         stdc.puts(""z)
     }
 
+    # int[3] array = [9,9,9]
+    # int* ptr = &array
+
+    #todo - this should probably be allowed
+    # int[3] array2 = *ptr as int[3]
+
+    #-----------------
 
     return 0
 }
+
 

@@ -8,6 +8,9 @@ import ppl7.all;
 void parseType(Node parent, ParseState state) {
     Type type;
 
+    bool isImmutable = state.text() == "immutable";
+    if(isImmutable) state.next();
+
     if(isTypeOf(state)) {
         type = parseTypeOf(state);
     } else if(isSimpleType(state)) {
@@ -32,10 +35,21 @@ void parseType(Node parent, ParseState state) {
         type = consumePointer(type, state);
     }
 
+    if(type.isPointer() || type.isArray()) {
+        if(auto p = type.extract!PointerType) {
+            p.isImmutable = isImmutable;
+        } else if(auto a = type.extract!Array) {
+            a.isImmutable = isImmutable;
+        }
+    } else if(isImmutable) {
+        semanticError(parent, EError.TYPE_CANNOT_BE_IMMUTABLE);
+    }
+
     parent.add(type);
 }
 
 bool isType(ParseState state) {
+    if(state.text() == "immutable") return true;
     return isSimpleType(state) || isAnonStruct(state) || isUserDefinedType(state) || isTypeOf(state) || isFunctionPtr(state);
 }
 bool isSimpleType(ParseState state) {

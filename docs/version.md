@@ -1,5 +1,11 @@
 # Version History
 
+## 0.2.24
+
+- Add immutable storage type to pointers and arrays
+- Add @isImmutable builtin function
+- Const storage type now only affects the variable and does not imply immutability of data
+
 ## 0.2.23
 
 - Refactor resolution

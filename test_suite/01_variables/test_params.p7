@@ -1,0 +1,21 @@
+/**
+ * magic!!
+ * name "test parameters"
+ * tags [variable, param]
+ * args []
+ */
+public fn main() {
+
+}
+
+#error "duplicate parameter names" [shadows another variable in the same scope]
+fn foo(int a, int b, int a) -> void {
+
+}
+#end
+
+fn foo1(int a, int b, int c) -> void {
+    #error "duplicate parameter names" [shadows another variable in the same scope]
+    int a = 3
+    #end
+}

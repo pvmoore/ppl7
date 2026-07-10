@@ -21,14 +21,6 @@ public:
 
 //──────────────────────────────────────────────────────────────────────────────────────────────────
 
-T extract(T)(Type t) if(is(T : Type)) {
-    if(T o = t.as!T) return o;
-    if(TypeRef tr = t.as!TypeRef) return extract!T(tr.type);
-    if(Alias a = t.as!Alias) return extract!T(a.aliasedType());
-    if(PointerType pt = t.as!PointerType) return extract!T(pt.valueType());
-    return null;
-}
-
 bool isVoidValue(Type t) { return t.etype() == EType.VOID && !t.isPointer(); }
 bool isInteger(Type t)   { return t.etype() >= EType.BYTE && t.etype() <= EType.LONG; }
 bool isReal(Type t)      { return t.etype() == EType.FLOAT || t.etype() == EType.DOUBLE; }
@@ -59,6 +51,12 @@ bool isPublic(Type t) {
     if(Enum en = t.extract!Enum) return en.isPublic;
     if(Alias al = t.extract!Alias) return al.isPublic;
     return true;
+}
+
+bool isImmutable(Type t) {
+    if(auto p = t.extract!PointerType) return p.isImmutable;
+    if(auto a = t.extract!Array) return a.isImmutable;
+    return false;
 }
 
 uint size(Type t) {

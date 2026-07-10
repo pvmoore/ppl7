@@ -1,0 +1,106 @@
+/**
+ * magic!!
+ * name "test immutable types"
+ * tags [variable, immutable]
+ * args []
+ */
+public fn main() {
+    immutables()
+}
+
+fn immutables() {
+    #------------------------------- values
+
+    int c0
+    assert @isImmutable(c0) is false
+
+    #error "immutable must be ptr or array" [Only arrays or pointers can have immutable data]
+    immutable int nope
+    #end
+
+    #------------------------------- pointers
+
+    int* mptr
+    immutable int* iptr
+
+    assert @isImmutable(mptr) is false
+    assert @isImmutable(iptr)
+    assert mptr is null
+    assert iptr is null
+
+    #------------------------------- arrays
+
+    int[3] marray = [5,4,3]
+    immutable int[3] iarray = [9,9,9]
+    immutable int[2] iarray0            # ok to initialise later because the var is not const
+
+    assert @isImmutable(marray) is false
+    assert @isImmutable(iarray)
+
+    assert marray is [5,4,3]
+    assert iarray is [9,9,9]
+    assert iarray0 is [0,0]
+
+    # reassignment is ok because both variables are non-const
+    marray = [4,5,6]
+    iarray = [1,2,3]
+
+    assert marray is [4,5,6]
+    assert iarray is [1,2,3]
+
+    #------------------------------- taking address of array
+
+    #error "cast immutable int* to int*" [Cannot assign immutable int* to int*]
+    mptr = &iarray
+    #end
+
+    mptr = &marray          # ok - mutable ptr, mutable array
+
+    iptr = &iarray          # ok - immutable int*
+    assert iptr[0] is 1
+    assert iptr[1] is 2
+    assert iptr[2] is 3
+
+    #todo - allow this
+    # assert *iptr as int[3] is [1,2,3]
+
+    #------------------------------- get target
+
+    int b = iarray[0]       # ok - copy int value
+    int c = *iptr           # ok - copy int value
+    assert b is 1
+    assert c is 1
+
+    marray[0] = 40          # mutable array
+    mptr[1] = 50            # ok - mutable ptr
+
+    assert marray is [40, 50, 6]
+    assert iarray is [1,2,3]
+
+    #------------------------------- set target
+
+    #error "mutation via immutable ptr" [Cannot assign to immutable variable]
+    *iptr = 5
+    #end
+
+    #error "mutation via immutable ptr index" [Cannot assign to immutable variable]
+    iptr[0] = 5
+    #end
+
+    #error "mutation via immutable array index" [Cannot assign to immutable variable]
+    iarray[0] = 10
+    #end
+
+    immutablePtrParameter(iptr)
+    immutableArrayParameter(iarray)
+}
+fn immutablePtrParameter(immutable int* ptr) {
+    #error "mutation via immutable ptr" [Cannot assign to immutable variable]
+    ptr[0] = 3
+    #end
+}
+fn immutableArrayParameter(immutable int[3] array) {
+    #error "mutation via immutable array index" [Cannot assign to immutable variable]
+    array[0] = 10
+    #end
+}

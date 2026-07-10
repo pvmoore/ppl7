@@ -177,5 +177,17 @@ void main(string[] args) {
     writefln("int.max = %s", int.max);
     writefln("long.min = %s", long.min);
     writefln("long.max = %s", long.max);
+
+    struct Blackberry {
+        int a;
+        byte b;
+        double c;
+        short d;
+    }
+    writefln("size = %s", Blackberry.sizeof);
+    writefln("a = %s", Blackberry.a.offsetof);
+    writefln("b = %s", Blackberry.b.offsetof);
+    writefln("c = %s", Blackberry.c.offsetof);
+    writefln("d = %s", Blackberry.d.offsetof);
 }
 
