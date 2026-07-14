@@ -6,7 +6,7 @@ final class Compiler {
 public:
     enum versionMajor = 0;
     enum versionMinor = 2;
-    enum versionPatch = 24;
+    enum versionPatch = 25;
 
     this(CompilerOptions options) {
         options.prepareForUse();
@@ -79,8 +79,9 @@ public:
                 }
 
             }while(false);
+
         }catch(Exception e) {
-            consoleLogAnsiAlways(Ansi.RED_BOLD, "!! Exception: %s %s:%s %s", e.msg, e.file, e.line, e.info);
+            //consoleLogAnsiAlways(Ansi.RED_BOLD, "!! Exception: %s %s:%s %s", e.msg, e.file, e.line, e.info);
         }
 
         cleanup();

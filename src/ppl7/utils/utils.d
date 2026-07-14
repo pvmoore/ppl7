@@ -5,7 +5,7 @@ import ppl7.all;
 /**
  * Convert relative filename to canonical Module name.
  * Assumes relFilename is relative to the project directory
- * Assumes the filename path separator is '/' 
+ * Assumes the filename path separator is '/'
  */
 string toModuleName(string relFilename) {
     import std.path : extension;
@@ -29,7 +29,7 @@ string toCanonicalDirectory(string path, bool forceToAbsolute) {
 
     string p1 = forceToAbsolute ? absolutePath(path) : path;
     string p2 = buildNormalizedPath(p1).replace("\\", "/");
-    if(!p2.endsWith("/")) p2 ~= "/"; 
+    if(!p2.endsWith("/")) p2 ~= "/";
     return p2;
 }
 
@@ -137,6 +137,14 @@ T maxOf(T)(T a, T b) {
 
 bool isOneOf(T)(T thing, T[] args...) {
     foreach(a; args) if(a==thing) return true;
+    return false;
+}
+bool allOf(bool[] predicates...) {
+    foreach(p; predicates) if(!p) return false;
+    return true;
+}
+bool anyOf(bool[] predicates...) {
+    foreach(p; predicates) if(p) return true;
     return false;
 }
 

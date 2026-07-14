@@ -22,8 +22,12 @@ public:
     override int precedence() { return node.precedence(); }
 
     override string toString() {
-        return "NodeRef %s".format(node.enode());
+        return "NodeRef %s".format(node);
     }
 }
 
-
+NodeRef makeNodeRef(Expression node) {
+    auto n = makeNode!NodeRef(0);
+    n.node = node;
+    return n;
+}

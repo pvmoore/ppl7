@@ -21,11 +21,11 @@ public:
     override int precedence() { return Precedence.LOWEST; }
 
     override string toString() {
-        return "%s %s".format(name, target);
+        return "'%s' %s".format(name, target);
     }
 }
 
-Identifier makeIdentifier(Module mod, string name) {
+Identifier makeIdentifier(string name) {
     auto i = makeNode!Identifier(0);
     i.target.identifier = i;
     i.name = name;

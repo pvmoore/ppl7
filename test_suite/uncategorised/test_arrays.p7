@@ -8,6 +8,14 @@
 public fn main() {
     initialisation()
 
+    #error "no array length" [Array is missing length argument]
+    int[] nope
+    #end
+
+    #error "zero elements" [Array has zero elements]
+    int[0] zero
+    #end
+
     # Create an array variable
     int[2] a;               assert a is [0, 0]
 
@@ -49,6 +57,7 @@ fn initialisation() {
 
     # array of structs
     Red[2] red;
+
 
     assert red[0].a is 1
     assert red[0].b is 2

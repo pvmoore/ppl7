@@ -26,3 +26,10 @@ public:
         return "Dot";
     }
 }
+
+Dot makeDot(Expression container, Expression member) {
+    Dot dot = makeNode!Dot(0);
+    dot.add(container);
+    dot.add(member);
+    return dot;
+}

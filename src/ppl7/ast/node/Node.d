@@ -30,6 +30,7 @@ T extract(T)(Node t) if(is(T : Node)) {
         if(TypeRef tr = t.as!TypeRef) return extract!T(tr.type);
         if(Alias a = t.as!Alias) return extract!T(a.aliasedType());
         if(PointerType pt = t.as!PointerType) return extract!T(pt.valueType());
+        if(Enum e = t.as!Enum) return extract!T(e.elementType());
     } else {
         if(auto nr = t.as!NodeRef) return extract!T(nr.node);
         if(auto d = t.as!Dot) return extract!T(d.member());
@@ -54,6 +55,7 @@ public:
     abstract bool isResolved();
 
     // ---------------------------------------------------------------------- Properties
+    final bool isAttached() { return hasAncestor(ENode.MODULE); }
     final bool hasChildren() { return children && children.length > 0; }
     final int numChildren() { return children.length.as!int; }
     final int index() { assert(parent !is null); return parent.children.indexOf(this); }

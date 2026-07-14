@@ -160,34 +160,34 @@ void main(string[] args) {
 
     // writefln("te1c = %s", te1c.a);
 
-    int a = -13 / 3;
-    int b = -13 % 3;
-    writefln("a = %s", a);
-    writefln("b = %s", b);
+    // int a = -13 / 3;
+    // int b = -13 % 3;
+    // writefln("a = %s", a);
+    // writefln("b = %s", b);
 
-    uint c = -13u / 3u;
-    uint d = -13u % 3u;
-    uint e = -13u % 7u;
-    writefln("-13u = %s", -13u);
-    writefln("c = %s", c);
-    writefln("d = %s", d);
-    writefln("e = %s", e);
+    // uint c = -13u / 3u;
+    // uint d = -13u % 3u;
+    // uint e = -13u % 7u;
+    // writefln("-13u = %s", -13u);
+    // writefln("c = %s", c);
+    // writefln("d = %s", d);
+    // writefln("e = %s", e);
 
-    writefln("int.min = %s", int.min);
-    writefln("int.max = %s", int.max);
-    writefln("long.min = %s", long.min);
-    writefln("long.max = %s", long.max);
+    // writefln("int.min = %s", int.min);
+    // writefln("int.max = %s", int.max);
+    // writefln("long.min = %s", long.min);
+    // writefln("long.max = %s", long.max);
 
-    struct Blackberry {
-        int a;
-        byte b;
-        double c;
-        short d;
-    }
-    writefln("size = %s", Blackberry.sizeof);
-    writefln("a = %s", Blackberry.a.offsetof);
-    writefln("b = %s", Blackberry.b.offsetof);
-    writefln("c = %s", Blackberry.c.offsetof);
-    writefln("d = %s", Blackberry.d.offsetof);
+    // struct Blackberry {
+    //     int a;
+    //     byte b;
+    //     double c;
+    //     short d;
+    // }
+    // writefln("size = %s", Blackberry.sizeof);
+    // writefln("a = %s", Blackberry.a.offsetof);
+    // writefln("b = %s", Blackberry.b.offsetof);
+    // writefln("c = %s", Blackberry.c.offsetof);
+    // writefln("d = %s", Blackberry.d.offsetof);
 }
 

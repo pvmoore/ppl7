@@ -9,6 +9,12 @@ void resolveIs(Is n, ResolveState state) {
 
     //log("resolving is: %s is %s", n.left(), n.right());
 
+    // Prevent expr is expr is expr which is confusing
+    if(n.parent.isA!Is) {
+        semanticError(n, EError.IS_AMBIGUOUS);
+        return;
+    }
+
     n.resolveEvaluated = true;
 
     Type lt = n.leftType();
@@ -72,6 +78,7 @@ void resolveIs(Is n, ResolveState state) {
             return;
         }
 
+
         // If the Types of left and right are different sizes then they must be different
         // if(lt.size() != rt.size()) {
         //     rewriteToBool(state, n, n.negate);
@@ -86,42 +93,53 @@ void resolveIs(Is n, ResolveState state) {
                 return;
             }
 
+            // Rewrite to Binary == or !=
+            // This will get handled in generate_binary
+            rewriteToBinary(state, n, n.negate ? Operator.NOT_EQUAL : Operator.EQUAL, left, right, makeBoolType());
+            return;
+
             //log("rewrite Struct to memcmp. Struct is %s", lt.extract!Struct);
 
             // Rewrite to memcmp
-            ulong size = lt.extract!Struct.getSize();
-            auto leftPtr = makeAs(makeAddressOf(left), makeBytePointerType());
-            auto rightPtr = makeAs(makeAddressOf(right), makeBytePointerType());
-            auto length = makeLongNumber(size);
+            // ulong size = lt.extract!Struct.getSize();
+            // auto leftPtr = makeAs(makeAddressOf(left), makeBytePointerType());
+            // auto rightPtr = makeAs(makeAddressOf(right), makeBytePointerType());
+            // auto length = makeLongNumber(size);
 
-            rewriteToMemcmp(state, n, leftPtr, rightPtr, length, !n.negate);
-            return;
+            // rewriteToMemcmp(state, n, leftPtr, rightPtr, length, !n.negate);
+            // return;
         }
 
         // Array comparison. The sizes must be the same otherwise we would have caught it above
         // Rewrite to Binary ==
         if(lt.isArray()) {
 
-            // Element Types are different
-            if(!lt.as!Array.elementType().exactlyMatches(rt.as!Array.elementType())) {
+            // If the arrays are trivially different then this is false
+            if(!lt.exactlyMatches(rt)) {
                 rewriteToBool(state, n, n.negate);
                 return;
             }
 
-            // Assume left and right are both of the same Array so we need to check the contents
+            // Assume left and right are both of the same Array type so we need to check the contents
+
+            // Rewrite to Binary == or !=
+            // This will get handled in generate_binary
+            rewriteToBinary(state, n, n.negate ? Operator.NOT_EQUAL : Operator.EQUAL, left, right, makeBoolType());
+            return;
+
 
             // Rewrite this to memcmp
 
-            auto leftPtr = makeAs(makeAddressOf(left), makeBytePointerType());
-            auto rightPtr = makeAs(makeAddressOf(right), makeBytePointerType());
+            // auto leftPtr = makeAs(makeAddressOf(left), makeBytePointerType());
+            // auto rightPtr = makeAs(makeAddressOf(right), makeBytePointerType());
 
-            // Multiply num elements by sizeof (numElements should be a Number at this point)
-            auto numElements = makeIntNumber(lt.as!Array.numElements());
-            auto size = makeIntNumber(lt.as!Array.elementType().size());
-            auto length = makeBinary(Operator.MUL, numElements, size, makeIntType());
+            // // Multiply num elements by sizeof (numElements should be a Number at this point)
+            // auto numElements = makeIntNumber(lt.as!Array.numElements());
+            // auto size = makeIntNumber(lt.as!Array.elementType().size());
+            // auto length = makeBinary(Operator.MUL, numElements, size, makeIntType());
 
-            rewriteToMemcmp(state, n, leftPtr, rightPtr, length, !n.negate);
-            return;
+            // rewriteToMemcmp(state, n, leftPtr, rightPtr, length, !n.negate);
+            // return;
         }
 
         rewriteToBinary(state, n, n.negate ? Operator.NOT_EQUAL : Operator.EQUAL, left, right, makeBoolType());

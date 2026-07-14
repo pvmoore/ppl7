@@ -12,34 +12,36 @@ final class Function : Type {
 public:
     // static state
     string name;                // This may be null if this is a function pointer
-    string alias_;              // The name to use internally if specified via #(name) attribute
+    string alias_;              // The name to use internally if specified via [[name]] attribute
     bool isExtern;              // true if this is an extern function (assume C if no ABI attribute is specified)
     uint numParams;
     bool isMain;                // true if this is the main/winmain of the program
     bool hasVarargParam;        // true if this function has a vararg parameter
     string callingConvention;   // eg. "Win64". null means use the default calling convention
-    bool isPublic;              // 
+    bool isPublic;              //
+
+    bool noinline;              // True if this function should not be inlined [[noinline]]
 
     // dynamic state
     bool isExternallyReferenced;    // true if this function is referenced from another Module
                                     // which means it will need to have external linkage
-    LLVMTypeRef llvmType;                                     
+    LLVMTypeRef llvmType;
     LLVMValueRef[string] llvmValueByModule; // key = mod.name
 
     // Node
     override ENode enode() { return ENode.FUNCTION; }
     override bool isResolved() { assert(returnType()); return returnType().isResolved() && paramTypes().areResolved(); }
-    
+
     // Statement
 
     // Type
     override EType etype() { return EType.FUNCTION; }
-    override bool exactlyMatches(Type other) { 
+    override bool exactlyMatches(Type other) {
         if(Function o = other.as!Function) {
             // Ignore the name here
             return returnType().exactlyMatches(o.returnType()) && .exactlyMatches(paramTypes(), o.paramTypes());
         }
-        return false; 
+        return false;
     }
     override bool canImplicitlyCastTo(Type other) {
         if(Function o = other.as!Function) {
@@ -67,7 +69,7 @@ public:
     string[] paramNames() { return children[1..1+numParams].map!(v=>v.as!Variable.name).array; }
     Type[] paramTypes() { return children[1..1+numParams].map!(v=>v.as!Variable.getType()).array; }
 
-    override string toString() { 
+    override string toString() {
         string[] info;
         if(name) info ~= "'%s'".format(name);
         if(alias_) info ~= "alias '%s'".format(alias_);
@@ -76,8 +78,8 @@ public:
         if(hasVarargParam) info ~= "varargs";
         if(isExtern) info ~= "extern %s".format(callingConvention);
         info  ~= "%s param%s".format(numParams, numParams == 1 ? "" : "s");
-                       
-        return "Function [%s]*".format(info.join(", ")); 
+
+        return "Function [%s]*".format(info.join(", "));
     }
 private:
 }

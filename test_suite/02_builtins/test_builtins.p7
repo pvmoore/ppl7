@@ -94,6 +94,15 @@ public fn main() {
     assert @offsetOf(s.a) is 0
     assert @offsetOf(s.b) is 4
 
+    #error "@offsetOf not a struct member" [requires a struct member as the first argument]
+    Frank f
+    int b = @offsetOf(f)
+    #end
+
+    #error "@offsetOf not a struct member" [requires a struct member as the first argument]
+    int b = @offsetOf(Frank)
+    #end
+
     # @isConst
     const int cint = 1
     const float cfloat = 1.0
@@ -150,6 +159,10 @@ struct BI_1 {
 struct BI_2 {
     int a
     bool b
+}
+
+struct Frank {
+    int a
 }
 
 public struct BI_3 {

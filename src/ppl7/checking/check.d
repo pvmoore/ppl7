@@ -32,6 +32,7 @@ void checkChildren(Node parent) {
         }
 
         switch(n.enode()) {
+            case ENode.ARRAY_TYPE: checkArray(n.as!Array); break;
             case ENode.ARRAY_LITERAL: checkArrayLiteral(n.as!ArrayLiteral); break;
             case ENode.AS: checkAs(n.as!As); break;
             case ENode.BINARY: checkBinary(n.as!Binary); break;
@@ -43,6 +44,12 @@ void checkChildren(Node parent) {
             case ENode.VARIABLE: checkVariable(n.as!Variable); break;
             default: break;
         }
+    }
+}
+
+void checkArray(Array n) {
+    if(n.numElements() == 0) {
+        semanticError(n, EError.ARRAY_ZERO_ELEMENTS);
     }
 }
 
@@ -137,7 +144,11 @@ void checkStructLiteral(StructLiteral n) {
         }
     }
 
-    if(n.hasNamedArguments()) {
+    if(n.numMembers() == 0) {
+
+        // Nothing in here
+
+    } else if(n.hasNamedArguments()) {
         // Named arguments: (They must all be named if we get here)
 
         foreach(i, name; n.names) {

@@ -201,7 +201,13 @@ Type parseArray(Expression type, ParseState state) {
     state.skip(EToken.LSQUARE);
 
     // Length Expression
-    parseExpression(a, state);
+    if(state.etoken() == EToken.RSQUARE) {
+        // This is an array type with no length. Add a dummy length and a semantic error.
+        a.add(makeIntNumber(0, makeIntType()));
+        semanticError(state, a, EError.ARRAY_MISSING_LENGTH);
+    } else {
+        parseExpression(a, state);
+    }
 
     // ]
     state.skip(EToken.RSQUARE);

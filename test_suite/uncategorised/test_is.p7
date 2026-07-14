@@ -4,13 +4,15 @@
  * tags [is]
  * args []
  */
-
 public fn main() {
     int a  = 1
     byte b = 2 as byte
 
     int* bb;      assert bb is null
-    #assert bb is not not null # double negation is not allowed
+
+    #error "double negation" [Boolean 'not' should be replaced with 'is false']
+    assert bb is not not null
+    #end
 
     # Type is Type
     bool c = int is int     ; assert c
@@ -18,10 +20,13 @@ public fn main() {
     assert int is int
     assert int is not bool
 
-    # Type is Expression (not allowed - use @typeOf)
-    # Expression is Type (not allowed - use @typeOf)
-    #e:bool = int is a
-    #f:bool = a is int
+    #error "Type is Expression" [Use @typeOf() here instead]
+    bool nope = int is a
+    #end
+
+    #error "Expression is Type" [Use @typeOf() here instead]
+    bool nope = a is int
+    #end
 
     bool e1 = int is @typeOf(a)      ; assert e1
     bool e2 = @typeOf(a) is int      ; assert e2
@@ -50,18 +55,91 @@ public fn main() {
     assert b is 2
     assert a is not b
 
-    # Array is Array
-    int[2] g1 = [1, 2]
-    int[2] g2 = [1, 2]
-    int[2] g3 = [3, 4]
-    assert g1 is g2
-    assert g2 is not g3
+    #error "Ambiguous 'is' expressions" [Use parentheses to clarify the intended meaning]
+    bool nope = 1 is 1 is not true
+    #end
 
-    # Array is int (not allowed)
-    # Value is Array (not allowed)
-    assert g1 is not a
-    assert a is not g1
+    #error "Ambiguous 'is' expressions" [Use parentheses to clarify the intended meaning]
+    bool nope = 1 is 1 is false
+    #end
 
-    # Ambiguous 'is' expressions
-    #b:bool = 1 is 1 is not true
+    arrayComparison()
+    structValueComparison()
+}
+
+# Array is Array
+fn arrayComparison() {
+    int[2] a1 = [1, 2]
+    int[2] a2 = [1, 2]
+    int[2] a3 = [3, 4]
+
+    int[3] b1 = [1, 2, 3]
+
+    assert a1 is a2
+    assert a2 is not a3
+    assert a2 is not b1
+
+    assert a1 is [1,2]
+    assert a1 is not [2,1]
+
+    #error "wrong number of elements" [Array literal has 1 elements, but the array type requires 2]
+    assert a1 is not [1]
+    #end
+
+    int a = 3
+
+    #todo - should we issue an error for these? The types are different
+    assert a1 is not a
+    assert a is not a1
+}
+# struct is struct
+fn structValueComparison() {
+    Outer outer
+
+    assert outer is { a:0, b:0, c:null, inner: { x:0, y:0, z:[0,0] } }
+
+    int a
+    int* p = &a
+
+    assert outer is not { a:1, b:0, c:null, inner: { x:0, y:0, z:[0,0] } }
+    assert outer is not { a:0, b:1, c:null, inner: { x:0, y:0, z:[0,0] } }
+    assert outer is not { a:0, b:0, c:p,    inner: { x:0, y:0, z:[0,0] } }
+    assert outer is not { a:0, b:0, c:null, inner: { x:1, y:0, z:[0,0] } }
+    assert outer is not { a:0, b:0, c:null, inner: { x:0, y:1, z:[0,0] } }
+    assert outer is not { a:0, b:0, c:null, inner: { x:0, y:0, z:[1,0] } }
+    assert outer is not { a:0, b:0, c:null, inner: { x:0, y:0, z:[0,1] } }
+
+    Monkey monkey
+    assert monkey is { a: [0,0,0] }
+    assert monkey is not { a: [1,0,0] }
+    assert monkey is not { a: [0,1,0] }
+    assert monkey is not { a: [0,0,1] }
+
+    Empty empty
+    assert empty is {}
+
+    ContainsEmpty containsEmpty
+    assert containsEmpty is { a: 5, b: {} }
+}
+
+struct Empty {
+
+}
+struct ContainsEmpty {
+    int a = 5
+    Empty b
+}
+struct Outer {
+    int a
+    float b
+    int* c
+    Inner inner
+}
+struct Inner {
+    int x
+    int y
+    int[2] z
+}
+struct Monkey {
+    int[3] a
 }

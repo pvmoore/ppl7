@@ -8,7 +8,7 @@ void generateFunctionDeclaration(Function f, GenerateState state) {
 
     state.mod.log("Generating function declaration %s(%s)", f.name, f.paramTypes().shortName());
 
-    // Create the type 
+    // Create the type
     if(f.llvmType is null) {
         f.llvmType = state.getLLVMFunctionType(f);
     }
@@ -40,6 +40,10 @@ void generateFunctionDeclaration(Function f, GenerateState state) {
 
     // Add attributes
     state.addFunctionAttribute(funcValue, "nounwind");
+
+    if(f.noinline) {
+        state.addFunctionAttribute(funcValue, "noinline");
+    }
 }
 
 void generateFunctionBody(Function f, GenerateState state) {
@@ -50,7 +54,7 @@ void generateFunctionBody(Function f, GenerateState state) {
     LLVMValueRef funcValue = f.llvmValueByModule[state.mod.name];
 
     state.currentFunction = funcValue;
-    
+
     // Create the entry block
     LLVMBasicBlockRef entry = LLVMAppendBasicBlockInContext(state.context, state.currentFunction, "entry");
     LLVMPositionBuilderAtEnd(state.builder, entry);
@@ -63,7 +67,7 @@ void generateFunctionBody(Function f, GenerateState state) {
         LLVMValueRef varValue = LLVMBuildAlloca(state.builder, state.getLLVMType(v.getType()), v.name.toStringz());
         v.llvmValueByModule[state.mod.name] = varValue;
 
-        // Store param value into our local lvalue 
+        // Store param value into our local lvalue
         LLVMBuildStore(state.builder, LLVMGetParam(state.currentFunction, i.as!int), varValue);
     }
 

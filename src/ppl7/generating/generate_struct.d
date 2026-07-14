@@ -12,13 +12,17 @@ void generateStruct(Struct s, GenerateState state) {
 void defaultInitialiseStruct(Struct s, LLVMValueRef structPtr, GenerateState state, bool isTopLevel = true) {
     LLVMTypeRef structType = state.getLLVMType(s);
 
-    // state.log("Default initialising struct %s", s.name);
+    //state.log("Default initialising struct %s", s.name);
     //state.log("%s structSize = %s", s.name ? s.name : "(anon)", LLVMABISizeOfType(state.targetData, structType));
     //state.log("%s alignment = %s", s.name, LLVMPreferredAlignmentOfType(state.targetData, structType));
 
     // Zero initialise the struct if this is the top level struct
     if(isTopLevel) {
-        LLVMBuildMemSet(state.builder, structPtr, state.createConstIntValue(state.INT8_TYPE, 0), state.createConstIntValue(state.INT64_TYPE, s.getSize()), 8);
+        // We shouldn't need to do this any more. I think this was only required when we were using memcmp
+        // for struct comparison which would pickup rubbish in the alignment holes. We now
+        // do per member comparison so this is not needed.
+
+        //LLVMBuildMemSet(state.builder, structPtr, state.createConstIntValue(state.INT8_TYPE, 0), state.createConstIntValue(state.INT64_TYPE, s.getSize()), 8);
     }
 
     // Set default member values if they are specified
@@ -27,7 +31,7 @@ void defaultInitialiseStruct(Struct s, LLVMValueRef structPtr, GenerateState sta
             string name = "%s.%s-gep".format(s.name, v.name);
             state.generate(v.initialiser());
             state.castType(state.rhs, v.initialiser().getType(), v.getType());
-        
+
             state.lhs = state.setStructMemberValue(structType, structPtr, state.rhs, v.index.as!uint, name);
         } else {
             // If this is a Struct value then we need to recursively initialise this as well
@@ -40,7 +44,6 @@ void defaultInitialiseStruct(Struct s, LLVMValueRef structPtr, GenerateState sta
         }
     }
 }
-
 
 void generateStructLiteral(StructLiteral n, GenerateState state) {
 
@@ -90,7 +93,7 @@ void generateStructLiteral(StructLiteral n, GenerateState state) {
         if(e) {
             state.lhs = LLVMBuildStructGEP2(state.builder, state.getLLVMType(st), tempStruct, i.as!uint, "gep");
             LLVMBuildStore(state.builder, e, state.lhs);
-        } 
+        }
     }
 
     // Point to the struct

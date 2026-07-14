@@ -7,6 +7,11 @@ string getSummaryMessage(CompilationError error) {
 
     switch(error.eerror()) with(EError) {
 
+        case ARRAY_MISSING_LENGTH:
+            return "Array is missing length argument";
+        case ARRAY_ZERO_ELEMENTS:
+            return "Array has zero elements";
+
         case ARRAY_LITERAL_NUM_ELEMENTS: {
             ArrayLiteral al = error.stmt.as!ArrayLiteral; assert(al);
             Array at = al.getType().as!Array; assert(at);
@@ -111,12 +116,15 @@ string getSummaryMessage(CompilationError error) {
         case IF_EXPRESSION_TYPE_MISMATCH:
             return "If expression requires the 'then' and 'else' expressions to be castable to the same type";
 
+        case IS_AMBIGUOUS:
+            return "Ambiguous 'is' expression. Use parentheses to clarify the intended meaning";
+
         case IS_TYPE_MISMATCH: {
             Is i = error.stmt.as!Is; assert(i);
             if(i.left().isA!Type) {
-                return "(Type is Expression) is not valid. Use ::typeOf() here instead";
+                return "(Type is Expression) is not valid. Use @typeOf() here instead";
             }
-            return "(Expression is Type) is not valid. Use ::typeOf() here instead";
+            return "(Expression is Type) is not valid. Use @typeOf() here instead";
         }
 
         case MODULE_MAIN_MISSING:

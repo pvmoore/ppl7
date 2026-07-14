@@ -254,6 +254,10 @@ void parseFunction(Module mod, ParseState state, bool isPublic) {
         }
     }
 
+    if(state.hasAttribute("noinline")) {
+        f.noinline = true;
+    }
+
     // fn
     state.skip("fn");
 

@@ -252,13 +252,6 @@ Expression attachAndRead(Node parent, Expression newExpr, ParseState state, bool
         }
     }
 
-    if(Is i = newExpr.as!Is) {
-        if(parent.isA!Is) {
-            int offset = state.peek(-1).text == "not" ? -2 : -1;
-            syntaxError(state, offset, "This 'is' expression is ambiguous. Use parentheses to clarify the intended meaning");
-        }
-    }
-
     // Swap expressions according to operator precedence
     if(Expression prevExpr = prev.as!Expression) {
 
@@ -657,10 +650,6 @@ Expression parseAndReturnIs(ParseState state) {
     if("not" == state.text()) {
         a.negate = true;
         state.next();
-
-        if("not" == state.text()) {
-            syntaxError(state, "Double negation is not allowed");
-        }
     }
 
     return a;

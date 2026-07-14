@@ -34,6 +34,8 @@ void defaultInitialiseArray(Array array, LLVMValueRef arrayPtr, GenerateState st
     if(array.numElements() == 0) return;
 
     if(elementType.isPointer()) {
+
+        // do we need this? we should already have stored null in here
         LLVMBuildStore(state.builder, LLVMConstNull(arrayTypeRef), arrayPtr);
         return;
     }
@@ -75,9 +77,14 @@ void propagateArrayValue(Array array, LLVMValueRef arrayPtr, LLVMTypeRef element
     LLVMValueRef endCounterValue = state.createConstI32Value(array.numElements() - 1);
     LLVMValueRef srcValue = LLVMBuildLoad2(state.builder, elementTypeRef, arrayPtr, "array_init_src");
 
+    LLVMBasicBlockRef startBlock = state.createBlock("array_init");
     LLVMBasicBlockRef loopBlock = state.createBlock("array_init_loop");
-    LLVMBasicBlockRef startBlock = LLVMGetPreviousBasicBlock(loopBlock);
     LLVMBasicBlockRef endBlock = state.createBlock("array_init_end");
+
+    LLVMBuildBr(state.builder, startBlock);
+
+    // start:
+    LLVMPositionBuilderAtEnd(state.builder, startBlock);
 
     LLVMBuildBr(state.builder, loopBlock);
 

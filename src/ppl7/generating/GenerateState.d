@@ -147,7 +147,8 @@ public:
                 logAnsi(mod, Ansi.RED_BOLD, "Module verification failed: %s", msgs.fromStringz());
                 LLVMDisposeMessage(msgs);
 
-                logAnsi(mod, Ansi.RED, "%s", currentModule.printModuleToString());
+                writefln(Ansi.YELLOW_BOLD ~ "Note:" ~ Ansi.RESET ~ " Written to bug-verify-failed.ll");
+                writeLLToFile(mod, "bug-verify-failed.ll");
 
                 return false;
             }
@@ -275,7 +276,7 @@ public:
     /**
      * This should get the intrinsic function and add it to the module if not already there.
      * It is not working for me however since when i ask for 'llvm.memset.inline' and params
-     * (ptr, i8, i64, i1) it returns a function with params (ptr, i8, i8, i1). Not sure why.
+     * (ptr, i8, i64, i1) it returns a function with params (ptr, i8, i8, i1). Not sure why?
      */
     LLVMValueRef getIntrinsicFunctionValue(string name, LLVMTypeRef[] paramTypes) {
         uint id = LLVMLookupIntrinsicID(name.toStringz(), name.length.as!uint);
@@ -376,8 +377,7 @@ public:
         }
 
         if(from.isStruct() && to.isStruct()) {
-            throwIf(true, "struct to struct cast should not happen. from = %s, to = %s, module = %s, function = %s",
-                from, to, mod.name, currentFunction ? currentFunction.printValueToString() : "unknown");
+            return value;
         }
 
         // Convert enums to the enum element type
@@ -441,6 +441,9 @@ public:
     LLVMValueRef getStructMemberPtr(LLVMTypeRef structType, LLVMValueRef structPtr, uint memberIndex, string name = null) {
         return LLVMBuildStructGEP2(builder, structType, structPtr, memberIndex, name.toStringz());
     }
+    LLVMValueRef getStructMemberValue(LLVMValueRef structValue, uint memberIndex, string name = null) {
+        return LLVMBuildExtractValue(builder, structValue, memberIndex, name.toStringz());
+    }
     LLVMValueRef setStructMemberValue(LLVMTypeRef structType, LLVMValueRef structPtr, LLVMValueRef value, uint memberIndex, string name = null) {
         LLVMValueRef ptr = getStructMemberPtr(structType, structPtr, memberIndex, name);
         LLVMBuildStore(builder, value, ptr);
@@ -451,6 +454,26 @@ public:
         LLVMValueRef ptr = LLVMBuildInBoundsGEP2(builder, elementType, arrayPtr, indices.ptr, 1, name.toStringz());
         LLVMBuildStore(builder, value, ptr);
         return ptr;
+    }
+    /**
+     * Convert a struct value into an equivalently sized integer value.
+     * This may be useful for something.
+     * Note that if the struct contains holes due to alignment there might be rubbish data
+     * that would not normally be a problem but would be a problem here.
+     *
+     * eg.
+     *  %s = type { i32, i32, i8, i32 }  ; this is a 16 byte struct
+     *  %i = i128                        ; this is a 16 byte int
+     */
+    LLVMValueRef convertStructValueToInt(LLVMValueRef structValue, LLVMTypeRef structType, int structSizeInBytes) {
+        auto storage = LLVMBuildAlloca(builder, structType, "struct-storage");
+        LLVMBuildStore(builder, structValue, storage);
+
+        LLVMTypeRef intType = LLVMIntTypeInContext(context, structSizeInBytes*8);
+        LLVMTypeRef intPtrType = LLVMPointerType(intType, 0);
+
+        auto intPtr = LLVMBuildBitCast(builder, storage, intPtrType, "int-ptr");
+        return LLVMBuildLoad2(builder, intPtrType, intPtr, "int-value");
     }
     //======================================================================== Attributes
     /**

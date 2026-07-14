@@ -76,6 +76,8 @@ void resolutionError(Node n, EError kind, ErrorExtraInfo extraInfo = null) {
     n.getProject().addError(new CompilationError(n.getModule(), n.as!Statement, t.line, t.column, kind, extraInfo));
 }
 
+
+
 void semanticError(Node n, EError kind, ErrorExtraInfo extraInfo = null) {
     semanticError(n.getProject(), n.getModule(), n, kind, extraInfo);
 }
@@ -91,4 +93,7 @@ void semanticError(Project project, Module mod, Node n, EError kind, ErrorExtraI
         t = mod.tokens[stmt.tokenIndex];
     }
     project.addError(new CompilationError(mod, stmt, t.line, t.column, kind, extraInfo));
+}
+void semanticError(ParseState state, Statement stmt, EError kind, ErrorExtraInfo extraInfo = null) {
+    semanticError(state.project, state.mod, stmt, kind, extraInfo);
 }

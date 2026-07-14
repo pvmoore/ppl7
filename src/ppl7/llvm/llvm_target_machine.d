@@ -29,7 +29,7 @@ public:
     }
     /**
      * Link all the modules together and then optimise the main module.
-     *  
+     *
      * It might be better to optimise the modules individually, create an object for each module,
      * then link all of the objects later. This would mean we could probably run the generate and
      * optimise steps in parallel.
@@ -60,7 +60,7 @@ public:
     bool buildProject(Project project) {
         Module mainModule = project.mainModule;
         log(mainModule, "Building project");
-        
+
         LLVMSetTargetMachineAsmVerbosity(targetMachine, 1);
 
         // Enabling this causes a translate phase failure (maybe LLVM bug?)
@@ -72,7 +72,7 @@ public:
 
         char* error;
         scope(exit) if(error !is null) LLVMDisposeMessage(error);
-    
+
         //log("  Writing bc file");
         if(LLVMWriteBitcodeToFile(mainModule.llvmModule, bcFile.toStringz())) {
             log(mainModule, "Failed to write bc file");
@@ -123,39 +123,39 @@ private:
 
         //LLVMTargetDataRef dataLayout = LLVMCreateTargetDataLayout(theTargetMachine);
         //log(" LLVMTargetDataRef = %s", dataLayout);
-        return theTargetMachine; 
+        return theTargetMachine;
     }
     LLVMPassBuilderOptionsRef createPassOptions() {
         // New pass manager
         LLVMPassBuilderOptionsRef passBuilderOptions = LLVMCreatePassBuilderOptions();
-        // Toggle debug logging when running the PassBuilder. 
+        // Toggle debug logging when running the PassBuilder.
         LLVMPassBuilderOptionsSetDebugLogging(passBuilderOptions, 0);
 
+        // Toggle adding the VerifierPass for the PassBuilder, ensuring all functions inside the module is valid.
+        LLVMPassBuilderOptionsSetVerifyEach(passBuilderOptions, 1);
+
         // Enable/disable loop interleaving
-        LLVMPassBuilderOptionsSetLoopInterleaving(passBuilderOptions, 0);
+        LLVMPassBuilderOptionsSetLoopInterleaving(passBuilderOptions, 1);
 
         // Enable/disable loop vectorization
-        LLVMPassBuilderOptionsSetLoopVectorization(passBuilderOptions, 0);
+        LLVMPassBuilderOptionsSetLoopVectorization(passBuilderOptions, 1);
 
         // Enable/disable slp loop vectorization
-        LLVMPassBuilderOptionsSetSLPVectorization(passBuilderOptions, 0);
+        LLVMPassBuilderOptionsSetSLPVectorization(passBuilderOptions, 1);
 
         // Enable/disable loop unrollin
-        LLVMPassBuilderOptionsSetLoopUnrolling(passBuilderOptions, 0);
+        LLVMPassBuilderOptionsSetLoopUnrolling(passBuilderOptions, 1);
 
         // I think this is a code size optimisation :: https://llvm.org/docs/MergeFunctions.html
         LLVMPassBuilderOptionsSetMergeFunctions(passBuilderOptions, 0);
 
-        // Toggle adding the VerifierPass for the PassBuilder, ensuring all functions inside the module is valid. 
-        LLVMPassBuilderOptionsSetVerifyEach(passBuilderOptions, 0);
-        
         // Other options that could be useful but I don't know enough about them
         //LLVMPassBuilderOptionsSetAAPipeline(passBuilderOptions, "?");
         //LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnrolling(passBuilderOptions, 1);
         //LLVMPassBuilderOptionsSetLicmMssaOptCap(passBuilderOptions, ?);
         //LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap(passBuilderOptions, ?);
         //LLVMPassBuilderOptionsSetCallGraphProfile(passBuilderOptions, 1);
-        //LLVMPassBuilderOptionsSetInlinerThreshold(passBuilderOptions, 25);
+        //LLVMPassBuilderOptionsSetInlinerThreshold(passBuilderOptions, 225);
 
         return passBuilderOptions;
     }
@@ -165,7 +165,7 @@ private:
     /**
      * Link modules together
      *
-     * After this step, mainModule.llvmModule contains all the LLVM code 
+     * After this step, mainModule.llvmModule contains all the LLVM code
      */
     bool linkModules(Module mainModule, Module[] allModules) {
         // Exit if we only have one module
@@ -176,7 +176,7 @@ private:
                                                 .map!(m => m.llvmModule)
                                                 .array;
 
-        log(mainModule, "Linking modules into [%s] <- %s", mainModule.name, allModules.filter!(it=>it !is mainModule).map!(m => m.name).array);                                                
+        log(mainModule, "Linking modules into [%s] <- %s", mainModule.name, allModules.filter!(it=>it !is mainModule).map!(m => m.name).array);
 
         foreach(LLVMModuleRef o; srcModules) {
             LLVMBool res = LLVMLinkModules2(dest, o);

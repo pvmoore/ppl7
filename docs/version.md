@@ -1,5 +1,10 @@
 # Version History
 
+## 0.2.25
+
+- Tidy test suite
+- Refactor struct and array comparison
+
 ## 0.2.24
 
 - Add immutable storage type to pointers and arrays

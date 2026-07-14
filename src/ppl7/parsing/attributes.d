@@ -10,11 +10,11 @@ struct Attribute {
 }
 
 /**
- * #(inline)                        // functions
- * #(name=x)    eg. #(name=itoa)    // functions
- * #(noinline)                      // functions
- * #(packed)                        // structs and unions
- * #(unqualified)                   // enums
+ * [[inline]]                        // functions
+ * [[name=x]]    eg. [[name=itoa]]   // functions
+ * [[noinline]]                      // functions
+ * [[packed]]                        // structs and unions
+ * [[unqualified]]                   // enums
  */
 final class Attributes {
 public:

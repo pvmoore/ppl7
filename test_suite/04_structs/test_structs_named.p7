@@ -1,7 +1,7 @@
 /**
  * magic!!
  * name "test named structs"
- * tags [struct]
+ * tags [struct,named-struct]
  * args []
  */
 
@@ -29,7 +29,7 @@ public fn main() {
     # Struct pointers
     Apple* applePtr;            assert applePtr is null
 
-    # todo - dereferencing null pointer.
+    #todo - dereferencing null pointer
     # This should trigger the null check assert if options.enableNullChecks is true
     #applePtr.a = '#'
 
@@ -42,21 +42,21 @@ public fn main() {
     # Struct within Struct
     Apple applez1
     Apple applez2
-    Pear pear
-    pear.apple = applez1;
-    pear.applePtr = &applez2;
+    AppleTree appleTree
+    appleTree.apple = applez1;
+    appleTree.applePtr = &applez2;
 
     Apple* a = &applez2
     assert *a is applez2
 
-    assert pear.apple is applez1
-    assert pear.applePtr is &applez2
-    assert *pear.applePtr is applez2
+    assert appleTree.apple is applez1
+    assert appleTree.applePtr is &applez2
+    assert *appleTree.applePtr is applez2
 }
 
-fn putchar(int) -> int
-
 fn defaultInitialisation() {
+
+    #----------------------------------------------
 
     # struct Apple {
     #     int a
@@ -64,38 +64,66 @@ fn defaultInitialisation() {
     #     bool c = true
     # }
 
-    Apple apple8
+    Apple apple
 
-    assert apple8.a is 0
-    assert apple8.b is 0.0
-    assert apple8.c is true
+    assert apple.a is 0
+    assert apple.b is 0.0
+    assert apple.c is true
+    assert apple is { a:0, b:0.0, c:true }
 
-    # struct Pear {
-    #     Apple apple
-    #     Apple* applePtr
-    # }
+    Apple pete
+    assert pete is { a:0, b: 0.0, c: true}
 
-    Pear pear4
+    Apple apple2 = {a:1}
+    assert apple2.a is 1
+    assert apple2.b is 0.0
+    assert apple2.c is true
 
-    assert pear4.apple.a is 0
-    assert pear4.apple.b is 0.0
-    assert pear4.apple.c is true
-    assert pear4.applePtr is null
+    Apple apple3 = { a:1, b:2.0, c:false }
+    assert apple3.a is 1
+    assert apple3.b is 2.0
+    assert apple3.c is false
 
     assert g_apple.a is 0
     assert g_apple.b is 0.0
     assert g_apple.c is true
 
-    assert g_pear.apple.a is 0
-    assert g_pear.apple.b is 0.0
-    assert g_pear.apple.c is true
-    assert g_pear.applePtr is null
+    assert g_2apples[0].a is 0
+    assert g_2apples[0].b is 0.0
+    assert g_2apples[0].c is true
 
-    # Set default values
-    Apple apple4a = {a:1}
-    assert apple4a.a is 1
-    assert apple4a.b is 0.0
-    assert apple4a.c is true
+    assert g_2apples[1].a is 0
+    assert g_2apples[1].b is 0.0
+    assert g_2apples[1].c is true
+
+    Apple[2] apples
+
+    assert apples[0].a is 0
+    assert apples[0].b is 0.0
+    assert apples[0].c is true
+
+    assert apples[1].a is 0
+    assert apples[1].b is 0.0
+    assert apples[1].c is true
+
+    #----------------------------------------------
+
+    # struct AppleTree {
+    #     Apple apple
+    #     Apple* applePtr
+    # }
+
+    AppleTree at
+
+    assert at.apple.a is 0
+    assert at.apple.b is 0.0
+    assert at.apple.c is true
+    assert at.applePtr is null
+
+    assert g_appleTree.apple.a is 0
+    assert g_appleTree.apple.b is 0.0
+    assert g_appleTree.apple.c is true
+    assert g_appleTree.applePtr is null
 
     # struct Fig {
     #     int a
@@ -115,9 +143,6 @@ fn defaultInitialisation() {
     assert @alignOf(fig.e) is 1
     assert @alignOf(fig.f) is 8
 
-    #assert @offsetOf(fig) is 0     # error - not a struct member
-    #assert @offsetOf(Fig) is 0     # error - not a struct member
-
     assert @offsetOf(fig.a) is 0
     assert @offsetOf(fig.b) is 4
     assert @offsetOf(fig.c) is 8
@@ -136,7 +161,6 @@ fn defaultInitialisation() {
     #     byte a
     # }
 
-    # nested struct members
     Gnat gnat
     assert @sizeOf(gnat) is 1
     assert @alignOf(gnat) is 1
@@ -147,7 +171,6 @@ fn defaultInitialisation() {
     #     bool b
     #     short c
     #}
-
 
     Chicken chicken
     assert @sizeOf(chicken) is 8
@@ -223,19 +246,30 @@ fn defaultInitialisation() {
 }
 
 fn structLiterals() {
+    # struct AppleTree {
+    #     Apple apple
+    #     Apple* applePtr
+    # }
+
     # Struct literal containing struct literal
-    Pear pear2 = { apple: { a: 1, b: 1.0 } }
-    assert pear2.apple.a is 1
-    assert pear2.apple.b is 1.0
-    assert pear2.apple.c is true
-    assert pear2.applePtr is null
+    AppleTree appleTree = { apple: { a: 1, b: 1.0 } }
+    assert appleTree.apple.a is 1
+    assert appleTree.apple.b is 1.0
+    assert appleTree.apple.c is true
+    assert appleTree.applePtr is null
 
     # Struct literal containing null pointer
-    Pear pear3 = { applePtr: null }
-    assert pear3.applePtr is null
+    AppleTree appleTree2 = { applePtr: null }
+    assert appleTree2.applePtr is null
+
+    # struct Apple {
+    #     int a
+    #     float b
+    #     bool c = true
+    # }
 
     # Set default values
-    Apple apple7 = {c: false}
+    Apple apple7 = { c: false }
     assert apple7.a is 0
     assert apple7.b is 0.0
     assert apple7.c is false
@@ -245,31 +279,41 @@ fn structLiterals() {
     assert orange.y is 3.0
 
     # Struct literals (unnamed arguments)
-    Apple apple4 = {a:'p', b:1.0}
+    Apple apple4 = { a:'p', b:1.0 }
     assert apple4.a is 'p'
     assert apple4.b is 1.0
 
     # Struct literals (named arguments)
-    Apple apple5 = {a: 1, b: 1.0}
+    Apple apple5 = { a: 1, b: 1.0 }
     assert apple5.a is 1
     assert apple5.b is 1.0
 
-    Apple apple6 = {b: 3.14, a: 2}
+    Apple apple6 = { b: 3.14, a: 2 }
     assert apple6.a is 2
     assert apple6.b is 3.14
 
-    #error - Cannot implicitly convert float to int
-    #pple apple4a = {1.0, 1.1}
+    #error - "Cannot implicitly convert float to int" [Cannot implicitly convert float to the struct member type int]
+    Apple apple4a = { a:1.0, b:1.1 }
+    #end
 
-    # error - Mixing named and unnamed arguments
-    #Apple apple4b = {a: 'p', 1.0}
+    #error - "Mixing named and unnamed arguments" [ Cannot mix named and unnamed arguments in a struct literal]
+    Apple apple4b = { a: 'p', 1.0 }
+    #end
 
-    # error - too many arguments
-    #Apple apple4c = {'p', 1.0, 2.0}
+    #error "Named args required" [Named struct literals require all arguments to be named]
+    Apple apple4c = { 1, 2.0 }
+    #end
+
+    #error "struct arg name not found" [Struct member 'z' not found]
+    Apple apple4c = { z:'p', b:1.0, a:2 }
+    #end
 }
 
 fn opaque() -> void {
-    TNSOpaque o
+
+    # struct Opaque {}
+
+    Opaque o
     assert @sizeOf(o) is 0
     assert @alignOf(o) is 1
 }
@@ -405,17 +449,18 @@ fn visibility() {
     #ug = { a:1, b:1, d:1, e:1, f:1 }   # error - some of these members are not visible
 }
 
-struct TNSOpaque {}
+struct Opaque {}
 
 Apple g_apple
-Pear g_pear
+Apple[2] g_2apples
+AppleTree g_appleTree
 
 struct Apple {
     int a
     float b
     bool c = true
 }
-struct Pear {
+struct AppleTree {
     Apple apple
     Apple* applePtr
 }

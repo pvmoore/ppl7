@@ -24,7 +24,89 @@ public fn main() -> int {
 
     #-----------------
 
+    testPete()
+
     return 0
 }
 
+[[noinline]]
+fn testPete() {
 
+    # Pete pete
+    # assert pete is { a:0, b:0.0, c:true }
+    # assert pete is not { a:0, b:0.0, c:false }
+
+    # Pete2 pete2
+    # assert pete2 is { a:0, inner: { y:3, z:4 }, b:0.0, c:true }
+
+    # assert pete2 is not { a:0, inner: { y: 3, z:4 }, b:0.0, c:true }
+
+    #todo test inner anon struct
+    #todo test inner pointer
+    #todo test inner array
+    #todo test empty struct and nested empty struct
+
+    # Monkey monkey
+    # assert monkey is { a: [0,0,0] }
+    # assert monkey is not { a: [1,0,0] }
+    # assert monkey is not { a: [0,1,0] }
+    # assert monkey is not { a: [0,0,1] }
+
+
+    # int[3] a = [1,2,3]
+
+    # assert a is [1,2,3]
+
+    # Red[2] reds
+    # assert reds is [{a:1, b:2, c:3}, {a:1, b:2, c:3}]
+
+    # E2[3] green
+    # assert green is [E2.A, E2.A, E2.A]
+
+    # Empty empty
+    # assert empty is {}
+
+    # Blue blue
+    # assert blue is { a:0 }
+    # assert blue is { a:0, e:{} }
+
+    # assert blue is not { a:1}
+
+    # int[0] aa
+}
+
+struct Pete {
+    int a
+    float b
+    bool c = true
+}
+
+struct Pete2 {
+    int a
+    Inner inner
+    float b
+    bool c = true
+}
+struct Inner {
+    int y = 3
+    int z = 4
+}
+struct Monkey {
+    int[3] a
+}
+struct Red {
+    int a = 1
+    int b = 2
+    int c = 3
+}
+enum E2 : Red {
+    A = { a:10, b:20, c:30 }
+    B = { a:4, b:5, c:6 }
+}
+struct Empty {
+
+}
+struct Blue {
+    int a
+    Empty e
+}

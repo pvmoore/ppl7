@@ -31,12 +31,7 @@ Tuple!(uint, uint, uint) getLLVMVersion() {
 LLVMBool toLLVMBool(bool b) {
     return b ? 1 : 0;
 }
-bool isPointer(LLVMTypeRef ty) {
-    return LLVMGetTypeKind(ty) == LLVMTypeKind.LLVMPointerTypeKind;
-}
-bool isPointer(LLVMValueRef value) {
-    return LLVMTypeOf(value).isPointer();
-}
+
 string printModuleToString(LLVMModuleRef mod) {
     auto chars = LLVMPrintModuleToString(mod);
     return cast(string)chars.fromStringz();
@@ -58,11 +53,33 @@ LLVMValueRef alignof(LLVMTypeRef t) {
 LLVMValueRef sizeof(LLVMTypeRef t) {
 	return LLVMSizeOf(t);
 }
-LLVMTypeRef getElementType(LLVMTypeRef ty) {
-	return LLVMGetElementType(ty);
+bool isPointer(LLVMValueRef value) {
+    return LLVMTypeOf(value).isPointer();
 }
 bool isFunction(LLVMValueRef value) {
     return LLVMGetValueKind(value) == LLVMValueKind.LLVMFunctionValueKind;
+}
+
+bool isPointer(LLVMTypeRef ty) {
+    return LLVMGetTypeKind(ty) == LLVMTypeKind.LLVMPointerTypeKind;
+}
+bool isArray(LLVMTypeRef ty) {
+    return LLVMGetTypeKind(ty) == LLVMTypeKind.LLVMArrayTypeKind;
+}
+bool isVector(LLVMTypeRef ty) {
+    return LLVMGetTypeKind(ty) == LLVMTypeKind.LLVMVectorTypeKind;
+}
+bool isStruct(LLVMTypeRef ty) {
+    return LLVMGetTypeKind(ty) == LLVMTypeKind.LLVMStructTypeKind;
+}
+// works on array, vector and pointer types
+LLVMTypeRef getElementType(LLVMTypeRef ty) {
+    assert(ty.isPointer() || ty.isArray() || ty.isVector());
+	return LLVMGetElementType(ty);
+}
+uint getArrayLength(LLVMTypeRef arr) {
+    assert(arr.isArray());
+	return LLVMGetArrayLength(arr);
 }
 
 

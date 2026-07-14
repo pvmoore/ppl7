@@ -40,12 +40,12 @@ struct TargetOfIdentifier {
 
     LLVMValueRef getLLVMValue() {
         Module mod = getClientModule();
-        return isVariable() ? var.llvmValueByModule[mod.name] : isFunction() ? func.llvmValueByModule[mod.name] : null; 
-    } 
+        return isVariable() ? var.llvmValueByModule[mod.name] : isFunction() ? func.llvmValueByModule[mod.name] : null;
+    }
 
     string toString() {
         if(!isResolved()) return "Target(UNRESOLVED)";
-        string r = isRemote() ? "%s.".format(getTargetModule().name) : "";
+        string r = !identifier.isAttached() ? "" : isRemote() ? "%s.".format(getTargetModule().name) : "";
         if(isVariable()) return "Target(%s%s)".format(r, var);
         return "Target(fn %s%s)".format(r, func.name);
     }
