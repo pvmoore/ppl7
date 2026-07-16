@@ -64,7 +64,7 @@ public:
         errors ~= e;
 
         // Bail out if this is a SyntaxError
-        if(e.eerror() == EError.SYNTAX) { throw new Exception(e.getSummary()); }
+        if(e.eerror() == EError.SYNTAX) { throw new SyntaxError(); }
     }
     void addModule(Module mod) {
         //consoleLog("Adding module %s %s", mod.baseDirectory, mod.relFilename);

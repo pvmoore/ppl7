@@ -10,6 +10,7 @@ import std.algorithm : map, uniq;
 import std.range     : array, chain;
 import std.traits    : isSomeString;
 import std.datetime.stopwatch : StopWatch, AutoStart;
+import std.regex     : Regex, regex, matchFirst;
 
 import ppl7.all;
 
@@ -79,12 +80,21 @@ void runTestDirectory(string suiteName, string directory) {
 struct Variation {
     string name;
     string src;
-    string[] errors;
+    Regex!char[] errorRegexes;
     bool moreToCome;
 }
 
 void runTestFile(string filename) {
     filename = filename.buildNormalizedPath().replace("\\", "/");
+
+    Tuple!(string, "name", Regex!char, "error") getNameAndErrorString(string line) {
+        auto q1 = line.indexOf("\"");        assert(q1!=-1);
+        auto q2 = line.indexOf("\"", q1+1);  assert(q2!=-1);
+
+        string error = ".*" ~ line[q2+1..$-1].strip() ~ ".*";
+
+        return tuple!("name", "error")(line[q1+1..q2-1], regex(error));
+    }
 
     // Split the source file if it contains #begin and #end blocks
     Variation[] getSourceVariations() {
@@ -115,14 +125,10 @@ void runTestFile(string filename) {
                     pos = start+6;
                     auto line = s[pos..s.indexOf("\n", pos)];
 
-                    var.name = getBetween(line, null, "\"", "\"");
+                    auto t = getNameAndErrorString(line.as!string);
+                    var.name = t.name;
+                    var.errorRegexes = [t.error];
 
-                    var.errors = getBetween(line, null, "[", "]")
-                                    .split(",")
-                                    .map!(it=>it.strip())
-                                    .map!(it=>it.toLower())
-                                    .map!((it)=>(it.length > 0 && it[0] == '"') ? it[1..$-1] : it)
-                                    .array();
                     pos = end;
                     continue;
                 }
@@ -173,7 +179,7 @@ void runTest(string filename, ISourceProvider sourceProvider, Variation variatio
     Meta meta = Meta.readFromString(contents);
     if(!meta.isTest) return;
 
-    meta.errors = variation.errors;
+    meta.errorRegexes = variation.errorRegexes;
 
     if(meta.args.length > 0) {
         throw new Exception("Implement test suite args");
@@ -223,7 +229,7 @@ void runTest(string filename, ISourceProvider sourceProvider, Variation variatio
     bool pass = false;
     string[] msg;
 
-    if(meta.errors.length == 0) {
+    if(meta.errorRegexes.length == 0) {
         // This is expected to pass. If there are no errors (in which case this is a fail) then
         // we need to run the executable to check the status code
 
@@ -237,22 +243,26 @@ void runTest(string filename, ISourceProvider sourceProvider, Variation variatio
             }
         }
     } else {
-        // This is expected to fail. Check that all expected errors are found
-
-        int numFound;
+        // This is expected to fail. Check that all expected error is found
         foreach(actual; errors) {
-            string summary = actual.getSummary().toLower();
-            foreach(expected; meta.errors) {
-                if(summary.indexOf(expected) != -1) {
-                    numFound++;
-                }
+
+            string summary = actual.getSummary();//.toLower();
+
+            auto c = matchFirst(summary, meta.errorRegexes[0]);
+            if(!c.empty) {
+                pass = true;
+                break;
             }
+
+            // if(summary.indexOf(meta.error) != -1) {
+            //     pass = true;
+            //     break;
+            // }
         }
-        pass = numFound == meta.errors.length;
 
         if(!pass) {
-            msg ~=  "Not all expected error(s) were found:";
-            msg ~= meta.errors.map!(it=>"  Expected : '%s'".format(it)).array();
+            msg ~=  "Expected error was not found:";
+            msg ~= "  Expected : '%s'".format(meta.errorRegexes[0]);
             msg ~= errors.map!(it=>"  Actual   : '%s'".format(it.getSummary())).array();
 
             if(errors.length == 0) {
@@ -304,7 +314,7 @@ struct Meta {
     string name;
     string[] tags;
     string[] args;
-    string[] errors;
+    Regex!char[] errorRegexes;
 
     bool containsAllTags(string[] requiredTags) {
         foreach(t; requiredTags) {
@@ -344,8 +354,8 @@ struct Meta {
             "  name \"%s\"\n" ~
             "  tags %s\n" ~
             "  args %s\n" ~
-            "  errors %s\n}"
-        ).format(name, tags, args, errors);
+            "  error %s\n}"
+        ).format(name, tags, args, errorRegexes);
     }
 }
 

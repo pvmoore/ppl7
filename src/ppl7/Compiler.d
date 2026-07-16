@@ -6,7 +6,7 @@ final class Compiler {
 public:
     enum versionMajor = 0;
     enum versionMinor = 2;
-    enum versionPatch = 25;
+    enum versionPatch = 26;
 
     this(CompilerOptions options) {
         options.prepareForUse();
@@ -80,8 +80,10 @@ public:
 
             }while(false);
 
+        }catch(SyntaxError e) {
+            // Let the user see the errors. No need to log anything here
         }catch(Exception e) {
-            //consoleLogAnsiAlways(Ansi.RED_BOLD, "!! Exception: %s %s:%s %s", e.msg, e.file, e.line, e.info);
+            consoleLogAnsiAlways(Ansi.RED_BOLD, "ICE: %s %s:%s %s", e.msg, e.file, e.line, e.info);
         }
 
         cleanup();
@@ -159,7 +161,7 @@ private:
             consoleLogAnsi(Ansi.RED_BOLD, "Not all nodes resolved after %s iterations", MAX_ITERATIONS);
 
             // Exit here if there were any errors
-            //if(project.hasErrors()) return false;
+            if(project.hasErrors()) return false;
 
             // Convert unresolved nodes to errors
             foreach(state; resolveStates) {

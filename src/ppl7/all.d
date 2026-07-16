@@ -117,6 +117,12 @@ import ppl7.utils.utils;
 import ppl7.utils.container_utils;
 import ppl7.utils.logging_utils;
 
+final class SyntaxError : Exception {
+    this() {
+        super("Syntax Error");
+    }
+}
+
 __gshared {
     // All static initialisation needs to go in here to avoid circular dependencies
     static this() {

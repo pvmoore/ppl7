@@ -30,7 +30,7 @@ string formatErrorMessage(Module mod, string message, int line, int column) {
             colour = Ansi.YELLOW_BOLD;
         } else if(t.etoken == EToken.IDENTIFIER && t.text in KEYWORDS) {
             colour = Ansi.BLUE;
-        } 
+        }
         formatted ~= fmt(colour, t.text);
 
         if(i+1 < tokens.length) {

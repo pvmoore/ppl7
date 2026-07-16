@@ -38,17 +38,17 @@ string getSummaryMessage(CompilationError error) {
             return "Cannot assign to immutable variable";
 
         case BUILTIN_PROPERTY_MISSING_TYPE:
-            return "@property() first argument must be a type";
+            return "@property first argument must be a type";
         case BUILTIN_PROPERTY_MISSING_KEY:
-            return "@property() second argument must be a string literal";
+            return "@property second argument must be a string literal";
         case BUILTIN_PROPERTY_INVALID_TYPE:
-            return "@property() type must be one of bool, byte, short, int, long, float, double";
+            return "@property type must be one of bool, byte, short, int, long, float, double";
         case BUILTIN_PROPERTY_NOT_DEFINED:
             return "@property(\"%s\") not defined and no default was provided".format(stmt.as!StringLiteral().stringValue);
         case BUILTIN_PROPERTY_INVALID_VALUE:
-            return "@property() value cannot be converted to the expected type";
+            return "@property value cannot be converted to the expected type";
         case BUILTIN_PROPERTY_INVALID_DEFAULT_VALUE:
-            return "@property() default value cannot be converted to the expected type";
+            return "@property default value cannot be converted to the expected type";
 
         case BUILTIN_OFFSET_OF_NOT_MEMBER:
             return "@offsetOf() requires a struct member as the first argument";
@@ -122,9 +122,9 @@ string getSummaryMessage(CompilationError error) {
         case IS_TYPE_MISMATCH: {
             Is i = error.stmt.as!Is; assert(i);
             if(i.left().isA!Type) {
-                return "(Type is Expression) is not valid. Use @typeOf() here instead";
+                return "(Type is Expression) is not valid. Use @typeOf here instead";
             }
-            return "(Expression is Type) is not valid. Use @typeOf() here instead";
+            return "(Expression is Type) is not valid. Use @typeOf here instead";
         }
 
         case MODULE_MAIN_MISSING:
@@ -160,7 +160,7 @@ string getSummaryMessage(CompilationError error) {
             return "Named struct literals require all arguments to be named";
 
         case STRUCT_MEMBER_UNNAMED:
-            return "Expecting this Struct member to be named";
+            return "Struct member missing name";
 
         case SYNTAX:
             return error.extraInfo.as!StringErrorExtraInfo.msg;

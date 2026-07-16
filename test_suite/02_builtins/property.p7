@@ -31,11 +31,11 @@ public fn main() -> int {
         assert false
     }
 
-    #error "unsupported property type" [@property() type must be one of]
+    #error "unsupported property type" @property type must be one of
     bool g = @property(void, "sdfsds")
     #end
 
-    #error "property not found" [not defined and no default was provided]
+    #error "property not found" not defined and no default was provided
     bool e = @property(bool, "blah")
     #end
 

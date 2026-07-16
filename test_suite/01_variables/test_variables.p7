@@ -11,7 +11,7 @@ public fn main() {
     locals()
     globals()
 
-    #error "variable not found" [cannot be resolved]
+    #error "variable not found" cannot be resolved
     a = 0
     #end
 }
@@ -29,11 +29,11 @@ fn locals() {
 
     fn()->void f1;  assert f1 is null; assert @typeOf(f1) is fn()->void
 
-    #error "variable initialiser type mismatch" [Cannot implicitly convert float to int]
+    #error "variable initialiser type mismatch" Cannot implicitly convert float to int
     int b2 = 2.1
     #end
 
-    #error "shadowing local" [shadows another variable in the same scope]
+    #error "shadowing local" shadows another variable in the same scope
     int a = 3
     #end
 }
@@ -43,7 +43,7 @@ fn globals() {
     assert tv_g_b is 1
     assert tvFuncPtr is null
 
-    #error "shadowing global" [shadows another variable in the same scope]
+    #error "shadowing global" shadows another variable in the same scope
     int tv_g_a = 3
     #end
 }
@@ -55,13 +55,13 @@ fn globals() {
 bool tv_g_a
 int tv_g_b = 1
 
-#error "const not initialised" [Const variables must be initialised]
+#error "const not initialised" Const variables must be initialised
 const int g_z
 #end
 
 const int g_a = 7
 
-#error "shadowing global" [shadows another variable in the same scope]
+#error "shadowing global" shadows another variable in the same scope
 int tv_g_a = 2
 #end
 

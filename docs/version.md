@@ -1,5 +1,10 @@
 # Version History
 
+## 0.2.26
+
+- Convert test suite error strings to regex and remove the square bracket syntax
+- Add more tests
+
 ## 0.2.25
 
 - Tidy test suite

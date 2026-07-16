@@ -14,7 +14,7 @@ fn immutables() {
     int c0
     assert @isImmutable(c0) is false
 
-    #error "immutable must be ptr or array" [Only arrays or pointers can have immutable data]
+    #error "immutable must be ptr or array" Only arrays or pointers can have immutable data
     immutable int nope
     #end
 
@@ -50,7 +50,7 @@ fn immutables() {
 
     #------------------------------- taking address of array
 
-    #error "cast immutable int* to int*" [Cannot assign immutable int* to int*]
+    #error "cast immutable int* to int*" Cannot assign immutable int\* to int\*
     mptr = &iarray
     #end
 
@@ -79,15 +79,15 @@ fn immutables() {
 
     #------------------------------- set target
 
-    #error "mutation via immutable ptr" [Cannot assign to immutable variable]
+    #error "mutation via immutable ptr" Cannot assign to immutable variable
     *iptr = 5
     #end
 
-    #error "mutation via immutable ptr index" [Cannot assign to immutable variable]
+    #error "mutation via immutable ptr index" Cannot assign to immutable variable
     iptr[0] = 5
     #end
 
-    #error "mutation via immutable array index" [Cannot assign to immutable variable]
+    #error "mutation via immutable array index" Cannot assign to immutable variable
     iarray[0] = 10
     #end
 
@@ -95,12 +95,12 @@ fn immutables() {
     immutableArrayParameter(iarray)
 }
 fn immutablePtrParameter(immutable int* ptr) {
-    #error "mutation via immutable ptr" [Cannot assign to immutable variable]
+    #error "mutation via immutable ptr" Cannot assign to immutable variable
     ptr[0] = 3
     #end
 }
 fn immutableArrayParameter(immutable int[3] array) {
-    #error "mutation via immutable array index" [Cannot assign to immutable variable]
+    #error "mutation via immutable array index" Cannot assign to immutable variable
     array[0] = 10
     #end
 }

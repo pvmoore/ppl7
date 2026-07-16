@@ -292,19 +292,19 @@ fn structLiterals() {
     assert apple6.a is 2
     assert apple6.b is 3.14
 
-    #error - "Cannot implicitly convert float to int" [Cannot implicitly convert float to the struct member type int]
+    #error - "Cannot implicitly convert float to int" Cannot implicitly convert float to the struct member type int
     Apple apple4a = { a:1.0, b:1.1 }
     #end
 
-    #error - "Mixing named and unnamed arguments" [ Cannot mix named and unnamed arguments in a struct literal]
+    #error - "Mixing named and unnamed arguments" Cannot mix named and unnamed arguments in a struct literal
     Apple apple4b = { a: 'p', 1.0 }
     #end
 
-    #error "Named args required" [Named struct literals require all arguments to be named]
+    #error "Named args required" Named struct literals require all arguments to be named
     Apple apple4c = { 1, 2.0 }
     #end
 
-    #error "struct arg name not found" [Struct member 'z' not found]
+    #error "struct arg name not found" Struct member 'z' not found
     Apple apple4c = { z:'p', b:1.0, a:2 }
     #end
 }

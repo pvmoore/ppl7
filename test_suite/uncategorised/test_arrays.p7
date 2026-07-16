@@ -4,35 +4,29 @@
  * tags [array]
  * args []
  */
-
 public fn main() {
     initialisation()
 
-    #error "no array length" [Array is missing length argument]
-    int[] nope
-    #end
-
-    #error "zero elements" [Array has zero elements]
-    int[0] zero
-    #end
-
-    # Create an array variable
-    int[2] a;               assert a is [0, 0]
-
-
     # Get a value
-    int e1 = a[1];          assert e1 is 0
+    int[2] a = [1, 2]
+    int e1 = a[1]
+    assert e1 is 2
 
     # Set a value
-    a[0] = 33;              assert a is [33, 0]
+    a[0] = 33
+    assert a is [33, 2]
 
     # copy the array
-    int[2] f2 = a;          assert f2 is [33, 0]
-
+    int[2] f2 = a
+    assert f2 is [33, 2]
     assert @typeOf(a) is int[2]
 
-    f2[0] = 34;             assert f2 is [34, 0]
-                            assert a is [33, 0]
+    f2[0] = 34
+    # f2 should now be [34,2]
+    assert f2 is [34, 2]
+
+    # a should be unchanged
+    assert a is [33, 2]
 
     # Get pointer to array
     int* ptr  = &f2
@@ -41,24 +35,59 @@ public fn main() {
     assert ptr is ptr2
     assert ptr is not ptr3
 
-    ptr[1] = 35;            assert f2 is [34, 35]
+    ptr[1] = 35
+    assert f2 is [34, 35]
 
-    #float[2] f2 = a           # variable initialiser type mismatch
-    #int[2] g = [1, 2, 3]      # too many elements
-    #int[2] h = [1, 2.0]       # element type mismatch
+    #error "type mismatch" Cannot implicitly convert
+    float[2] nope = a
+    #end
+
+    #error "too many elements" Array literal has 3 elements, but the array type requires 2
+    int[2] nope = [1, 2, 3]
+    #end
+
+    #error "element type mismatch" Cannot implicitly convert float to the array element type int
+    int[2] nope = [1, 2.0]
+    #end
 }
 
 fn initialisation() {
-    int[2] a;               assert a is [0, 0]
-    float[1] b;             assert b is [0.0]
-    int*[2] c;              assert c is [null, null]
-    int[3]* d;              assert d is null
-    int[3] e = [1, 2, 3];   assert e is [1, 2, 3]
 
-    # array of structs
-    Red[2] red;
+    #error "no array length" Array is missing length argument
+    int[] nope
+    #end
 
+    #error "zero elements" Array has zero elements
+    int[0] nope
+    #end
 
+    #------------------------ initialise to zero
+    int[2] a
+    assert a is [0, 0]
+
+    float[1] b
+    assert b is [0.0]
+
+    int*[2] c
+    assert c is [null, null]
+
+    int[3]* d
+    assert d is null
+
+    int[3] e = [1, 2, 3]
+    assert e is [1, 2, 3]
+
+    #------------------------ array of structs
+
+    # struct Red {
+    #     int a = 1
+    #     int b = 2
+    #     int c = 3
+    # }
+
+    Red[2] red
+
+    # initialise to the struct init value
     assert red[0].a is 1
     assert red[0].b is 2
     assert red[0].c is 3
@@ -67,12 +96,25 @@ fn initialisation() {
     assert red[1].b is 2
     assert red[1].c is 3
 
-    assert red is [{a:1, b:2, c:3}, {a:1, b:2, c:3}]
+    assert red is [ {a:1, b:2, c:3}, {a:1, b:2, c:3} ]
 
-    # array of enums
-    E1[3] blue;             assert blue is [E1.A, E1.A, E1.A]
+    #------------------------ array of enums
 
-    # array of struct enums
+    # enum E1 : byte {
+    #     A = 1     # = 1
+    #     B         # = 2
+    # }
+
+    E1[3] blue
+    assert blue is [E1.A, E1.A, E1.A]
+
+    #------------------------ array of struct enums
+
+    # enum E2 : Red {
+    #     A = { a:10, b:20, c:30 }
+    #     B = { a:4,  b:5,  c:6 }
+    # }
+
     E2[3] green
     assert green[0].a is 10
     assert green[0].b is 20
@@ -88,10 +130,10 @@ fn initialisation() {
 
     assert green is [E2.A, E2.A, E2.A]
 
-    # global array
+    #------------------------ global array
     assert g_red is [{a:1, b:2, c:3}, {a:1, b:2, c:3}, {a:1, b:2, c:3}]
 
-    # call function with array parameter
+    #------------------------ call function with array parameter
     int[3] f = [1, 2, 3]
     arrayParam([1, 2, 3])
     arrayParam(f)
@@ -110,8 +152,8 @@ struct Red {
 }
 
 enum E1 : byte {
-    A = 1
-    B       # = 2
+    A = 1       # = 1
+    B           # = 2
 }
 
 enum E2 : Red {

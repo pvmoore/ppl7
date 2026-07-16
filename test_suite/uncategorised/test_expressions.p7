@@ -21,18 +21,18 @@ public fn main() {
     bool a12 = (1 is 2) is false    ; assert a12
 
     # bitwise expressions
-    int b1 = 0b111 & 0b10  ; assert b1 is 0b10
-    int b2 = 0b01 | 0b10   ; assert b2 is 0b11
-    int b3 = 0b11 ^ 0b10   ; assert b3 is 0b01
-    int b4 = 0b11 << 2     ; assert b4 is 0b1100
-    int b5 = 0b1100 >> 2   ; assert b5 is 0b11
+    int b1 = 0b111 & 0b10           ; assert b1 is 0b10
+    int b2 = 0b01 | 0b10            ; assert b2 is 0b11
+    int b3 = 0b11 ^ 0b10            ; assert b3 is 0b01
+    int b4 = 0b11 << 2              ; assert b4 is 0b1100
+    int b5 = 0b1100 >> 2            ; assert b5 is 0b11
 
     # arithmetic expressions
-    int c1 = 2 + 3              ; assert c1 is 5
-    short c2 = (5 - 2) as short ; assert c2 is 3
-    float c3 = 96.14 * 2        ; assert c3 is 192.28
-    double c4 = 123.45 / 2.0    ; assert c4 is 61.725
-    int c5 = 0xffff %% 2        ; assert c5 is 1
+    int c1 = 2 + 3                  ; assert c1 is 5
+    short c2 = (5 - 2) as short     ; assert c2 is 3
+    float c3 = 96.14 * 2            ; assert c3 is 192.28
+    double c4 = 123.45 / 2.0        ; assert c4 is 61.725
+    int c5 = 0xffff %% 2            ; assert c5 is 1
 
     # Pointer expressions
     int* y1 = null
@@ -51,16 +51,16 @@ public fn main() {
     p1 = p2 ; assert p1 is 1
 
     # Op assign
-    p1 += 2     ; assert p1 is 3
-    p1 -= 1     ; assert p1 is 2
-    p1 *= 3     ; assert p1 is 6
-    p1 /= 2     ; assert p1 is 3
-    p1 %= 2     ; assert p1 is 1
-    p1 ^= 3     ; assert p1 is 2
-    p1 &= 1     ; assert p1 is 0
-    p1 |= 2     ; assert p1 is 2
-    p1 <<= 1    ; assert p1 is 4
-    p1 >>= 1    ; assert p1 is 2
+    p1 += 2                     ; assert p1 is 3
+    p1 -= 1                     ; assert p1 is 2
+    p1 *= 3                     ; assert p1 is 6
+    p1 /= 2                     ; assert p1 is 3
+    p1 %= 2                     ; assert p1 is 1
+    p1 ^= 3                     ; assert p1 is 2
+    p1 &= 1                     ; assert p1 is 0
+    p1 |= 2                     ; assert p1 is 2
+    p1 <<= 1                    ; assert p1 is 4
+    p1 >>= 1                    ; assert p1 is 2
 
     # Parens
     int f1 = (1 + 2) * 3        ; assert f1 is 9

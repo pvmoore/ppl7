@@ -25,7 +25,7 @@ fn vars() {
     # ok - initialise later
     int aa
 
-    #error "const not initialised" [Const variables must be initialised]
+    #error "const not initialised" Const variables must be initialised
     const int bb
     #end
 
@@ -33,11 +33,11 @@ fn vars() {
 
     a = 9       # ok
 
-    #error "modifying const" [Cannot assign to a const variable]
+    #error "modifying const" Cannot assign to a const variable
     b = 10
     #end
 
-    #error "modifying const variable" [Cannot assign to a const variable]
+    #error "modifying const variable" Cannot assign to a const variable
     b += 1
     #end
 
@@ -67,7 +67,7 @@ fn vars() {
     int* ap5 = ap2 as int*
 }
 fn constParam(const int a, int b) {
-    #error "modifying const param" [Cannot assign to a const variable]
+    #error "modifying const param" Cannot assign to a const variable
     a += 1  # error - modifying a const
     #end
 
@@ -88,11 +88,11 @@ fn arrays() {
     # ok - reassignment
     c = c2
 
-    #error "modifying const variable" [Cannot assign to a const variable]
+    #error "modifying const variable" Cannot assign to a const variable
     d = c2
     #end
 
-    #error "modifying const variable" [Cannot assign to a const variable]
+    #error "modifying const variable" Cannot assign to a const variable
     const int[2] d2 = [1,2]
     d = d2
     #end
@@ -109,22 +109,22 @@ fn enums() {
     assert @isConst(me) is false
     assert @isConst(e1)
 
-    #error "modifying const enum var" [Cannot assign to a const variable]
+    #error "modifying const enum var" Cannot assign to a const variable
     e1 = E1.B
     #end
 }
 fn anonStructs() {
     const struct{int a} g1 = { 1 }
 
-    #error "const struct cannot be reassigned" [Cannot assign to a const variable]
+    #error "const struct cannot be reassigned" Cannot assign to a const variable
     g1 = { 2 }
     #end
 
-    #error "anon struct with const members" [ Anonymous structs cannot have const members]
+    #error "anon struct with const members" Anonymous structs cannot have const members
     struct{const int a} g2
     #end
 
-    #error "const struct members do not count" [Struct literal has too many arguments]
+    #error "const struct members do not count" Struct literal has too many arguments
     S1 e2 = { 1, 2 }    # (const members must be initialised internally)
     #end
 
@@ -160,7 +160,7 @@ struct S2 {
     #const int d = A + B * C    # ok - resolves to a compile time constant
 }
 
-#error "struct const member not initialised" [Const variable is not initialised]
+#error "struct const member not initialised" Const variable is not initialised
 struct S3 {
     const int A
 }
@@ -170,7 +170,7 @@ fn namedStructs() {
     S2 s2
     assert s2.A is 3
 
-    #error "A is const" [Cannot assign to a const variable]
+    #error "A is const" Cannot assign to a const variable
     s2.A = 4
     #end
 

@@ -10,7 +10,7 @@ public fn main() {
 
     int* bb;      assert bb is null
 
-    #error "double negation" [Boolean 'not' should be replaced with 'is false']
+    #error "double negation" Boolean 'not' should be replaced with 'is false'
     assert bb is not not null
     #end
 
@@ -20,11 +20,11 @@ public fn main() {
     assert int is int
     assert int is not bool
 
-    #error "Type is Expression" [Use @typeOf() here instead]
+    #error "Type is Expression" Use @typeOf here instead
     bool nope = int is a
     #end
 
-    #error "Expression is Type" [Use @typeOf() here instead]
+    #error "Expression is Type" Use @typeOf here instead
     bool nope = a is int
     #end
 
@@ -55,11 +55,11 @@ public fn main() {
     assert b is 2
     assert a is not b
 
-    #error "Ambiguous 'is' expressions" [Use parentheses to clarify the intended meaning]
+    #error "Ambiguous 'is' expressions" Use parentheses to clarify the intended meaning
     bool nope = 1 is 1 is not true
     #end
 
-    #error "Ambiguous 'is' expressions" [Use parentheses to clarify the intended meaning]
+    #error "Ambiguous 'is' expressions" Use parentheses to clarify the intended meaning
     bool nope = 1 is 1 is false
     #end
 
@@ -82,7 +82,7 @@ fn arrayComparison() {
     assert a1 is [1,2]
     assert a1 is not [2,1]
 
-    #error "wrong number of elements" [Array literal has 1 elements, but the array type requires 2]
+    #error "wrong number of elements" Array literal has 1 elements, but the array type requires 2
     assert a1 is not [1]
     #end
 
