@@ -5,13 +5,20 @@ import ppl7.errors.error_utils;
 import ppl7.errors.error_summary;
 import ppl7.errors.error_extra_info;
 
-interface ErrorExtraInfo {}
+interface ErrorMetadata {}
 
-final class StringErrorExtraInfo : ErrorExtraInfo { string msg; this(string msg) { this.msg = msg; } }
+final class StringErrorMetadata : ErrorMetadata { string msg; this(string msg) { this.msg = msg; } }
+
+final class VariableErrorMetadata : ErrorMetadata {
+    Variable[] duplicateVariables;
+    this(Variable[] dupes) {
+        this.duplicateVariables = dupes;
+    }
+}
 
 class CompilationError {
 public:
-    this(Module mod, Statement stmt, int line, int column, EError kind, ErrorExtraInfo extraInfo) {
+    this(Module mod, Statement stmt, int line, int column, EError kind, ErrorMetadata extraInfo) {
         this.mod = mod;
         this.stmt = stmt;
         this.line = line;
@@ -46,7 +53,7 @@ package:
     Statement stmt;
     EError _eerror;
     Module mod;
-    ErrorExtraInfo extraInfo;
+    ErrorMetadata extraInfo;
 }
 
 void warn(ParseState state, string msg) {
@@ -57,36 +64,36 @@ void warn(Statement n, string msg) {
 }
 
 void syntaxError(Module mod, int line, int column, string msg) {
-    mod.project.addError(new CompilationError(mod, null, line, column, EError.SYNTAX, new StringErrorExtraInfo(msg)));
+    mod.project.addError(new CompilationError(mod, null, line, column, EError.SYNTAX, new StringErrorMetadata(msg)));
 }
 void syntaxError(ParseState state, string msg) {
     Token t = state.token();
-    state.project.addError(new CompilationError(state.mod, null, t.line, t.column, EError.SYNTAX, new StringErrorExtraInfo(msg)));
+    state.project.addError(new CompilationError(state.mod, null, t.line, t.column, EError.SYNTAX, new StringErrorMetadata(msg)));
 }
 void syntaxError(ParseState state, int offset, string msg) {
     Token t = state.peek(offset);
-    state.project.addError(new CompilationError(state.mod, null, t.line, t.column, EError.SYNTAX, new StringErrorExtraInfo(msg)));
+    state.project.addError(new CompilationError(state.mod, null, t.line, t.column, EError.SYNTAX, new StringErrorMetadata(msg)));
 }
 void syntaxError(Module mod, Token token, string msg) {
-    mod.project.addError(new CompilationError(mod, null, token.line, token.column, EError.SYNTAX, new StringErrorExtraInfo(msg)));
+    mod.project.addError(new CompilationError(mod, null, token.line, token.column, EError.SYNTAX, new StringErrorMetadata(msg)));
 }
 
-void resolutionError(Node n, EError kind, ErrorExtraInfo extraInfo = null) {
+void resolutionError(Node n, EError kind, ErrorMetadata extraInfo = null) {
     Token t = n.as!Statement.startToken;
     n.getProject().addError(new CompilationError(n.getModule(), n.as!Statement, t.line, t.column, kind, extraInfo));
 }
 
 
 
-void semanticError(Node n, EError kind, ErrorExtraInfo extraInfo = null) {
+void semanticError(Node n, EError kind, ErrorMetadata extraInfo = null) {
     semanticError(n.getProject(), n.getModule(), n, kind, extraInfo);
 }
-void semanticError(Statement n, int offset, EError kind, ErrorExtraInfo extraInfo = null) {
+void semanticError(Statement n, int offset, EError kind, ErrorMetadata extraInfo = null) {
     Module mod = n.getModule(); assert(mod);
     Token t = mod.getToken(n.tokenIndex + offset);
     mod.project.addError(new CompilationError(mod, n, t.line, t.column, kind, extraInfo));
 }
-void semanticError(Project project, Module mod, Node n, EError kind, ErrorExtraInfo extraInfo = null) {
+void semanticError(Project project, Module mod, Node n, EError kind, ErrorMetadata extraInfo = null) {
     Token t;
     auto stmt = n.as!Statement;
     if(stmt) {
@@ -94,6 +101,6 @@ void semanticError(Project project, Module mod, Node n, EError kind, ErrorExtraI
     }
     project.addError(new CompilationError(mod, stmt, t.line, t.column, kind, extraInfo));
 }
-void semanticError(ParseState state, Statement stmt, EError kind, ErrorExtraInfo extraInfo = null) {
+void semanticError(ParseState state, Statement stmt, EError kind, ErrorMetadata extraInfo = null) {
     semanticError(state.project, state.mod, stmt, kind, extraInfo);
 }

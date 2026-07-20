@@ -152,8 +152,8 @@ struct Red {
 }
 
 enum E1 : byte {
-    A = 1       # = 1
-    B           # = 2
+    A = 1 as byte   # = 1
+    B               # = 2
 }
 
 enum E2 : Red {

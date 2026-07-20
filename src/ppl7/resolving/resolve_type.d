@@ -39,15 +39,18 @@ void resolveEnum(Enum n, ResolveState state) {
 
         if(m.hasInitialiser()) {
             // Set value to the initialiser value
-            if(Number num = m.first().as!Number) {
+            if(Number num = m.value().as!Number) {
                 value = num.getValueAsInt();
             } else {
                 // We can't evaluate this yet. Bail out and try again in the next pass
                 return;
             }
 
-            if(!m.value().getType().exactlyMatches(elementType)) {
-                rewriteToAs(state, m.value(), m.value().as!Expression, makeTypeRef(elementType));
+            // if(!m.value().getType().exactlyMatches(elementType)) {
+            if(!m.value().getType().canImplicitlyCastTo(elementType)) {
+                // rewriteToAs(state, m.value(), m.value().as!Expression, makeTypeRef(elementType));
+                semanticError(m.value(), EError.ENUM_MEMBER_TYPE_MISMATCH);
+                //return;
             }
 
         } else {

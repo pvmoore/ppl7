@@ -39,7 +39,7 @@ void resolveIdentifier(Identifier n, ResolveState state) {
                     break;
                 }
             } else if(Enum e = k.as!Enum) {
-                if(!e.isUnqualified) continue; 
+                if(!e.isUnqualified) continue;
 
                 // Search through unqualified enums
                 if(EnumMember member = e.getMemberByName(n.name)) {
@@ -53,7 +53,7 @@ void resolveIdentifier(Identifier n, ResolveState state) {
         // Resolve from the previous link in the chain
         auto prev = n.prevLink(); assert(prev);
         if(!prev.isResolved()) return;
-        
+
         Type prevType = prev.getType();
 
         // Enum.A
@@ -90,9 +90,9 @@ void resolveIdentifier(Identifier n, ResolveState state) {
         // id1.id2 (this is id2)
         if(Identifier id = prev.as!Identifier) {
 
-            // if 'id1' is an identifier that is an Enum then switch to the enum element type 
+            // if 'id1' is an identifier that is an Enum then switch to the enum element type
             if(Enum e = prevType.extract!Enum) {
-                prevType = e.elementType(); 
+                prevType = e.elementType();
             }
         }
 
@@ -112,13 +112,13 @@ void resolveIdentifier(Identifier n, ResolveState state) {
                         rewriteToNodeRef(state, n.parent.as!Dot, member);
                         return;
                     }
-                } 
+                }
             }
 
             // Do we want to allow access to external module variables in general? We already allow for
             // function ptrs. We probably should for consistency.
 
-            todo("[%s] resolveIdentifier: ModuleRef functions and variables", state.mod.name);
+            //todo("[%s] resolveIdentifier: ModuleRef functions and variables", state.mod.name);
 
         // } else if(Enum e = prevType.extract!Enum) {
         //     consoleLog("prevType is enum : %s member = %s", e.name, e.getMemberByName(n.name));
@@ -131,7 +131,7 @@ void resolveIdentifier(Identifier n, ResolveState state) {
         } else {
             todo("[%s] resolveIdentifier: prev is a %s", state.mod.name, prev.enode());
         }
-    } 
+    }
 
-    n.resolveEvaluated = true;      
+    n.resolveEvaluated = true;
 }

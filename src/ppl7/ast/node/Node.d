@@ -147,10 +147,21 @@ public:
 
     final string dump(string indent = "") {
         string s;
+
         if(this.isA!Function && this.as!Function.name) s ~= "────────────────────────────────────────────────────────── fn '%s'\n".format(this.as!Function.name);
         if(this.isA!Struct && this.as!Struct.name) s ~= ".......................................................... struct '%s'\n".format(this.as!Struct.name);
         if(this.isA!Enum) s ~= ".......................................................... enum '%s'\n".format(this.as!Enum.name);
-        s ~= "%s%s\n".format(indent, this.toString());
+
+        string lineStr;
+
+        if(auto stmt = this.as!Statement) {
+            if(stmt.parent.isA!Module) {
+                lineStr = " line %s".format(stmt.line());
+            }
+        }
+
+        s ~= "%s%s%s\n".format(indent, this.toString(), lineStr);
+
         foreach(c; children) {
             s ~= c.dump(indent ~ "  ");
         }

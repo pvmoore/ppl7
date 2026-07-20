@@ -171,7 +171,16 @@ void resolveAssert(Assert n, ResolveState state) {
 }
 
 void resolveNull(Null n, ResolveState state) {
-    n.setType(state.resolveTypeFromParent(n));
+    Type parentType = state.resolveTypeFromParent(n);
+    if(parentType.isResolved()) {
+
+        if(!parentType.isPointer() && !parentType.extract!PointerType) {
+            semanticError(n, EError.NULL_TYPE_MISMATCH);
+            return;
+        }
+
+        n.setType(parentType);
+    }
 }
 
 void resolveStringLiteral(StringLiteral n, ResolveState state) {

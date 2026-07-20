@@ -32,14 +32,14 @@ public fn main() -> int {
 [[noinline]]
 fn testPete() {
 
-    ByteEnum pete
-    bool emma = pete is ByteEnum.A
+    #ByteEnum pete
+    assert ByteEnum.B is 10 as ByteEnum
 }
 
 enum ByteEnum : byte {  # byte
     A               # 0
-    B = 10          # 10
+    B = 10 as byte          # 10
     C               # 11
-    D = 7           # 7
+    D = 7 as byte          # 7
     E               # 8
 }

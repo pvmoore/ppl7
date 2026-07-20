@@ -49,7 +49,10 @@ public:
                 case ENode.BINARY:
                 case ENode.BUILTIN:
                 case ENode.DOT:
+                //case ENode.ENUM:
                 case ENode.IS:
+                // case ENode.TYPE_OF:
+                // case ENode.TYPE_REF:
                     // Ignore these. Assume there will be something else that is also unresolved
                     continue;
                 default:

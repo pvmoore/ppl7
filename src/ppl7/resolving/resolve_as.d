@@ -13,6 +13,22 @@ void resolveAs(As n, ResolveState state) {
     if(!lt.isResolved() || !rt.isResolved()) return;
 
     checkExplicitCast(n, lt, rt, state);
+
+    // fold
+
+    if(n.isResolved() && !state.project.hasErrors()) {
+
+        if(auto num = n.expr().as!Number) {
+            if(rt.isA!SimpleType) {
+                // We can convert the Number to the correct type now and remove the As node
+
+                num.setType(rt);
+
+                rewrite(state, n, n.expr());
+                return;
+            }
+        }
+    }
 }
 
 //──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -67,13 +83,6 @@ void checkExplicitCast(As n, Type lt, Type rt, ResolveState state) {
         return;
     }
 
-    // if(rt.isEnum()) {
-    //     // Casting from a non-Enum to an Enum
-    //     checkExplicitCast(n, lt, rt.extract!Enum.elementType(), state);
-    //     return;
-    // }
-
-
     if(lt.isStruct() && rt.isStruct()) {
         assert(lt.isValue() && rt.isValue());
 
@@ -101,10 +110,5 @@ void checkExplicitCast(As n, Type lt, Type rt, ResolveState state) {
         return;
     }
 
-    if(n.expr().isA!Number) {
-        // todo - we can convert the Number to the correct type now and remove the As node
-    }
-
-    // If we get here then the cast is valid
     n.resolveEvaluated = true;
 }

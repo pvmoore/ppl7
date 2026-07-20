@@ -79,9 +79,16 @@ string getSummaryMessage(CompilationError error) {
             return "Cannot cast %s to %s".format(a.leftType().shortName(), a.rightType().shortName());
         }
 
+
+        case ENUM_MEMBER_TYPE_MISMATCH: {
+            auto member = error.stmt.parent.as!EnumMember; assert(member);
+            Enum e = member.parent.as!Enum; assert(e);
+            return "Enum member cannot be implicitly converted to %s".format(e.elementType().shortName());
+        }
         case ENUM_MISSING_INITIALISERS:
             return "Enum members must be explicitly initialised when the element type is not an integer or real";
-
+        case ENUM_ZERO_MEMBERS:
+            return "Enums must have at least one member";
 
         case FUNCTION_NOT_FOUND:
             return "Function not found: %s".format(stmt.as!Call().name);
@@ -141,6 +148,9 @@ string getSummaryMessage(CompilationError error) {
         case MODULE_MAIN_MISSING:
             return "Main module must have a program entry point function eg 'main' if targetType is EXE";
 
+        case NULL_TYPE_MISMATCH:
+            return "Cannot implicitly convert null to %s".format(stmt.parent.as!Statement.getType().shortName());
+
         case STRUCT_LITERAL_MEMBER_TYPE_MISMATCH: {
             Expression ele = error.stmt.as!Expression; assert(ele);
             StructLiteral sl = ele.parent.as!StructLiteral; assert(sl);
@@ -174,7 +184,7 @@ string getSummaryMessage(CompilationError error) {
             return "Struct member missing name";
 
         case SYNTAX:
-            return error.extraInfo.as!StringErrorExtraInfo.msg;
+            return error.extraInfo.as!StringErrorMetadata.msg;
 
 
         case TYPE_CANNOT_BE_IMMUTABLE:

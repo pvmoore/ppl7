@@ -79,8 +79,9 @@ fn test_qualified() {
     assert te2.QualEnum.B is 1 as te2.QualEnum
     assert te2.QualEnum.C is 2 as te2.QualEnum
 
-    # error - not public
-    #te2.QualEnum2 a
+    #error "enum is not public" 'QualEnum2' cannot be resolved to a variable or function
+    te2.QualEnum2 a
+    #end
 }
 
 fn test_unqualified() {
@@ -90,8 +91,9 @@ fn test_unqualified() {
     assert UnqualEnum.B is 1 as UnqualEnum
     assert UnqualEnum.C is 2 as UnqualEnum
 
-    # error - not public
-    #UnqualEnum2 a
+    #error "enum is not public" 'UnqualEnum2' cannot be resolved to a variable or function
+    UnqualEnum2 a
+    #end
 }
 
 fn test_casting() {
@@ -119,9 +121,9 @@ enum LocalEnum2 {
 }
 enum ByteEnum : byte {  # byte
     A               # 0
-    B = 10          # 10
+    B = 10 as byte  # 10
     C               # 11
-    D = 7           # 7
+    D = 7 as byte   # 7
     E               # 8
 }
 struct IntStruct {
@@ -132,7 +134,24 @@ enum IntStructEnum : IntStruct {
     B = { a:2 }
 }
 
-
 enum IntPtrStructEnum : int* {
     A = null
 }
+
+#error "empty enum" Enums must have at least one member
+enum EmptyEnum {}
+#end
+
+#error "null enum initialiser" Cannot implicitly convert null to BadEnum1
+enum BadEnum1 {
+    A = 1
+    B = null    # cannot convert null to BadEnum1
+}
+#end
+
+#error "float enum initialiser" Enum member cannot be implicitly converted to int
+enum BadEnum2 {
+    A
+    B = 1.1
+}
+#end

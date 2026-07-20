@@ -11,13 +11,6 @@ void checkVariable(Variable v) {
     shadowingChecks(v);
 }
 
-final class VariableErrorExtraInfo : ErrorExtraInfo {
-    Variable[] duplicateVariables;
-    this(Variable[] dupes) {
-        this.duplicateVariables = dupes;
-    }
-}
-
 //──────────────────────────────────────────────────────────────────────────────────────────────────
 private:
 
@@ -58,9 +51,9 @@ void initialiserChecks(Variable v, Type type) {
 
         Expression init = v.initialiser();
         Type initType = init.getType();
-        
+
         if(v.isParameter()) {
-            // Don't allow default parameters 
+            // Don't allow default parameters
             semanticError(init, EError.VARIABLE_PARAMETER_INITIALISER);
             return;
         }
@@ -106,7 +99,7 @@ void initialiserChecks(Variable v, Type type) {
 
 /**
  * Check for any duplicate Variables visible within the same scope.
- * Ignore struct/union members here. They will be checked elsewhere 
+ * Ignore struct/union members here. They will be checked elsewhere
  */
 void shadowingChecks(Variable v) {
     if(v.isMember()) return;
@@ -132,13 +125,13 @@ void shadowingChecks(Variable v) {
 
         // We only need to check earlier globals
         if(v2 == v) break;
-        
+
         if(v2.name == v.name) {
             dupes ~= v2;
         }
     }
 
     if(dupes.length > 0) {
-        semanticError(v, EError.VARIABLE_SHADOWING, new VariableErrorExtraInfo(dupes));
+        semanticError(v, EError.VARIABLE_SHADOWING, new VariableErrorMetadata(dupes));
     }
 }

@@ -9,7 +9,13 @@ public:
 
     abstract Type getType();
 
-    Token startToken() { return getModule().tokens[tokenIndex]; }
+    Token startToken() {
+        auto tokens = getModule().tokens;
+        if(tokenIndex <0 || tokenIndex >= tokens.length) {
+            return NO_TOKEN;
+        }
+        return tokens[tokenIndex];
+    }
     int line() { return startToken().line; }
 
 protected:

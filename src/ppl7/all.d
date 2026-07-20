@@ -69,6 +69,7 @@ import ppl7.checking.check;
 import ppl7.checking.check_binary;
 import ppl7.checking.check_function;
 import ppl7.checking.check_identifier;
+import ppl7.checking.check_type;
 import ppl7.checking.check_variable;
 
 import ppl7.errors.CompilationError;

@@ -35,7 +35,7 @@ string getExtraInfoMessage(CompilationError error) {
         }
         case EError.VARIABLE_SHADOWING: {
             Variable v = stmt.as!Variable; assert(v);
-            VariableErrorExtraInfo extra = error.extraInfo.as!VariableErrorExtraInfo; assert(extra);
+            VariableErrorMetadata extra = error.extraInfo.as!VariableErrorMetadata; assert(extra);
             extraInfo ~= "Shadowed variables:\n";
             foreach(v2; extra.duplicateVariables) {
                 extraInfo ~= "  %s\n".format(ansiWrap(getLocationString(v2), Ansi.CYAN));
@@ -43,20 +43,20 @@ string getExtraInfoMessage(CompilationError error) {
             break;
         }
 
-        default: 
+        default:
             break;
     }
 
     return extraInfo;
 }
 
-string formatAmbiguousFunction(Call n) { 
+string formatAmbiguousFunction(Call n) {
     CallResolveHistory h = n.resolveHistory;
 
     string s;
 
     if(n.arguments().areResolved()) {
-        s ~= "    %s(%s)\n\n".format(n.name, n.argumentTypes().shortName()); 
+        s ~= "    %s(%s)\n\n".format(n.name, n.argumentTypes().shortName());
     }
 
     s ~= "Possible matches:";
