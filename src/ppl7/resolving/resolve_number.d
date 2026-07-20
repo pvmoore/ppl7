@@ -63,11 +63,14 @@ void resolveReal(Number n, string s) {
     }
 
     if(isDouble) {
+        n.value.doubleValue = s.to!double;
         n.setType(makeDoubleType());
     } else {
         n.value.floatValue = s.to!float;
         n.setType(makeFloatType());
     }
+
+    n.stringValue = s;
 }
 
 void resolveInteger(Number n, string s) {
@@ -128,6 +131,8 @@ void resolveInteger(Number n, string s) {
     //log("number %s (%s, %s) size = %s", s, s.to!long, s.to!long.as!ulong, size);
 
     n.setType(makeSimpleType(tk));
+
+    n.stringValue = s;
 }
 
 void resolveChar(Number n, ResolveState state) {

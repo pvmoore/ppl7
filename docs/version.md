@@ -2,6 +2,7 @@
 
 ## 0.2.27
 
+- Add folding phase for As expressions
 - More tests
 
 ## 0.2.26

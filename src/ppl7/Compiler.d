@@ -154,7 +154,7 @@ private:
             }
 
             allResolved = resolveStates.all!((s) => !s.hasUnresolvedNodes() && !s.rewriteOccurred);
-            if(allResolved) break;
+            if(allResolved || project.hasErrors()) break;
         }
 
         if(!allResolved) {

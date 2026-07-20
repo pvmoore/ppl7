@@ -34,13 +34,28 @@ void resolveEnum(Enum n, ResolveState state) {
     // The element type is an integer or real. Generate any missing initialisers
     assert(elementType.isInteger() || elementType.isReal());
 
-    int value = 0;
+    string stringValue = "0";
     foreach(i, m; n.members()) {
 
         if(m.hasInitialiser()) {
+
+            if(auto nl = m.value().as!Null) {
+                if(!elementType.isPointer()) {
+                    semanticError(m.value(), EError.ENUM_MEMBER_TYPE_MISMATCH);
+                    return;
+                }
+            }
+
+            if(!m.value().isResolved()) {
+                // Wait for the initialiser to be resolved
+                return;
+            }
+
             // Set value to the initialiser value
             if(Number num = m.value().as!Number) {
-                value = num.getValueAsInt();
+
+                stringValue = num.stringValue;
+
             } else {
                 // We can't evaluate this yet. Bail out and try again in the next pass
                 return;
@@ -48,18 +63,22 @@ void resolveEnum(Enum n, ResolveState state) {
 
             // if(!m.value().getType().exactlyMatches(elementType)) {
             if(!m.value().getType().canImplicitlyCastTo(elementType)) {
-                // rewriteToAs(state, m.value(), m.value().as!Expression, makeTypeRef(elementType));
                 semanticError(m.value(), EError.ENUM_MEMBER_TYPE_MISMATCH);
-                //return;
+                return;
             }
 
         } else {
             // Create a new Number node with the correct value
-            Number num = makeIntNumber(value, elementType);
+            Number num = makeNumber(stringValue, elementType);
             m.add(num);
         }
-        value++;
-        }
+
+        // Increment the value
+
+        //todo - use num.add(1)
+        import std.conv : to;
+        stringValue = "%s".format(stringValue.to!double + 1.0);
+    }
 
     n.resolveEvaluated = true;
 }

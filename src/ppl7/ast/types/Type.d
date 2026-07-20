@@ -25,9 +25,12 @@ bool isVoidValue(Type t) { return t.etype() == EType.VOID && !t.isPointer(); }
 bool isInteger(Type t)   { return t.etype() >= EType.BYTE && t.etype() <= EType.LONG; }
 bool isReal(Type t)      { return t.etype() == EType.FLOAT || t.etype() == EType.DOUBLE; }
 bool isBool(Type t)      { return t.etype() == EType.BOOL; }
-bool isPointer(Type t)   { return t.etype() == EType.POINTER || t.etype() == EType.FUNCTION; }
-bool isValue(Type t)     { return !isPointer(t); }
 bool isVararg(Type t)    { return t.etype() == EType.C_VARARGS; }
+bool isValue(Type t)     { return !isPointer(t); }
+bool isPointer(Type t)   {
+    if(auto e = t.extract!Enum) return isPointer(e.elementType());
+    return t.etype() == EType.POINTER || t.etype() == EType.FUNCTION;
+}
 
 bool isFunction(Type t) {
     return t.etype() == EType.FUNCTION;

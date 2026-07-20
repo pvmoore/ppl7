@@ -3,11 +3,16 @@ module ppl7.resolving.resolve_is;
 import ppl7.all;
 
 void resolveIs(Is n, ResolveState state) {
+    if(n.isResolved()) return;
+
+    Expression left  = n.left();
+    Expression right = n.right();
 
     // Wait for both sides to be resolved
-    if(!n.left().isResolved() || !n.right().isResolved()) return;
+    if(!left.isResolved() || !right.isResolved()) return;
 
     //log("resolving is: %s is %s", n.left(), n.right());
+    n.resolveEvaluated = true;
 
     // Prevent expr is expr is expr which is confusing
     if(n.parent.isA!Is) {
@@ -15,38 +20,44 @@ void resolveIs(Is n, ResolveState state) {
         return;
     }
 
-    n.resolveEvaluated = true;
-
-    Type lt          = n.leftType();
-    Type rt          = n.rightType();
-    Expression left  = n.left();
-    Expression right = n.right();
-
     // Type is Type
     if(left.isA!Type && right.isA!Type) {
-        // Rewrite to bool Number
-
-        //log("Type (%s) is Type (%s) %s", lt, rt, lt.exactlyMatches(rt));
-
-        // Type (TypeRef intptr) is Type (TypeRef 'intptr', intptr) false
-
-        bool result = lt.exactlyMatches(rt);
-        if(n.negate) result = !result;
-
-        rewriteToBool(state, n, result);
+        typeIsType(n, state);
         return;
     }
 
     // Type       is Expression
     // Expression is Type
     if(left.isA!Type != right.isA!Type) {
-        // This is always false
-
-        semanticError(n, EError.IS_TYPE_VS_NON_TYPE);
+        typeIsExpression(n, state);
         return;
     }
 
     assert(!left.isA!Type && !right.isA!Type);
+
+    // Expression is Expression
+    expressionIsExpression(n, state);
+}
+
+//──────────────────────────────────────────────────────────────────────────────────────────────────
+private:
+
+void typeIsType(Is n, ResolveState state) {
+    bool result = n.leftType().exactlyMatches(n.rightType());
+    if(n.negate) result = !result;
+
+    rewriteToBool(state, n, result);
+}
+
+void typeIsExpression(Is n, ResolveState state) {
+    semanticError(n, EError.IS_TYPE_VS_NON_TYPE);
+}
+
+void expressionIsExpression(Is n, ResolveState state) {
+    Expression left  = n.left();
+    Expression right = n.right();
+    Type lt          = n.leftType();
+    Type rt          = n.rightType();
 
     // Pointer is Pointer
     if(lt.isPointer() && rt.isPointer()) {
@@ -152,5 +163,4 @@ void resolveIs(Is n, ResolveState state) {
     assert(selectCommonType(lt, rt) !is null);
 
     rewriteToBinary(state, n, n.negate ? Operator.NOT_EQUAL : Operator.EQUAL, left, right, makeBoolType());
-
 }

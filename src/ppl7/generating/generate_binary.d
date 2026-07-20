@@ -59,7 +59,16 @@ void generateBinary(Binary n, GenerateState state) {
 
         leftValue = state.castType(leftValue, leftType, ty);
         rightValue = state.castType(rightValue, rightType, ty);
-        isReal = ty.isReal();
+
+        if(auto e = ty.extract!Enum) {
+            isReal = e.elementType().isReal();
+        } else {
+            isReal = ty.isReal();
+        }
+
+        // writefln("left  = %s (%s)", left, leftValue.printValueToString);
+        // writefln("right = %s (%s)", right, rightValue.printValueToString);
+
     } else {
         leftValue = state.castType(leftValue, leftType, n.type);
         rightValue = state.castType(rightValue, rightType, n.type);

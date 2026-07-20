@@ -46,6 +46,8 @@ public fn main() {
     assert g_te1c.a is 1
 
     assert IntPtrStructEnum.A is null
+    assert IntPtrStructEnum.B is &g_one
+    assert IntPtrStructEnum.C is &g_two
 }
 
 #--------------------------------------------------------------------------------------------
@@ -67,10 +69,14 @@ fn defaultInit() {
     assert c is ByteEnum.A
     assert c as byte is 0
 
-    IntStructEnum ddd
-    assert ddd is IntStructEnum.A
+    IntStructEnum d
+    assert d is IntStructEnum.A
+    assert d as IntStruct is { a:1 }
 
-    assert ddd as IntStruct is { a:1 }
+    DoubleEnum e
+    assert e is DoubleEnum.A
+    assert e as double is 0.0d
+    assert DoubleEnum.B as double is 1.0d
 }
 
 fn test_qualified() {
@@ -134,18 +140,28 @@ enum IntStructEnum : IntStruct {
     B = { a:2 }
 }
 
+int g_one
+int g_two
+
 enum IntPtrStructEnum : int* {
     A = null
+    B = &g_one
+    C = &g_two
+}
+
+enum DoubleEnum : double {
+    A           # 1.0d
+    B           # 2.0d
 }
 
 #error "empty enum" Enums must have at least one member
 enum EmptyEnum {}
 #end
 
-#error "null enum initialiser" Cannot implicitly convert null to BadEnum1
+#error "null enum initialiser" Enum member cannot be implicitly converted to int
 enum BadEnum1 {
     A = 1
-    B = null    # cannot convert null to BadEnum1
+    B = null
 }
 #end
 

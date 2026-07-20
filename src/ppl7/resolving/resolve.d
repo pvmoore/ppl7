@@ -25,16 +25,12 @@ void resolve(ResolveState state) {
 void resolveChildren(Node parent, ResolveState state) {
     foreach(n; parent.children) {
 
+        if(!n.isAttached()) continue;
+
         // resolve from the bottom up
         if(n.hasChildren()) {
             resolveChildren(n, state);
         }
-
-        // Always resolve Variable in case it needs to rewrite its initialiser
-        //bool alwaysResolve = n.isA!Variable;
-        //if(!alwaysResolve && n.isResolved()) continue;
-
-        if(!n.parent) continue;
 
         switch(n.enode()) {
             case ENode.ADDRESS_OF: resolveAddressOf(n.as!AddressOf, state); break;
@@ -74,7 +70,7 @@ void resolveChildren(Node parent, ResolveState state) {
         }
 
         // At this point Node n may no longer be attached
-        if(!n.parent) continue;
+        if(!n.isAttached()) continue;
 
         if(!n.isResolved()) {
             state.setUnresolved(n);

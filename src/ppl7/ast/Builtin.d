@@ -45,7 +45,10 @@ public:
     string name;
 
     override ENode enode() { return ENode.BUILTIN; }
-    override bool isResolved() { return false; }
+    override bool isResolved() {
+        // Builtin should always be replaced by some other node
+        return false;
+    }
 
     // Statement
     override Type getType() { return _type; }

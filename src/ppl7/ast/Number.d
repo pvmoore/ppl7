@@ -102,18 +102,18 @@ public:
     //         default: assert(false);
     //     }
     // }
-    void setValue(int v) {
-        stringValue = "%s".format(v);
-        switch(_type.etype()) {
-            case EType.BYTE:   value.byteValue = v.as!byte; break;
-            case EType.SHORT:  value.shortValue = v.as!short; break;
-            case EType.INT:    value.intValue = v; break;
-            case EType.LONG:   value.longValue = v.as!long; break;
-            case EType.FLOAT:  value.floatValue = v.as!float; break;
-            case EType.DOUBLE: value.doubleValue = v.as!double; break;
-            default: assert(false);
-        }
-    }
+    // void setValue(int v) {
+    //     stringValue = "%s".format(v);
+    //     switch(_type.etype()) {
+    //         case EType.BYTE:   value.byteValue = v.as!byte; break;
+    //         case EType.SHORT:  value.shortValue = v.as!short; break;
+    //         case EType.INT:    value.intValue = v; break;
+    //         case EType.LONG:   value.longValue = v.as!long; break;
+    //         case EType.FLOAT:  value.floatValue = v.as!float; break;
+    //         case EType.DOUBLE: value.doubleValue = v.as!double; break;
+    //         default: assert(false);
+    //     }
+    // }
 private:
     Type _type;
 }

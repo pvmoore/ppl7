@@ -6,7 +6,7 @@ import ppl7.all;
  * Is
  *     Expression
  *     Expression
- *     
+ *
  * Type       is TypeExpr
  * Identifier is Type
  * Identifier is Identifier
@@ -21,7 +21,10 @@ public:
 
     // Node
     override ENode enode() { return ENode.IS; }
-    override bool isResolved() { return resolveEvaluated && left().isResolved() && right().isResolved(); }
+    override bool isResolved() {
+        // Is should always be replaced by some other node
+        return false;
+    }
 
     // Statement
     override Type getType() { return _type; }

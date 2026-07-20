@@ -61,6 +61,8 @@ fn initialisation() {
     int[0] nope
     #end
 
+    #int[1.1] nopey
+
     #------------------------ initialise to zero
     int[2] a
     assert a is [0, 0]

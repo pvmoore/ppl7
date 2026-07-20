@@ -88,6 +88,8 @@ import ppl7.generating.generate_struct;
 import ppl7.generating.generate_variable;
 import ppl7.generating.GenerateState;
 
+import ppl7.folding.fold;
+
 import ppl7.linking.lld_linker;
 import ppl7.linking.ms_linker;
 

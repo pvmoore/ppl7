@@ -3,31 +3,19 @@ module ppl7.resolving.resolve_as;
 import ppl7.all;
 
 void resolveAs(As n, ResolveState state) {
-    if(n.isResolved()) return;
+    if(n.isResolved()) {
+        fold(n, state);
+        return;
+    }
 
-    Type lt = n.leftType();
-    Type rt = n.rightType();
-    assert(lt);
-    assert(rt);
 
-    if(!lt.isResolved() || !rt.isResolved()) return;
+    Type lt = n.leftType();     assert(lt);
+    Type rt = n.rightType();    assert(rt);
 
-    checkExplicitCast(n, lt, rt, state);
+    if(!n.isResolved()) {
+        if(!lt.isResolved() || !rt.isResolved()) return;
 
-    // fold
-
-    if(n.isResolved() && !state.project.hasErrors()) {
-
-        if(auto num = n.expr().as!Number) {
-            if(rt.isA!SimpleType) {
-                // We can convert the Number to the correct type now and remove the As node
-
-                num.setType(rt);
-
-                rewrite(state, n, n.expr());
-                return;
-            }
-        }
+        checkExplicitCast(n, lt, rt, state);
     }
 }
 

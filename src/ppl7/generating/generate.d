@@ -52,7 +52,7 @@ void generateNull(Null n, GenerateState state) {
 }
 
 void generateNumber(Number n, GenerateState state) {
-    //log("generate Number %s", n.stringValue);
+    // writefln("generate Number %s, %s", n.stringValue, n.getType().etype() == EType.DOUBLE ? n.value.doubleValue : -1);
     LLVMTypeRef numType = state.getLLVMType(n.getType());
     LLVMValueRef value;
     switch(n.getType().etype()) {
