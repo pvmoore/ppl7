@@ -22,6 +22,7 @@ import std.string   : toLower;
  * 'c', '\n', '\x12', '\u1234', '\U12345678' (uint)  we will turn chars into uint
  */
 void resolveNumber(Number n, ResolveState state) {
+    if(n.isResolved()) return;
 
     if("true" == n.stringValue) {
         n.value.byteValue = -1;

@@ -31,6 +31,8 @@ public:
 
     override bool exactlyMatches(Type other) {
         if(Struct o = other.extract!Struct) {
+            if(this.isPacked != o.isPacked) return false;
+
             return .exactlyMatches(memberTypes(), o.memberTypes());
         }
         return false;

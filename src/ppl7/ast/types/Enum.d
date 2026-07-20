@@ -61,6 +61,6 @@ public:
         if(isUnqualified) info ~= "unqualified";
         if(!isResolved()) info ~= "UNRESOLVED";
         return "Enum [%s]".format(info.join(", "));
-    } 
+    }
 }
 

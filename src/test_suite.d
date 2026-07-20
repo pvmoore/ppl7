@@ -93,7 +93,7 @@ void runTestFile(string filename) {
 
         string error = ".*" ~ line[q2+1..$-1].strip() ~ ".*";
 
-        return tuple!("name", "error")(line[q1+1..q2-1], regex(error));
+        return tuple!("name", "error")(line[q1+1..q2], regex(error));
     }
 
     // Split the source file if it contains #begin and #end blocks

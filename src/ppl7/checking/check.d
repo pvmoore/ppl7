@@ -103,13 +103,19 @@ void checkStruct(Struct n) {
 
     } else {
         // Anon struct
+
+        // Cannot have unnamed Variables
         if(n.parent.isA!Variable) {
-            // This struct must have named Variables
             foreach(v; n.members()) {
                 if(!v.name) {
                     semanticError(v, EError.STRUCT_MEMBER_UNNAMED);
                 }
             }
+        }
+
+        // Cannot be packed
+        if(n.isPacked) {
+            semanticError(n, EError.ANON_STRUCT_PACKED);
         }
     }
 }

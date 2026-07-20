@@ -76,13 +76,23 @@ void generateGlobal(Variable n, GenerateState state) {
 void setDefaultInitialiser(Variable n, LLVMValueRef varPtr, LLVMTypeRef llvmType, GenerateState state) {
     if(n.getType().isPointer()) {
 
-    } else if(n.getType().isEnum()) {
-        // Enums are initialised to the first enum value
-        Enum en = n.getType().extract!Enum;
+    } else if(Enum en = n.getType().extract!Enum) {
+        // Enums are initialised to the first enum member value
+
         EnumMember member = en.getMemberByIndex(0);
-        state.generate(member);
-        state.castType(state.rhs, member.getType(), n.getType());
+
+        if(auto num = member.value().as!Number) {
+            if(num.isZero()) {
+                // Nothing to do. We have already set the value to zero
+                return;
+            }
+        }
+
+        state.generate(member.value());
+
+        //state.castType(state.rhs, member.getType(), n.getType());
         LLVMBuildStore(state.builder, state.rhs, varPtr);
+
     } else if(auto array = n.getType().extract!Array) {
         defaultInitialiseArray(array, varPtr, state);
     } else if(Struct st = n.getType().extract!Struct) {

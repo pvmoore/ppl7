@@ -17,9 +17,9 @@ void resolveIs(Is n, ResolveState state) {
 
     n.resolveEvaluated = true;
 
-    Type lt = n.leftType();
-    Type rt = n.rightType();
-    Expression left = n.left();
+    Type lt          = n.leftType();
+    Type rt          = n.rightType();
+    Expression left  = n.left();
     Expression right = n.right();
 
     // Type is Type
@@ -37,12 +37,16 @@ void resolveIs(Is n, ResolveState state) {
         return;
     }
 
-    // Type is Expression
+    // Type       is Expression
     // Expression is Type
     if(left.isA!Type != right.isA!Type) {
-        semanticError(n, EError.IS_TYPE_MISMATCH);
+        // This is always false
+
+        semanticError(n, EError.IS_TYPE_VS_NON_TYPE);
         return;
     }
+
+    assert(!left.isA!Type && !right.isA!Type);
 
     // Pointer is Pointer
     if(lt.isPointer() && rt.isPointer()) {
@@ -53,97 +57,100 @@ void resolveIs(Is n, ResolveState state) {
 
     // Pointer is Value is always false
     if(lt.isPointer() != rt.isPointer()) {
-        rewriteToBool(state, n, n.negate);
+        semanticError(n, EError.IS_POINTER_VS_VALUE);
         return;
     }
+
+    assert(lt.isValue() && rt.isValue());
 
     // Expression is Expression
-    if(lt.isValue() && rt.isValue()) {
 
-        // if(state.mod.name == "tests/enum/test_enums")
-        //     log("[%s:%s] %s is %s", state.mod.name, n.startToken.line, lt, rt);
+    // if(state.mod.name == "tests/enum/test_enums")
+    //     log("[%s:%s] %s is %s", state.mod.name, n.startToken.line, lt, rt);
 
-        if(lt.isArray() != rt.isArray()) {
-            rewriteToBool(state, n, n.negate);
-            return;
-        }
-
-        if(lt.isStruct() != rt.isStruct()) {
-            rewriteToBool(state, n, n.negate);
-            return;
-        }
-
-        if(lt.isEnum() != rt.isEnum()) {
-            rewriteToBool(state, n, n.negate);
-            return;
-        }
-
-
-        // If the Types of left and right are different sizes then they must be different
-        // if(lt.size() != rt.size()) {
-        //     rewriteToBool(state, n, n.negate);
-        //     return;
-        // }
-
-        if(lt.isStruct()) {
-
-            // If the structs are different then this is false
-            if(!lt.exactlyMatches(rt)) {
-                rewriteToBool(state, n, n.negate);
-                return;
-            }
-
-            // Rewrite to Binary == or !=
-            // This will get handled in generate_binary
-            rewriteToBinary(state, n, n.negate ? Operator.NOT_EQUAL : Operator.EQUAL, left, right, makeBoolType());
-            return;
-
-            //log("rewrite Struct to memcmp. Struct is %s", lt.extract!Struct);
-
-            // Rewrite to memcmp
-            // ulong size = lt.extract!Struct.getSize();
-            // auto leftPtr = makeAs(makeAddressOf(left), makeBytePointerType());
-            // auto rightPtr = makeAs(makeAddressOf(right), makeBytePointerType());
-            // auto length = makeLongNumber(size);
-
-            // rewriteToMemcmp(state, n, leftPtr, rightPtr, length, !n.negate);
-            // return;
-        }
-
-        // Array comparison. The sizes must be the same otherwise we would have caught it above
-        // Rewrite to Binary ==
-        if(lt.isArray()) {
-
-            // If the arrays are trivially different then this is false
-            if(!lt.exactlyMatches(rt)) {
-                rewriteToBool(state, n, n.negate);
-                return;
-            }
-
-            // Assume left and right are both of the same Array type so we need to check the contents
-
-            // Rewrite to Binary == or !=
-            // This will get handled in generate_binary
-            rewriteToBinary(state, n, n.negate ? Operator.NOT_EQUAL : Operator.EQUAL, left, right, makeBoolType());
-            return;
-
-
-            // Rewrite this to memcmp
-
-            // auto leftPtr = makeAs(makeAddressOf(left), makeBytePointerType());
-            // auto rightPtr = makeAs(makeAddressOf(right), makeBytePointerType());
-
-            // // Multiply num elements by sizeof (numElements should be a Number at this point)
-            // auto numElements = makeIntNumber(lt.as!Array.numElements());
-            // auto size = makeIntNumber(lt.as!Array.elementType().size());
-            // auto length = makeBinary(Operator.MUL, numElements, size, makeIntType());
-
-            // rewriteToMemcmp(state, n, leftPtr, rightPtr, length, !n.negate);
-            // return;
-        }
-
-        rewriteToBinary(state, n, n.negate ? Operator.NOT_EQUAL : Operator.EQUAL, left, right, makeBoolType());
+    if(lt.isArray() != rt.isArray()) {
+        semanticError(n, EError.IS_TYPE_MISMATCH);
         return;
     }
+
+    if(lt.isStruct() != rt.isStruct()) {
+        semanticError(n, EError.IS_TYPE_MISMATCH);
+        return;
+    }
+
+    if(lt.isEnum() != rt.isEnum()) {
+        semanticError(n, EError.IS_TYPE_MISMATCH);
+        return;
+    }
+
+
+    // If the Types of left and right are different sizes then they must be different
+    // if(lt.size() != rt.size()) {
+    //     rewriteToBool(state, n, n.negate);
+    //     return;
+    // }
+
+    if(lt.isStruct()) {
+        assert(rt.isStruct());
+
+        // If the structs are different then this is false
+        if(!lt.exactlyMatches(rt)) {
+            rewriteToBool(state, n, n.negate);
+            return;
+        }
+
+        // Rewrite to Binary == or !=
+        // This will get handled in generate_binary
+        rewriteToBinary(state, n, n.negate ? Operator.NOT_EQUAL : Operator.EQUAL, left, right, makeBoolType());
+        return;
+
+        //log("rewrite Struct to memcmp. Struct is %s", lt.extract!Struct);
+
+        // Rewrite to memcmp
+        // ulong size = lt.extract!Struct.getSize();
+        // auto leftPtr = makeAs(makeAddressOf(left), makeBytePointerType());
+        // auto rightPtr = makeAs(makeAddressOf(right), makeBytePointerType());
+        // auto length = makeLongNumber(size);
+
+        // rewriteToMemcmp(state, n, leftPtr, rightPtr, length, !n.negate);
+        // return;
+    }
+
+    // Array comparison. The sizes must be the same otherwise we would have caught it above
+    // Rewrite to Binary ==
+    if(lt.isArray()) {
+
+        // If the arrays are trivially different then this is false
+        if(!lt.exactlyMatches(rt)) {
+            rewriteToBool(state, n, n.negate);
+            return;
+        }
+
+        // Assume left and right are both of the same Array type so we need to check the contents
+
+        // Rewrite to Binary == or !=
+        // This will get handled in generate_binary
+        rewriteToBinary(state, n, n.negate ? Operator.NOT_EQUAL : Operator.EQUAL, left, right, makeBoolType());
+        return;
+
+
+        // Rewrite this to memcmp
+
+        // auto leftPtr = makeAs(makeAddressOf(left), makeBytePointerType());
+        // auto rightPtr = makeAs(makeAddressOf(right), makeBytePointerType());
+
+        // // Multiply num elements by sizeof (numElements should be a Number at this point)
+        // auto numElements = makeIntNumber(lt.as!Array.numElements());
+        // auto size = makeIntNumber(lt.as!Array.elementType().size());
+        // auto length = makeBinary(Operator.MUL, numElements, size, makeIntType());
+
+        // rewriteToMemcmp(state, n, leftPtr, rightPtr, length, !n.negate);
+        // return;
+    }
+
+    // Assume the types have a common type
+    assert(selectCommonType(lt, rt) !is null);
+
+    rewriteToBinary(state, n, n.negate ? Operator.NOT_EQUAL : Operator.EQUAL, left, right, makeBoolType());
 
 }

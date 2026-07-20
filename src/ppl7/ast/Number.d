@@ -176,10 +176,3 @@ Number makeDoubleNumber(double value) {
     n.setType(makeDoubleType());
     return n;
 }
-// Number makeRealNumber(double value, Type type) {
-//     auto n = makeNode!Number(0);
-//     n.stringValue = "%.8f".format(value);
-//     n.value.doubleValue = value;
-//     n.setType(type);
-//     return n;
-// }

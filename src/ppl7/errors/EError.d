@@ -5,6 +5,8 @@ import ppl7.all;
 enum EError {
     SYNTAX,
 
+    ANON_STRUCT_PACKED,
+
     ARRAY_MISSING_LENGTH,
     ARRAY_ZERO_ELEMENTS,
 
@@ -51,6 +53,8 @@ enum EError {
 
     IS_AMBIGUOUS,
     IS_TYPE_MISMATCH,
+    IS_TYPE_VS_NON_TYPE,
+    IS_POINTER_VS_VALUE,
 
     MODULE_MAIN_MISSING,
 

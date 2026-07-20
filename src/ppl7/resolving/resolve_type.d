@@ -16,51 +16,49 @@ void resolveArray(Array n, ResolveState state) {
 void resolveEnum(Enum n, ResolveState state) {
     if(n.isResolved()) return;
 
-    if(n.elementType().isResolved()) {
-        // Update the member values (for integer or real enums)
-        Type elementType = n.elementType();
-        if(!elementType.isInteger() && !elementType.isReal()) {
+    Type elementType = n.elementType();
 
-            // If there are any missing initialisers this is an error
-            if(!n.allMembersHaveInitialisers()) {
-                semanticError(n, EError.ENUM_MISSING_INITIALISERS);
-            }
-            n.resolveEvaluated = true;
-            return;
+    assert(elementType.isResolved());
+
+    // Update the member values (for integer or real enums)
+
+    // If the enum type is not integer or real then every member must have an initialiser
+    if(!elementType.isInteger() && !elementType.isReal()) {
+        if(!n.allMembersHaveInitialisers()) {
+            semanticError(n, EError.ENUM_MISSING_INITIALISERS);
         }
-
-        // The element type is an integer or real. Generate the missing initialisers
-
-        if(elementType.isInteger() || elementType.isReal()) {
-            int value = 0;
-            foreach(i, m; n.members()) {
-
-                if(m.hasInitialiser()) {
-                    // Set value to the initialiser value
-                    if(Number num = m.first().as!Number) {
-                        value = num.getValueAsInt();
-                    } else {
-                        // We can't evaluate this yet. Bail out and try again in the next pass
-                        return;
-                    }
-
-                    if(!m.value().getType().exactlyMatches(elementType)) {
-                        rewriteToAs(state, m.value(), m.value().as!Expression, makeTypeRef(elementType));
-                    }
-
-                } else {
-                    // Create a new Number node with the correct value
-                    Number num = makeNode!Number(m.tokenIndex);
-                    num.setType(elementType);
-                    num.setValue(value);
-                    m.add(num);
-                }
-                value++;
-            }
-        }
-
         n.resolveEvaluated = true;
+        return;
     }
+
+    // The element type is an integer or real. Generate any missing initialisers
+    assert(elementType.isInteger() || elementType.isReal());
+
+    int value = 0;
+    foreach(i, m; n.members()) {
+
+        if(m.hasInitialiser()) {
+            // Set value to the initialiser value
+            if(Number num = m.first().as!Number) {
+                value = num.getValueAsInt();
+            } else {
+                // We can't evaluate this yet. Bail out and try again in the next pass
+                return;
+            }
+
+            if(!m.value().getType().exactlyMatches(elementType)) {
+                rewriteToAs(state, m.value(), m.value().as!Expression, makeTypeRef(elementType));
+            }
+
+        } else {
+            // Create a new Number node with the correct value
+            Number num = makeIntNumber(value, elementType);
+            m.add(num);
+        }
+        value++;
+        }
+
+    n.resolveEvaluated = true;
 }
 
 void resolveTypeOf(TypeOf n, ResolveState state) {

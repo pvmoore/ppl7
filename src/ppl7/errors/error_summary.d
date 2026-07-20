@@ -7,6 +7,9 @@ string getSummaryMessage(CompilationError error) {
 
     switch(error.eerror()) with(EError) {
 
+        case ANON_STRUCT_PACKED:
+            return "Anonymous structs cannot be packed";
+
         case ARRAY_MISSING_LENGTH:
             return "Array is missing length argument";
         case ARRAY_ZERO_ELEMENTS:
@@ -120,12 +123,20 @@ string getSummaryMessage(CompilationError error) {
             return "Ambiguous 'is' expression. Use parentheses to clarify the intended meaning";
 
         case IS_TYPE_MISMATCH: {
+            Is i = error.stmt.as!Is;
+            return "(%s is%s %s) No common type".format(
+                i.leftType().shortName(), i.negate ? " not" : "", i.rightType().shortName());
+        }
+
+        case IS_TYPE_VS_NON_TYPE: {
             Is i = error.stmt.as!Is; assert(i);
             if(i.left().isA!Type) {
                 return "(Type is Expression) is not valid. Use @typeOf here instead";
             }
             return "(Expression is Type) is not valid. Use @typeOf here instead";
         }
+        case IS_POINTER_VS_VALUE:
+            return "Pointer is value is always false";
 
         case MODULE_MAIN_MISSING:
             return "Main module must have a program entry point function eg 'main' if targetType is EXE";

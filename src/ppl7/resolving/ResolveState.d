@@ -67,6 +67,10 @@ public:
         assert(parent !is null, "parent is null. This should not happen");
 
         switch(parent.enode()) {
+            case ENode.AS:
+                As as = parent.as!As;
+                return as.getType();
+
             case ENode.ADDRESS_OF: {
                 AddressOf a = parent.as!AddressOf;
                 // What should we do here?

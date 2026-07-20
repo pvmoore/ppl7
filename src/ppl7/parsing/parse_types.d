@@ -146,15 +146,23 @@ Type parseSimpleType(ParseState state) {
     return type;
 }
 
+/**
+ * struct '{' { Type [ name ] [','] } '}'
+ */
 Type parseAnonStruct(ParseState state) {
     Struct s = makeNode!Struct(state);
     state.skip("struct");
     state.skip(EToken.LBRACE);
 
+    if(state.hasAttribute("packed")) {
+        s.isPacked = true;
+    }
+
     while(state.etoken() != EToken.RBRACE) {
         parseVariable(s, state, false);
 
-        if(state.etoken().isOneOf(EToken.SEMICOLON, EToken.COMMA)) {
+        // optional comma
+        if(state.etoken() == EToken.COMMA) {
             state.next();
         }
     }

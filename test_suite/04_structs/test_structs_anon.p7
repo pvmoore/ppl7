@@ -6,6 +6,8 @@
  */
 public fn main() {
     #---------------------------- Anon struct with default initialisation
+    defaultInit()
+
     struct {
         int a
         float b
@@ -15,9 +17,9 @@ public fn main() {
     assert anonStruct is { 0, 0.0, false }
 
     assert @isStruct(anonStruct)
-    assert @typeOf(anonStruct) is struct { int; float; bool; }
-    assert @typeOf(anonStruct) is struct { int a; float b; bool c; }
-    assert @typeOf(anonStruct) is struct { int float bool }
+    assert @typeOf(anonStruct) is struct { int, float, bool }
+    assert @typeOf(anonStruct) is struct { int a, float b, bool c }
+    assert @typeOf(anonStruct) is struct { int, float, bool }
 
     assert @typeOf(anonStruct) is not int
 
@@ -55,20 +57,63 @@ public fn main() {
     assert anonStruct2.c is false
 
     #---------------------------- Anon struct with initialiser
-    struct { int a; float b; bool c; } anonStruct3 = { 1, 2.0, true }
+    struct { int a, float b, bool c } anonStruct3 = { 1, 2.0, true }
 
     assert anonStruct3 is { 1, 2.0, true }
     assert anonStruct3.a is 1
     assert anonStruct3.b is 2.0
     assert anonStruct3.c is true
 
+    #error "packed anon struct" Anonymous structs cannot be packed
+    [[packed]]
+    struct { int a, float b } packedStruct
+    #end
+
     anonStructCall()
     anonStructCasting()
 }
 
+fn defaultInit() {
+    struct {
+        int a
+        float b
+        bool c
+    } a
+
+    assert a is { 0, 0.0, false }
+
+    struct {
+        int a
+        struct { int x, int y } b
+    } b
+
+    assert b is { 0, { 0, 0 } }
+
+    struct {
+        int a = 1
+        struct { int x = 2, int y = 3 } b
+    } c
+
+    assert c is { 1, { 2, 3 } }
+
+    struct {
+        int a
+        Turnip b = { a:1, b:2.0 }
+    } d
+
+    assert d is { 0, { a:1, b:2.0 } }
+
+    struct {
+        int a = 1
+        int[2] b = [2,3]
+    } e
+
+    assert e is { 1, [2,3] }
+}
+
 fn anonStructCall() {
-    struct { int a; float b; bool c; } intFloatBool
-    struct { int a; int b; bool c; } intIntBool
+    struct { int a, float b, bool c } intFloatBool
+    struct { int a, int b, bool c } intIntBool
 
     # ok - exact match identifier
     anons1(intFloatBool)
@@ -79,19 +124,30 @@ fn anonStructCall() {
     #error "arg type mismatch" Cannot implicitly convert float to the struct member type int
     anons1({ 1.0, 2.0, true })
     #end
+
+    # ok
+    anons1({ 1.0 as int, 2.0, true })
 }
 
-fn anons1(struct { int a; float b; bool c; } s) {
+fn anons1(struct { int a, float b, bool c } s) {
 
 }
 
 fn anonStructCasting() {
-    struct { int a; int b; bool c; } s1 = { 1, 2, true }
+    struct { int a, int b, bool c } s1 = { 1, 2, true }
 
     # Ok. Structs are the same Type
     struct{int a,int b,bool c} s2 = s1
 
+
+    #todo - this should probably be allowed since the types have the same size
+
     #error "invalid cast" Cannot cast struct\{int, int, bool\} to struct\{int, float, bool\}
-    struct { int a; float b; bool c; } nope = s1 as struct { int a; float b; bool c; }
+    struct { int a, float b, bool c } nope = s1 as struct { int a, float b, bool c }
     #end
+}
+
+struct Turnip {
+    int a
+    float b
 }

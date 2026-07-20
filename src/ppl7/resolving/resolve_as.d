@@ -12,13 +12,14 @@ void resolveAs(As n, ResolveState state) {
 
     if(!lt.isResolved() || !rt.isResolved()) return;
 
-    checkExplicitCast(n, lt, rt);
+    checkExplicitCast(n, lt, rt, state);
 }
 
 //──────────────────────────────────────────────────────────────────────────────────────────────────
 private:
 
-void checkExplicitCast(As n, Type lt, Type rt) {
+void checkExplicitCast(As n, Type lt, Type rt, ResolveState state) {
+
     if(lt.exactlyMatches(rt)) {
         // todo - rewrite to remove the As node because it is not necessary
         n.resolveEvaluated = true;
@@ -46,8 +47,37 @@ void checkExplicitCast(As n, Type lt, Type rt) {
         }
     }
 
+    if(lt.isEnum() && rt.isEnum()) {
+        Enum leftEnum = lt.extract!Enum;
+        Enum rightEnum = rt.extract!Enum;
+        assert(leftEnum != rightEnum);
+
+        // These must be different enums. Allow this if the element types are convertable
+        checkExplicitCast(n, leftEnum.elementType(), rightEnum.elementType(), state);
+        return;
+    }
+
+    if(auto e = lt.extract!Enum) {
+        checkExplicitCast(n, e.elementType(), rt, state);
+        return;
+    }
+
+    if(auto e = rt.extract!Enum) {
+        checkExplicitCast(n, lt, e.elementType(), state);
+        return;
+    }
+
+    // if(rt.isEnum()) {
+    //     // Casting from a non-Enum to an Enum
+    //     checkExplicitCast(n, lt, rt.extract!Enum.elementType(), state);
+    //     return;
+    // }
+
+
     if(lt.isStruct() && rt.isStruct()) {
         assert(lt.isValue() && rt.isValue());
+
+        // Both sides are structs but they are not exact matches
 
         // Techcically we could allow this if all of the following are true:
         //  - The sizes are the same
@@ -59,24 +89,15 @@ void checkExplicitCast(As n, Type lt, Type rt) {
         return;
     }
 
-    if(lt.isEnum() && rt.isEnum()) {
-        Enum leftEnum = lt.extract!Enum;
-        Enum rightEnum = rt.extract!Enum;
-        assert(leftEnum != rightEnum);
-
-        // These must be different enums. Allow this if the element types are convertable
-        checkExplicitCast(n, leftEnum.elementType(), rightEnum.elementType());
+    if(lt.isStruct() && !rt.isStruct()) {
+        // Casting from a struct to a non-struct
+        semanticError(n, EError.CAST_INVALID);
         return;
     }
 
-    if(lt.isEnum()) {
-        // Casting from an Enum to a non-Enum
-
-    }
-
-    if(rt.isEnum()) {
-        // Casting from a non-Enum to an Enum
-        checkExplicitCast(n, lt, rt.extract!Enum.elementType());
+    if(!lt.isStruct() && rt.isStruct()) {
+        // Casting from a non-struct to a struct
+        semanticError(n, EError.CAST_INVALID);
         return;
     }
 

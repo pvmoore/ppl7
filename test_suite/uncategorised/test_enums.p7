@@ -6,55 +6,22 @@
  */
 
 /**
- * Contains
- *
  * Enums:
- *   - TE2
+ *   - QualEnum
  */
 import te2 = imports/qualified
 
 /**
- * Contains
- *
  * Enums:
- *   - TE3
+ *   - UnqualEnum
  */
 import imports/unqualified
 
-enum LocalEnum {  # int
-    A       # 0
-    B       # 1
-    C       # 2
-}
-enum TE1B : byte {  # byte
-    A               # 0
-    B = 10          # 10
-    C               # 11
-    D = 7           # 7
-    E               # 8
-}
-struct TES {
-    int a
-}
-enum TE1C : TES {
-    A = { a:1 }
-    B = { a:2 }
-}
-
-TE1C g_te1c     # default init to TE1C.A
-
-enum TE1D : int* {
-    A = null
-}
-
 public fn main() {
-    te_qualified()
-    te_unqualified()
-    te_casting()
-
-    LocalEnum e           # default init to TE1.A
-    assert e is 0 as LocalEnum
-    assert e is LocalEnum.A
+    defaultInit()
+    test_qualified()
+    test_unqualified()
+    test_casting()
 
     int a = LocalEnum.A as int
     assert a is 0
@@ -65,22 +32,48 @@ public fn main() {
     assert LocalEnum.C is 2 as LocalEnum
     #assert TE1.D is 0    # error - identifier not found
 
-    assert TE1B.A is 0 as TE1B  ; assert @typeOf(TE1B.A) is TE1B
-    assert TE1B.B is 10 as TE1B
-    assert TE1B.C is 11 as TE1B
-    assert TE1B.D is 7 as TE1B
-    assert TE1B.E is 8 as TE1B
+    assert @typeOf(ByteEnum.A) is ByteEnum
+    assert ByteEnum.A is 0 as ByteEnum
+    assert ByteEnum.B is 10 as ByteEnum
+    assert ByteEnum.C is 11 as ByteEnum
+    assert ByteEnum.D is 7 as ByteEnum
+    assert ByteEnum.E is 8 as ByteEnum
 
-    TE1C te1c       # default init to TE1C.A
+    IntStructEnum te1c       # default init to IntStructEnum.A
     assert te1c.a is 1
 
     # Global enum is default initialised in the init function
     assert g_te1c.a is 1
 
-    assert TE1D.A is null
+    assert IntPtrStructEnum.A is null
 }
 
-fn te_qualified() {
+#--------------------------------------------------------------------------------------------
+
+fn defaultInit() {
+    LocalEnum a           # default init to TE1.A
+    assert a is LocalEnum.A
+    assert a is 0 as LocalEnum
+
+    LocalEnum2 b
+    assert b is LocalEnum2.A
+
+    #error "enum is not an int" \(LocalEnum2 is int\) No common type
+    assert b is 3
+    #end
+    assert b as int is 3
+
+    ByteEnum c
+    assert c is ByteEnum.A
+    assert c as byte is 0
+
+    IntStructEnum ddd
+    assert ddd is IntStructEnum.A
+
+    assert ddd as IntStruct is { a:1 }
+}
+
+fn test_qualified() {
     int a = te2.QualEnum.A as int
     assert a is 0   ; assert @typeOf(te2.QualEnum.A) is te2.QualEnum
     assert te2.QualEnum.B is 1 as te2.QualEnum
@@ -90,7 +83,7 @@ fn te_qualified() {
     #te2.QualEnum2 a
 }
 
-fn te_unqualified() {
+fn test_unqualified() {
     int a = UnqualEnum.A as int
     assert a is 0
     assert @typeOf(UnqualEnum.A) is UnqualEnum
@@ -101,10 +94,45 @@ fn te_unqualified() {
     #UnqualEnum2 a
 }
 
-fn te_casting() {
+fn test_casting() {
     float a = LocalEnum.B as float
     assert a is 1.0
 
     LocalEnum e = 1 as LocalEnum
     assert e is LocalEnum.B
+}
+
+#--------------------------------------------------------------------------------------------
+
+# globals
+IntStructEnum g_te1c
+
+#types
+enum LocalEnum {  # int
+    A       # 0
+    B       # 1
+    C       # 2
+}
+enum LocalEnum2 {
+    A = 3
+    B       # 4
+}
+enum ByteEnum : byte {  # byte
+    A               # 0
+    B = 10          # 10
+    C               # 11
+    D = 7           # 7
+    E               # 8
+}
+struct IntStruct {
+    int a
+}
+enum IntStructEnum : IntStruct {
+    A = { a:1 }
+    B = { a:2 }
+}
+
+
+enum IntPtrStructEnum : int* {
+    A = null
 }

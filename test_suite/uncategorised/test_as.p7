@@ -1,0 +1,113 @@
+/**
+ * magic!!
+ * name "test casting"
+ * tags [as, cast]
+ * args []
+ */
+public fn main() {
+    int a    = 1
+    byte b   = a as byte
+    float c  = 1234 as float
+    double d = 12345678 as double
+    long e   = 123.3 as long
+
+    asAnonStruct()
+    asNamedStruct()
+}
+
+fn asAnonStruct() {
+    # these two are the same
+    struct { int a, int b, bool c } s1
+    struct { int a, int b, bool c } s2
+
+    # this one is the same size but has a different type
+    struct { int a, float b, bool c } s3
+
+    # this one has a different size
+    struct { short a, short b, bool c } s4
+    assert @sizeOf(s1) is 12
+    assert @sizeOf(s2) is 12
+    assert @sizeOf(s3) is 12
+    assert @sizeOf(s4) is 6
+
+    # ok - cast not actually required
+    s1 = s2 as struct { int, int, bool }
+
+    #error "cast to anon struct with different type but same size" Cannot cast struct\{int, float, bool\} to struct\{int, int, bool\}
+    s1 = s3 as struct { int, int, bool }
+    #end
+
+    #error "cast to anon struct with different type and size" Cannot cast struct\{short, short, bool\} to struct\{int, int, bool\}
+    s1 = s4 as struct { int, int, bool }
+    #end
+
+    #error "cast int to anon struct" Cannot cast int to struct\{int, int, bool\}
+    s1 = 10 as struct { int, int, bool }
+    #end
+
+    #error "packed named struct to anon struct" Cannot cast PackedApple to struct\{int, bool\}
+    PackedApple packedApple
+    struct { int a, bool b } anonApple = packedApple as struct { int, bool }
+    #end
+
+    # ok - Apple is the same shape
+    Apple apple
+    struct { int a, bool b } anonApple1 = apple as struct { int, bool }
+
+    #error "named struct to anon struct - implicit" Cannot implicitly convert Apple to struct\{int, bool\}
+    struct { int a, bool b } nope = apple
+    #end
+}
+fn asNamedStruct() {
+    Apple apple
+    Pear pear
+    PackedApple packedApple
+
+    struct { int a, bool b } anonApple
+    struct { bool a, int b } anonPear
+
+    #error "named struct to different named struct" Cannot cast Pear to Apple
+    apple = pear as Apple
+    #end
+
+    # ok - the structs have the same shape
+    apple = anonApple as Apple
+
+    apple = { 1, true } as struct{ int, bool } as Apple
+
+    #error "different shape"  Cannot cast struct\{bool, int\} to Apple
+    apple = anonPear as Apple
+    #end
+
+    #error "anon struct to packed named struct" Cannot cast struct\{int, bool\} to PackedApple
+    packedApple = anonApple as PackedApple
+    #end
+
+    #error "named struct to int" Cannot cast Apple to int
+    int a = apple as int
+    #end
+
+    #pear = AnonPearEnum.A
+}
+
+struct Apple {
+    int a
+    bool b
+}
+[[packed]]
+struct PackedApple {
+    int a
+    bool b
+}
+struct Pear {
+    bool a
+    int b
+}
+enum AppleEnum : Apple {
+    A = { a:1, b:true }
+    B = { a:2, b:false }
+}
+enum AnonPearEnum : struct{ bool, int } {
+    A = { true, 10 }
+    B = { false, 20 }
+}
