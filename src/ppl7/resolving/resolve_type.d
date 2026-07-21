@@ -1,16 +1,28 @@
 module ppl7.resolving.resolve_type;
 
 import ppl7.all;
-import ppl7.resolving.resolve_const;
 
 void resolveSimpleType(SimpleType n, ResolveState state) {
     // Nothing to do
 }
 
 void resolveArray(Array n, ResolveState state) {
-    if(n.isResolved()) return;
+    if(n.isResolved()) {
 
-    resolveConstNumber(n.numElementsExpr(), state);
+        auto num = n.numElementsExpr(); assert(num);
+
+        if(!num.getType().isInteger()) {
+            semanticError(num, EError.ARRAY_NON_INTEGER_LENGTH);
+        }
+
+        return;
+    }
+
+    if(auto num = n.numElementsExpr().as!Number) {
+        if(!num.isResolved()) return;
+
+        rewriteToNodeRef(state, n.numElementsExpr(), num);
+    }
 }
 
 void resolveEnum(Enum n, ResolveState state) {
@@ -22,8 +34,14 @@ void resolveEnum(Enum n, ResolveState state) {
 
     // Update the member values (for integer or real enums)
 
-    // If the enum type is not integer or real then every member must have an initialiser
-    if(!elementType.isInteger() && !elementType.isReal()) {
+    // If the element type is:
+    //  - an enum or
+    //  - not integer and
+    //  - not real
+    // then every member must be manually initialised
+    bool requiresManualInitialisation = elementType.isEnum() || (!elementType.isInteger() && !elementType.isReal());
+
+    if(requiresManualInitialisation) {
         if(!n.allMembersHaveInitialisers()) {
             semanticError(n, EError.ENUM_MISSING_INITIALISERS);
         }

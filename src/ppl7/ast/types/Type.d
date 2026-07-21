@@ -21,22 +21,37 @@ public:
 
 //──────────────────────────────────────────────────────────────────────────────────────────────────
 
-bool isVoidValue(Type t) { return t.etype() == EType.VOID && !t.isPointer(); }
-bool isInteger(Type t)   { return t.etype() >= EType.BYTE && t.etype() <= EType.LONG; }
-bool isReal(Type t)      { return t.etype() == EType.FLOAT || t.etype() == EType.DOUBLE; }
-bool isBool(Type t)      { return t.etype() == EType.BOOL; }
-bool isVararg(Type t)    { return t.etype() == EType.C_VARARGS; }
-bool isValue(Type t)     { return !isPointer(t); }
-bool isPointer(Type t)   {
+bool isVararg(Type t) {
+    return t.etype() == EType.C_VARARGS;
+}
+bool isVoidValue(Type t) {
+    if(auto e = t.extract!Enum) return isVoidValue(e.elementType());
+    return t.etype() == EType.VOID && !t.isPointer();
+}
+bool isBool(Type t) {
+    if(auto e = t.extract!Enum) return isBool(e.elementType());
+    return t.etype() == EType.BOOL;
+}
+bool isInteger(Type t) {
+    if(auto e = t.extract!Enum) return isInteger(e.elementType());
+    return t.etype() >= EType.BYTE && t.etype() <= EType.LONG;
+}
+bool isReal(Type t) {
+    if(auto e = t.extract!Enum) return isReal(e.elementType());
+    return t.etype() == EType.FLOAT || t.etype() == EType.DOUBLE;
+}
+bool isValue(Type t) {
+    return !isPointer(t);
+}
+bool isPointer(Type t) {
     if(auto e = t.extract!Enum) return isPointer(e.elementType());
     return t.etype() == EType.POINTER || t.etype() == EType.FUNCTION;
 }
-
 bool isFunction(Type t) {
     return t.etype() == EType.FUNCTION;
 }
 bool isArray(Type t) {
-    return t.etype() == EType.ARRAY;
+    return t.extract!Array !is null;
 }
 bool isStruct(Type t) {
     return t.extract!Struct !is null;

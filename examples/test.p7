@@ -31,40 +31,7 @@ public fn main() -> int {
 
 [[noinline]]
 fn testPete() {
-
-    #fixme
-    #int[1.1] nope
-
-    # DoubleEnum e
-    # assert e is DoubleEnum.A
-    # assert e as double is 1.0d
-
-    # DoubleEnum a = DoubleEnum.A
-    # DoubleEnum b = DoubleEnum.B
-
-    # assert a as double is 1.1d
-    # assert DoubleEnum.B as double is 2.1d
-
-    # IntPtrStructEnum a = IntPtrStructEnum.A
-    # IntPtrStructEnum b = IntPtrStructEnum.B
-    # IntPtrStructEnum c = IntPtrStructEnum.C
-
-    # assert b is IntPtrStructEnum.B
-
-    assert IntPtrStructEnum.B is &g_one
-    assert IntPtrStructEnum.C is not &g_one
+    const int SIZE = 7
+    int[SIZE] array
 }
 
-enum DoubleEnum : double {
-    A = 1.1d          # 1.1d
-    B                 # 2.1d
-}
-
-int g_one
-int g_two
-
-enum IntPtrStructEnum : int* {
-    A = null
-    B = &g_one
-    C = &g_two
-}

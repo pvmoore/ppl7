@@ -63,7 +63,7 @@ void defaultInitialiseArray(Array array, LLVMValueRef arrayPtr, GenerateState st
     }
 
     // Zero initialise the array
-    LLVMBuildStore(state.builder, LLVMConstNull(arrayTypeRef), arrayPtr);
+    //LLVMBuildStore(state.builder, LLVMConstNull(arrayTypeRef), arrayPtr);
 }
 
 /**

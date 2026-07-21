@@ -14,6 +14,8 @@ string getSummaryMessage(CompilationError error) {
             return "Array is missing length argument";
         case ARRAY_ZERO_ELEMENTS:
             return "Array has zero elements";
+        case ARRAY_NON_INTEGER_LENGTH:
+            return "Array length must be an integer";
 
         case ARRAY_LITERAL_NUM_ELEMENTS: {
             ArrayLiteral al = error.stmt.as!ArrayLiteral; assert(al);
@@ -86,7 +88,7 @@ string getSummaryMessage(CompilationError error) {
             return "Enum member cannot be implicitly converted to %s".format(e.elementType().shortName());
         }
         case ENUM_MISSING_INITIALISERS:
-            return "Enum members must be explicitly initialised when the element type is not an integer or real";
+            return "Enum members with complex base type must be explicitly initialised";
         case ENUM_ZERO_MEMBERS:
             return "Enums must have at least one member";
 
@@ -142,8 +144,6 @@ string getSummaryMessage(CompilationError error) {
             }
             return "(Expression is Type) is not valid. Use @typeOf here instead";
         }
-        case IS_POINTER_VS_VALUE:
-            return "Pointer is value is always false";
 
         case MODULE_MAIN_MISSING:
             return "Main module must have a program entry point function eg 'main' if targetType is EXE";

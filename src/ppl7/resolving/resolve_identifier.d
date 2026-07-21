@@ -3,6 +3,10 @@ module ppl7.resolving.resolve_identifier;
 import ppl7.all;
 
 void resolveIdentifier(Identifier n, ResolveState state) {
+    if(n.isResolved()) {
+        fold(n, state);
+        return;
+    }
 
     if(n.isStartOfChain()) {
 

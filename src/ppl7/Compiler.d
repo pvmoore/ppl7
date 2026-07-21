@@ -137,7 +137,7 @@ private:
         // Create ResolveStates for all Modules
         ResolveState[] resolveStates = project.allModules.map!(m => new ResolveState(project, m)).array;
         bool allResolved = false;
-        enum MAX_ITERATIONS = 10;
+        enum MAX_ITERATIONS = 12;
 
         // Run the iterations
         foreach(iter; 0..MAX_ITERATIONS) {

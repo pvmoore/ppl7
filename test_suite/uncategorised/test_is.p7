@@ -41,7 +41,7 @@ public fn main() {
     assert f2 is not f3
     assert f4 is f2
 
-    #error "pointer is value" Pointer is value is always false
+    #error "pointer is value" \(int\* is not int\) No common type
     assert f1 is not a
     #end
 

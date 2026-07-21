@@ -52,7 +52,7 @@ void checkArrayLiteral(ArrayLiteral n) {
     //log(" Checking array literal");
 
     assert(n.getType().isArray(), "Expected array type but was %s".format(n.getType()));
-    Array at = n.getType().as!Array;
+    Array at = n.getType().extract!Array;
 
     // Check that we have the correct number of elements
     if(n.elements().length != at.numElements()) {

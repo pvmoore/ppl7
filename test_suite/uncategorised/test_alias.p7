@@ -5,8 +5,11 @@
  * args []
  */
 
+#
+# alias QualInt = int
 import ta2 = imports/qualified
 
+# alias UnqualInt = int
 import imports/unqualified
 
 /**
@@ -31,12 +34,14 @@ public fn main() {
     assert @typeOf(a) is myint
     assert @isInteger(a)
     assert @sizeOf(a) is 4
+    assert a is 1
 
     intptr b
     assert @typeOf(b) is int*
     assert @typeOf(b) is intptr
     assert @isPointer(b)
     assert @sizeOf(b) is 8
+    assert b is null
 
     TAS5 c
     assert @typeOf(c) is int*
@@ -44,6 +49,7 @@ public fn main() {
     assert @typeOf(c) is TAS5
     assert @isPointer(c)
     assert @sizeOf(c) is 8
+    assert c is null
 
     TAS tas
     assert @typeOf(tas) is TAS
@@ -56,6 +62,7 @@ public fn main() {
     assert @alignOf(tas) is 8
     assert @offsetOf(tas.a) is 0
     assert @offsetOf(tas.b) is 8
+    assert tas is { a: 0, b: null }
 
     TAS2 tas2
     assert @typeOf(tas2) is TAS
@@ -65,6 +72,7 @@ public fn main() {
     assert @typeOf(tas2.b) is intptr
     assert @isStruct(tas2)
     assert @sizeOf(tas2) is 16
+    assert tas2 is { a: 0, b: null }
 
     TAS3 tas3
     assert @typeOf(tas3) is TAS3
@@ -73,6 +81,7 @@ public fn main() {
     assert @typeOf(tas3.b) is int
     assert @isStruct(tas3)
     assert @sizeOf(tas3) is 8
+    assert tas3 is { a: 0, b: 0 }
 
     TAS4 tas4
     assert @typeOf(tas4) is TAS4
@@ -82,9 +91,11 @@ public fn main() {
     assert @typeOf(tas4.b) is int
     assert @isStruct(tas4)
     assert @sizeOf(tas4) is 8
+    assert tas4 is null
 
     ta_qualified()
     ta_unqualified()
+    mixingPointers()
 }
 
 fn ta_qualified() {
@@ -92,11 +103,13 @@ fn ta_qualified() {
     assert @typeOf(a) is int
     assert @typeOf(a) is ta2.QualInt
 
-    # error - must be qualified
-    #QualInt b
+    #error "must be qualified" 'QualInt' cannot be resolved to a variable or function
+    QualInt b
+    #end
 
-    # error - not public
-    #ta2.QualShort b
+    #error "qualified import not public" 'QualShort' cannot be resolved
+    ta2.QualShort b
+    #end
 }
 
 fn ta_unqualified() {
@@ -104,6 +117,17 @@ fn ta_unqualified() {
     assert @typeOf(a) is int
     assert @typeOf(a) is UnqualInt
 
-    # error - not public
-    #UnqualShort b
+    #error "unqualified import not public" 'UnqualShort' cannot be resolved
+    UnqualShort b
+    #end
+}
+
+alias A1 = int
+alias A2 = int*
+alias A3 = A2*
+
+fn mixingPointers() {
+    assert @typeOf(A1) is int
+    assert @typeOf(A2) is int*
+    assert @typeOf(A3) is int**
 }

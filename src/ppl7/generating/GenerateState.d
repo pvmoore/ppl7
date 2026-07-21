@@ -188,15 +188,13 @@ public:
                                                    : getLLVMType(t.extract!PointerType.valueType());
             return LLVMPointerType(valueType, 0);
         }
-        if(t.isArray()) {
-            Array at = t.extract!Array; assert(at);
+        if(auto at = t.extract!Array) {
             if(at.llvmType) return at.llvmType;
 
             at.llvmType = LLVMArrayType2(getLLVMType(at.elementType()), at.numElements());
             return at.llvmType;
         }
-        if(t.isStruct()) {
-            Struct st = t.extract!Struct; assert(st);
+        if(auto st = t.extract!Struct) {
             if(st.llvmType) return st.llvmType;
 
             LLVMTypeRef[] memberTypes = st.members().map!(m => getLLVMType(m.getType())).array;
@@ -346,40 +344,9 @@ public:
 
         //this.log("castType from %s to %s", from, to);
 
-        if(from.isArray() || to.isArray()) {
-            throwIf(true, "Can't cast Arrays. They should exactly match");
+        if(from.isEnum() && to.isEnum()) {
+            return castType(value, from.extract!Enum.elementType(), to.extract!Enum.elementType(), name);
         }
-
-        // Pointer casts are not required
-        if(from.isPointer() && to.isPointer()) {
-            // no-op
-            return value;
-        }
-        /// cast to different pointer type
-        // if(from.isPointer() && to.isPointer()) {
-        //     log("castType from %s* to %s*", from.as!PointerType.valueType(), to.as!PointerType.valueType());
-        //     this.rhs = LLVMBuildBitCast(builder, value, toType, namez);
-        //     log("2");
-        //     return this.rhs;
-        // }
-
-        if(from.isPointer() && to.isInteger()) {
-            this.rhs = LLVMBuildPtrToInt(builder, value, toType, namez);
-            return this.rhs;
-        }
-        // if(from.isPointer() && to.isBool()) {
-        //     this.rhs = LLVMBuildICmp(builder, LLVMIntPredicate.LLVMIntNE, value, LLVMConstPointerNull(getLLVMType(from)), namez);
-        //     return castI1ToI8(this.rhs);
-        //}
-        if(from.isInteger() && to.isPointer()) {
-            this.rhs = LLVMBuildIntToPtr(builder, value, toType, namez);
-            return this.rhs;
-        }
-
-        if(from.isStruct() && to.isStruct()) {
-            return value;
-        }
-
         // Convert enums to the enum element type
         if(from.isEnum() && !to.isEnum()) {
             return castType(value, from.extract!Enum.elementType(), to, name);
@@ -387,6 +354,37 @@ public:
         if(!from.isEnum() && to.isEnum()) {
             return castType(value, from, to.extract!Enum.elementType(), name);
         }
+
+        // All pointers have the same type in LLVM
+        if(from.isPointer() && to.isPointer()) {
+            // no-op
+            return value;
+        }
+
+        if(from.isArray() || to.isArray()) {
+            throwIf(true, "Can't cast Arrays. They should exactly match (%s -> %s)", from, to);
+        }
+
+        if(from.isPointer() && to.isInteger()) {
+            this.rhs = LLVMBuildPtrToInt(builder, value, toType, namez);
+            return this.rhs;
+        }
+        if(from.isInteger() && to.isPointer()) {
+            this.rhs = LLVMBuildIntToPtr(builder, value, toType, namez);
+            return this.rhs;
+        }
+
+        // if(from.isPointer() && to.isBool()) {
+        //     this.rhs = LLVMBuildICmp(builder, LLVMIntPredicate.LLVMIntNE, value, LLVMConstPointerNull(getLLVMType(from)), namez);
+        //     return castI1ToI8(this.rhs);
+        //}
+
+        if(from.isStruct() && to.isStruct()) {
+            // no-op
+            return value;
+        }
+
+
 
         /// real->integer or integer->real
         if(from.isReal() != to.isReal()) {

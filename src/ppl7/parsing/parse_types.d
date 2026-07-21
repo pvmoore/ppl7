@@ -35,12 +35,11 @@ void parseType(Node parent, ParseState state) {
         type = consumePointer(type, state);
     }
 
-    if(type.isPointer() || type.isArray()) {
-        if(auto p = type.extract!PointerType) {
-            p.isImmutable = isImmutable;
-        } else if(auto a = type.extract!Array) {
-            a.isImmutable = isImmutable;
-        }
+    // Add immutable property to the type
+    if(auto p = type.extract!PointerType) {
+        p.isImmutable = isImmutable;
+    } else if(auto a = type.extract!Array) {
+        a.isImmutable = isImmutable;
     } else if(isImmutable) {
         semanticError(parent, EError.TYPE_CANNOT_BE_IMMUTABLE);
     }

@@ -7,7 +7,6 @@ import ppl7.resolving.resolve_as;
 import ppl7.resolving.resolve_binary;
 import ppl7.resolving.resolve_builtin;
 import ppl7.resolving.resolve_call;
-import ppl7.resolving.resolve_const;
 import ppl7.resolving.resolve_identifier;
 import ppl7.resolving.resolve_is;
 import ppl7.resolving.resolve_if;
@@ -116,8 +115,7 @@ void resolveAddressOf(AddressOf n, ResolveState state) {
     if(!n.expr().isResolved()) return;
 
     // Add explicit cast for &array if not already done
-    if(n.expr().getType().isArray()) {
-        Array at = n.expr().getType().extract!Array;
+    if(Array at = n.expr().getType().extract!Array) {
 
         PointerType ptr = makePointerType(at.elementType());
         ptr.isImmutable = at.isImmutable;

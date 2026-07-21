@@ -68,7 +68,7 @@ void expressionIsExpression(Is n, ResolveState state) {
 
     // Pointer is Value is always false
     if(lt.isPointer() != rt.isPointer()) {
-        semanticError(n, EError.IS_POINTER_VS_VALUE);
+        semanticError(n, EError.IS_TYPE_MISMATCH);
         return;
     }
 

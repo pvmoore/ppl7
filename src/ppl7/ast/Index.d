@@ -18,11 +18,11 @@ public:
         Type t = expr().getType();
         if(!t.isResolved()) return t;
 
-        if(t.isArray()) {
-            return t.as!Array.elementType();
+        if(auto a = t.extract!Array) {
+            return a.elementType();
         }
-        if(t.isPointer()) {
-            return t.as!PointerType.valueExpr().getType();
+        if(auto p = t.extract!PointerType) {
+            return p.valueExpr().getType();
         }
         return makeUnknownType();
     }
@@ -33,8 +33,8 @@ public:
     Expression expr() { return last().as!Expression; }
     Expression index() { return first().as!Expression; }
 
-    bool isArrayIndex() { return expr().getType().isArray(); }
-    bool isPointerIndex() { return expr().getType().isPointer(); }
+    bool isArrayIndex() { return expr().getType().extract!Array !is null; }
+    bool isPointerIndex() { return expr().getType().extract!PointerType !is null; }
 
     override string toString() {
         string t = getType().isResolved() ? " %s".format(getType()) : "UNRESOLVED";

@@ -123,6 +123,11 @@ private:
 Number makeNumber(string value, Type type) {
     auto n = makeNode!Number(0);
     n.stringValue = value;
+
+    if(auto e = type.extract!Enum) {
+        type = e.elementType();
+    }
+
     switch(type.etype()) {
         case EType.BOOL:   n.value.byteValue = value.toBool() ? -1 : 0; break;
         case EType.BYTE:   n.value.byteValue = value.toInt().as!byte; break;

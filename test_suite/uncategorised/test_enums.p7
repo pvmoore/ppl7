@@ -77,6 +77,14 @@ fn defaultInit() {
     assert e is DoubleEnum.A
     assert e as double is 0.0d
     assert DoubleEnum.B as double is 1.0d
+
+    EnumOfSubEnum f
+    assert f is EnumOfSubEnum.A
+    assert f as SubEnum is SubEnum.A
+
+    ArrayEnum g
+    assert g is ArrayEnum.A
+    assert g as int[2] is [2,3]
 }
 
 fn test_qualified() {
@@ -153,6 +161,45 @@ enum DoubleEnum : double {
     A           # 1.0d
     B           # 2.0d
 }
+
+enum SubEnum {
+    A = 10
+}
+enum EnumOfSubEnum : SubEnum {
+    A = SubEnum.A
+}
+
+enum ArrayEnum : int[2] {
+    A = [2,3]
+}
+
+#error "enum of enum must have initialisers" Enum members with complex base type must be explicitly initialised
+enum SubEnum {
+    A = 1
+}
+enum EnumOfSubEnumNope : SubEnum {
+    A
+}
+#end
+
+#error "enum of struct must have initialisers" Enum members with complex base type must be explicitly initialised
+struct Nope { int a }
+enum StructEnumNope : Nope {
+    A
+}
+#end
+
+#error "enum of struct must have initialisers" Enum members with complex base type must be explicitly initialised
+enum ArrayEnumNope : int[2] {
+    A
+}
+#end
+
+#error "enum of pointer must have initialisers" Enum members with complex base type must be explicitly initialised
+enum PtrEnumNope : int* {
+    A
+}
+#end
 
 #error "empty enum" Enums must have at least one member
 enum EmptyEnum {}
