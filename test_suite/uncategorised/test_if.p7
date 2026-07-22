@@ -4,9 +4,12 @@
  * tags [if]
  * args []
  */
-
 public fn main() {
+    ifStatement()
+    ifExpression()
+}
 
+fn ifStatement() {
     # if with then
     int a = 1
     if(a is 1) {
@@ -23,14 +26,27 @@ public fn main() {
     }
     assert a2 is 2
 
+    if(a2 is 1) {
+        a2 = 2
+    } else {
+        a2 = 3
+    }
+    assert a2 is 3
+
     # if with then and else branch without braces
     int a3 = 1
-    if(a3 is 2) a3 = 2 else a3 = 3
-    assert a3 is 3
+    if(a3 is 1) a3 = 2 else a3 = 3
+    assert a3 is 2
 
-    # if expression
-    int b = if(2 is 2) 3 else 4
-    assert b is 3
+    if(a3 is 1) a3 = 2 else a3 = 3
+    assert a3 is 3
+}
+fn ifExpression() {
+    int a = if(true) 3 else 4
+    assert a is 3
+
+    int b = if(false) 3 else 4
+    assert b is 4
 
     int c = if(false) {
         int d = 3

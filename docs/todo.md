@@ -1,17 +1,110 @@
 # PPL7 ToDo List
 
+## Remove function declaration brackets if there are no parameters?
+
+```c
+fn foo {
+
+}
+```
+
+## Remove function return type right arrow?
+
+Current syntex:
+```c
+fn foo(int a) -> int
+```
+
+Possible alternatives:
+
+```c
+fn foo(int a) int
+fn foo(int a; int)
+```
+Note: Having the type after the bracket could cause ambiguous parsing.
+
+## Add EError codes
+
+eg.
+
+ARRAY_MISSING_LENGTH  -> E10301
+
+We can test for this in the test suite. This would be better because messages can be improved without
+having to change a lot of tests.
+
+## More builtins
+
+```c
+int[2] a
+@elementTypeOf(a)
+```
+
+## Array properties
+
+Add properties to arrays eg.
+
+```c
+int[3] a
+int len  = a.length
+int* ptr = a.ptr
+```
+
+length should be an int unless the array length > int.max when it should be a long. We know the length
+at compile time.
+
+## More constant folding
+
+Fold Binary +/- etc for Numbers
+
+## Allow user defined types at any scope
+
+```c
+fn foo() {
+  struct A { int a }
+  alias INT = int
+}
+```
+
+## Remove bracket requirement from if statement?
+
+```c
+if a < 1 { x+=1 } else { y+=1 }
+int a = if b < 1 { 1 } else { 3 }
+```
+
+If we do this should be enforce braces on the then and else branches?
+
+```c
+if a < 1 x+=1 else y+=1
+int a = if b < 1 1 else 3
+```
+
+## C style struct literals
+
+Convert struct literals to C style
+
+eg.
+
+```c
+struct Z { int x, int y }
+struct A { int a, Z b }
+{
+  .a = 1,
+  .b = {
+    .x = 2,
+    .y = 3
+  }
+}
+```
+
+## Max array length
+
+Should we introduce a maximum length for arrays? Should we allow any length for globals but limited
+length for local arrays?
+
 ## Unions
 
 Implement unions
-
-## Comparing Struct values
-
-We can try using these functions to compare structs. Cast the struct to an int of the same number of bits
-and then use LLVM's icmp eq:
-  LLVMIntTypeInContext(context, numBits)
-  LLVMConstIntOfArbitraryPrecision(context, numWords, words)
-
-Alternatively we can iterate through the members and compare them one by one
 
 ## Imports
 
@@ -56,6 +149,10 @@ At the moment I am not sure which files actually implement this. Could be one of
   lld-link.exe
   lld.exe
 ```
+
+## Clang Linker
+
+Add support for the Clang linker
 
 ## Debugging
 
@@ -106,6 +203,21 @@ Add auto type:
 ```
   auto a = 1
 ```
+
+## Loops
+
+Implement loops.
+
+```
+for(int i = 0; 0..<3) {
+
+}
+for(int i = 0; 0..=2) {
+
+}
+```
+
+Is this expression a range ? --> x..<y
 
 ## Loop expression
 
@@ -161,7 +273,7 @@ These are simple struct templates (template syntax tbc).
 
 ## Array length property
 
-Add an array length property eg. a.length that returns an int. If the array length is greater than 2^31-1 then
+Add an array length property eg. 'a.length' that returns an int. If the array length is greater than 2^31-1 then
 return a long. This length is known at compile time.
 
 Slices should also have the same property but we won't know at compile time whether it is > 2^31-1.
