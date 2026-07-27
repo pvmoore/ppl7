@@ -42,6 +42,9 @@ string getSummaryMessage(CompilationError error) {
         case BINARY_ASSIGNMENT_TO_IMMUTABLE:
             return "Cannot assign to immutable variable";
 
+        case BREAK_INVALID_LOCATION:
+            return "Break must be inside a for loop";
+
         case BUILTIN_PROPERTY_MISSING_TYPE:
             return "@property first argument must be a type";
         case BUILTIN_PROPERTY_MISSING_KEY:
@@ -81,6 +84,9 @@ string getSummaryMessage(CompilationError error) {
             return "Cannot cast %s to %s".format(a.leftType().shortName(), a.rightType().shortName());
         }
 
+        case CONTINUE_INVALID_LOCATION:
+            return "Continue must be inside a for loop";
+
 
         case ENUM_MEMBER_TYPE_MISMATCH: {
             auto member = error.stmt.parent.as!EnumMember; assert(member);
@@ -91,6 +97,28 @@ string getSummaryMessage(CompilationError error) {
             return "Enum members with complex base type must be explicitly initialised";
         case ENUM_ZERO_MEMBERS:
             return "Enums must have at least one member";
+
+        case FOR_COUNTER_ASSIGNMENT:
+            return "For loop counter must be uninitialised";
+        case FOR_MISSING_INCLUSIVE_EXCLUSIVE:
+            return "For loop must specify whether the range is inclusive or exclusive eg. a..<b or a..=b or a>..b or a=..b";
+        case FOR_STEP_MUST_BE_CONST:
+            return "For loop step must be a constant";
+        case FOR_STEP_MUST_BE_NON_ZERO:
+            return "For loop step must be non-zero";
+        case FOR_STEP_MUST_BE_INTEGER:
+            return "For loop step must be an integer";
+        case FOR_START_END_MUST_BE_INTEGER:
+            return "For loop start and end must be integers";
+        case FOR_STEP_INCORRECT_DIRECTION:
+            return "For loop step must have the same direction as the range";
+        case FOR_START_END_INCORRECT_DIRECTION:
+            return "For loop start and end must have the same direction as the range";
+        case FOR_START_END_EQUAL_BUT_NOT_INCLUSIVE:
+            return "For loop will never run because the start and end are equal but isInclusive is false";
+        case FOR_START_END_CANNOT_IMPLICITLY_CAST_TO_COUNTER_TYPE:
+            return "For loop start and end must be implicitly convertable to the counter type";
+
 
         case FUNCTION_NOT_FOUND:
             return "Function not found: %s".format(stmt.as!Call().name);

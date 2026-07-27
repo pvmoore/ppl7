@@ -29,7 +29,7 @@
 					"name": "entity.name.tag.ast"
 				},
 				{
-					"match": "\\b(const|immutable|if|while|return|import|assert|not|is|as|and|or|else|break|continue|loop|select|var)\\b",
+					"match": "\\b(const|immutable|if|import|assert|not|is|as|and|or|else|select)\\b",
 					"name": "keyword.control.ast"
 				},
 				{
@@ -37,7 +37,7 @@
 					"name": "storage.type.ast"
 				},
 				{
-					"match": "\\b(Alias|AddressOf|As|Binary|Builtin|Break|Call|Case|Continue|Dot|Enum|EnumMember|Function|Identifier|Import|Index|Is|ModuleRef|NodeRef|Target|ArrayLiteral|StructLiteral|Null|Number|Module|ModuleId|Return|Scope|Struct|TypeRef|Unary|Union|ValueOf|Variable)(\\*+|\\b)",
+					"match": "\\b(Alias|AddressOf|As|Assert|Binary|Builtin|Break|Call|Case|Continue|Dot|Enum|EnumMember|For|Function|Identifier|Import|Index|Is|ModuleRef|NodeRef|Return|Target|ArrayLiteral|StructLiteral|Null|Number|Module|ModuleId|Scope|Struct|TypeRef|Unary|Union|ValueOf|Variable)(\\*+|\\b)",
 					"name": "keyword.control.ast"
 				},
 				{

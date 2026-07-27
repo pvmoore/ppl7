@@ -6,7 +6,7 @@ final class Compiler {
 public:
     enum versionMajor = 0;
     enum versionMinor = 2;
-    enum versionPatch = 27;
+    enum versionPatch = 28;
 
     this(CompilerOptions options) {
         options.prepareForUse();

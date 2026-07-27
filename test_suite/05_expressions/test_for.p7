@@ -1,0 +1,194 @@
+/**
+ * magic!!
+ * name "for loop"
+ * tags [for]
+ * args []
+ */
+public fn main() {
+    forwardSequence()
+    reverseSequence()
+    whileLoop()
+    errors()
+}
+
+fn forwardSequence() {
+
+    int count1
+    int value1
+    for int i, 0..<2 { count1 += 1; value1 = i }
+    assert count1 is 2
+    assert value1 is 1
+
+    int count2
+    int value2
+    for int i, 0..=2 { count2 += 1; value2 = i }
+    assert count2 is 3
+    assert value2 is 2
+
+    int start = 1
+    int end   = 3
+    int count3
+    int value3
+    for i, start..<end { count3 += 1; value3 = i }
+    assert count3 is 2
+    assert value3 is 2
+    assert start is 1
+    assert end is 3
+
+    # break
+
+    int count4before
+    int count4after
+    int value4
+    for i, 0..<4 {
+        count4before += 1
+        value4 = i
+        if(i is 1) break
+        count4after += 1
+    }
+    assert count4before is 2
+    assert count4after is 1
+    assert value4 is 1
+
+    # continue
+
+    int count5before
+    int count5after
+    int value5
+    for i, 0..<10 {
+        # 0,1,2,3,4,5,6,7,8,9
+        count5before += 1
+        value5 = i
+        if(i < 5) continue
+        # 0,1,2,3,4
+        count5after += 1
+    }
+    assert count5before is 10
+    assert count5after is 5
+    assert value5 is 9
+}
+fn reverseSequence() {
+
+    int start = 3
+    int end   = 1
+
+    int count1
+    int value1
+    for int i, 10>..0 { count1 += 1; value1 = i }
+    assert count1 is 10
+    assert value1 is 0
+
+    int count2
+    int value2
+    for int i, 10=..1 { count2 += 1; value2 = i }
+    assert count2 is 10
+    assert value2 is 1
+
+    # break
+
+    int count3before
+    int count3after
+    int value3
+    for i, 4>..0 {
+        # 3,2,1,0
+        count3before += 1
+        value3 = i
+        if(i is 2) break
+        count3after += 1
+    }
+    assert count3before is 2
+    assert count3after is 1
+    assert value3 is 2
+
+    # continue
+
+    int count4before
+    int count4after
+    int value4
+    for i, 10>..0 {
+        # 9,8,7,6,5,4,3,2,1,0
+        count4before += 1
+        value4 = i
+        if(i < 5) continue
+        # 9,8,7,6,5
+        count4after += 1
+    }
+    assert count4before is 10
+    assert count4after is 5
+    assert value4 is 0
+
+    # for int i, 0..=0 {}     # ok - one iteration will occur
+}
+fn whileLoop() {
+    int count1
+    int count1a
+    int value1
+    for int i, true {
+        count1 += 1
+        value1 = i
+        break
+        count1a += 1
+    }
+    assert count1 is 1
+    assert count1a is 0
+    assert value1 is 0
+
+    int count2
+    for true {
+        count2 += 1
+        break
+    }
+    assert count2 is 1
+
+    int count3
+    for condition() {
+        count3 += 1
+    }
+    assert count3 is 2
+    assert g_conditionCount is 3
+}
+int g_conditionCount
+fn condition() -> bool {
+    g_conditionCount += 1
+    return g_conditionCount < 3
+}
+
+fn errors() {
+
+    #error "break outside of loop" Break must be inside a for loop
+    break
+    #end
+
+    #error "shadowing" Variable 'dupe' shadows another variable in the same scope
+    int dupe
+    for int dupe, 0..<2 {}
+    #end
+
+    #error "start is not integer" For loop start and end must be integers
+    for int i, 3.14..<4 {}
+    #end
+
+    #error "end is not integer" For loop start and end must be integers
+    for int i, 0..<4.4 {}
+    #end
+
+    #error "start > end forward sequence" For loop start and end must have the same direction as the range
+    for int i, 4..<0 {}
+    #end
+
+    #error "start > end reverse sequence" For loop start and end must have the same direction as the range
+    for int i, 0>..4 {}
+    #end
+
+    #error "start == end exclusive" For loop will never run because the start and end are equal but isInclusive is false
+    for int i, 0..<0 {}
+    #end
+
+    #error "start cast to counter" For loop start and end must be implicitly convertable to the counter type
+    for byte i, 300>..(0 as byte) {}
+    #end
+
+    #error "end cast to counter" For loop start and end must be implicitly convertable to the counter type
+    for byte i, (0 as byte)..<300 {}
+    #end
+}

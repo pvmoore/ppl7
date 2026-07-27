@@ -3,8 +3,8 @@ module ppl7.ast.stmts.Return;
 import ppl7.all;
 
 /**
- * Return 
- *    [ Expression ] 
+ * Return
+ *    [ Expression ]
  */
 final class Return : Statement {
 public:
@@ -23,7 +23,7 @@ public:
     Function func() { return getAncestor!Function(); }
 
     override string toString() {
-        return "return";
+        return "Return";
     }
 private:
     Type _type;

@@ -108,7 +108,8 @@ void shadowingChecks(Variable v) {
 
     if(v.vkind == VariableKind.LOCAL || v.vkind == VariableKind.PARAMETER) {
         // Check earlier locals and parameters
-        Node n = v.prev(false);
+
+        Node n = v.prev(!v.parent.isA!Function);
         while(n) {
             if(Variable v2 = n.as!Variable) {
                 if(v2.name && v2.name == v.name) {

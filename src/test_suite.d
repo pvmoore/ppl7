@@ -98,14 +98,14 @@ void runTestFile(string filename) {
 
     // Split the source file if it contains #begin and #end blocks
     Variation[] getSourceVariations() {
-        char[] original = cast(char[])read(filename);
+        string original = readSource(filename, true);
         Variation[] variations;
 
         Variation getVariation(int variation) {
             bool found = variation == 0;
             long pos = original.indexOf("#error");
             if(pos == -1) {
-                return Variation(null, found ? cast(string)original : null);
+                return Variation(null, found ? original : null);
             }
             Variation var;
             int section = -1;
@@ -365,4 +365,46 @@ string getBetween(T)(T s, string skipTo, string start, string end) if(isSomeStri
     startIdx += start.length;
     auto endIdx   = s.indexOf(end, startIdx); if(endIdx == -1) return null;
     return cast(string)s[startIdx..endIdx];
+}
+
+string readSource(string filename, bool stripMultilineComments) {
+    char[] s = cast(char[])read(filename);
+    if(stripMultilineComments) {
+        int pos;
+
+        int peek(int offset) {
+            if(pos+offset >= s.length) return 0;
+            return s[pos+offset];
+        }
+
+        while(pos < s.length) {
+            if(peek(0) == '/' && peek(1) == '*') {
+                // Start of a multi-line comment
+
+                s[pos]   = ' ';
+                s[pos+1] = ' ';
+                pos += 2;
+
+                while(pos < s.length) {
+
+                    if(peek(0) == '*' && peek(1) == '/') {
+                        // End of a multi-line comment
+
+                        s[pos]   = ' ';
+                        s[pos+1] = ' ';
+                        pos += 2;
+                        break;
+                    } else {
+                        if(peek(0) == '\n') {
+
+                        } else {
+                            s[pos] = ' ';
+                        }
+                        pos++;
+                    }
+                }
+            } else pos++;
+        }
+    }
+    return cast(string)s;
 }

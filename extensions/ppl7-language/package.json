@@ -1,7 +1,7 @@
 {
     "name": "ppl7-lang",
-    "displayName": "Stagecoach",
-    "description": "Stagecoach language syntax highlighting support",
+    "displayName": "PPL7",
+    "description": "PPL7 language syntax highlighting support",
     "version": "0.0.1",
     "engines": {
         "vscode": "^1.100.0"

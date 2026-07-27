@@ -23,7 +23,7 @@ public:
 
     override string toString() {
         string[] info;
-        return "assert %s".format(info);
+        return "Assert %s".format(info);
     }
 private:
     Type _type;

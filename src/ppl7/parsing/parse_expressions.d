@@ -132,6 +132,7 @@ void parseSingle(Node parent, ParseState state) {
  */
 void parseInfix(Node parent, ParseState state) {
     while(!state.eof()) {
+
         switch(state.etoken()) {
             case EToken.NONE:
             case EToken.LBRACE:
@@ -148,6 +149,11 @@ void parseInfix(Node parent, ParseState state) {
             case EToken.DOLLAR:
             case EToken.COLON2:
             case EToken.LSQUARE2:
+            case EToken.DOT2:
+            case EToken.RANGLE_DOT2:
+            case EToken.EQUAL_DOT2:
+            case EToken.DOT2_EQUAL:
+            case EToken.DOT2_LANGLE:
                 return;
             case EToken.IDENTIFIER:
                 switch(state.text()) {

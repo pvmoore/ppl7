@@ -39,11 +39,14 @@ void resolveChildren(Node parent, ResolveState state) {
             case ENode.AS: resolveAs(n.as!As, state); break;
             case ENode.ASSERT: resolveAssert(n.as!Assert, state); break;
             case ENode.BINARY: resolveBinary(n.as!Binary, state); break;
+            case ENode.BREAK: break;
             case ENode.BUILTIN: resolveBuiltin(n.as!Builtin, state); break;
             case ENode.CALL: resolveCall(n.as!Call, state); break;
+            case ENode.CONTINUE: break;
             case ENode.DOT: break;
             case ENode.ENUM: resolveEnum(n.as!Enum, state); break;
             case ENode.ENUM_MEMBER: break;
+            case ENode.FOR: break;
             case ENode.FUNCTION: break;
             case ENode.IDENTIFIER: resolveIdentifier(n.as!Identifier, state); break;
             case ENode.IF: resolveIf(n.as!If, state); break;

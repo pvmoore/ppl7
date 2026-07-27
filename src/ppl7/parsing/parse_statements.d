@@ -100,6 +100,18 @@ void parseStatementAtFunctionScope(Statement parent, ParseState state) {
                 parseAssert(parent, state);
                 return;
             }
+            if("for" == state.text()) {
+                parseFor(parent, state);
+                return;
+            }
+            if("break" == state.text()) {
+                parseBreak(parent, state);
+                return;
+            }
+            if("continue" == state.text()) {
+                parseContinue(parent, state);
+                return;
+            }
             break;
         default:
             break;
@@ -182,6 +194,26 @@ void parseAssert(Node parent, ParseState state) {
     state.skip("assert");
 
     parseExpression(a, state);
+}
+
+/**
+ * 'break'
+ */
+void parseBreak(Node parent, ParseState state) {
+    auto b = makeNode!Break(state);
+    parent.add(b);
+
+    state.skip("break");
+}
+
+/**
+ * 'continue'
+ */
+void parseContinue(Node parent, ParseState state) {
+    auto c = makeNode!Continue(state);
+    parent.add(c);
+
+    state.skip("continue");
 }
 
 /**
@@ -500,4 +532,110 @@ void parseImport(Node parent, ParseState state, bool isPublic) {
     }
 
     state.mod.log("importing %s", moduleName);
+}
+
+/**
+ * FOR          ::= 'for' [Variable ','] SEQUENCE '{' { Statement } '}'
+ * FORWARD_SEQ  ::= Expression '..' ( '<' | '=' ) Expression
+ * REVERSE_SEQ  ::= Expression ( '>' | '=' ) '..' Expression
+ * WHILE_SEQ    ::= Expression
+ * SEQUENCE     ::= FORWARD_SEQ | REVERSE_SEQ | WHILE_SEQ
+ */
+void parseFor(Statement parent, ParseState state) {
+    state.skip("for");
+
+    For f = makeNode!For(state);
+    parent.add(f);
+
+    // optional counter
+    if(isType(state)) {
+        f.hasCounter = true;
+        auto counter = makeNode!Variable(state);
+        f.add(counter);
+
+        parseType(counter, state);
+
+        counter.name = state.text(); state.next();
+        counter.vkind = VariableKind.LOCAL;
+
+    } else {
+        // Is it a variable identifier?
+        if(state.matches(0, EToken.IDENTIFIER, EToken.COMMA) ||
+           state.matches(0, EToken.IDENTIFIER, EToken.EQUAL))
+        {
+            f.hasCounter = true;
+            auto counter = makeNode!Variable(state);
+            f.add(counter);
+
+            counter.add(makeIntType());
+
+            counter.name = state.text(); state.next();
+            counter.vkind = VariableKind.LOCAL;
+        }
+    }
+
+    if(f.hasCounter) {
+        if(state.etoken() == EToken.EQUAL) {
+            state.skip(EToken.EQUAL);
+            parseExpression(f.counter(), state);
+
+            semanticError(f, EError.FOR_COUNTER_ASSIGNMENT);
+        }
+        state.skip(EToken.COMMA);
+    }
+
+    // The first expression must always exist but could be either:
+    //   (1) start or
+    //   (2) condition
+    parseExpression(f, state);
+
+    void parseEnd() {
+        // end
+        parseExpression(f, state);
+    }
+
+    if(state.matches(0, EToken.DOT2)) {
+        semanticError(state, f, EError.FOR_MISSING_INCLUSIVE_EXCLUSIVE);
+
+    } else if(state.matches(0, EToken.DOT2_LANGLE)) {
+        // forward sequence, exclusive
+        state.skip(EToken.DOT2_LANGLE);
+
+        parseEnd();
+
+    } else if(state.matches(0, EToken.DOT2_EQUAL)) {
+        // forward sequence, inclusive
+        state.skip(EToken.DOT2_EQUAL);
+        f.isInclusive = true;
+
+        parseEnd();
+
+    } else if(state.matches(0, EToken.RANGLE_DOT2)) {
+        // reverse sequence, exclusive
+        f.isReversed = true;
+        state.skip(EToken.RANGLE_DOT2);
+
+        parseEnd();
+
+    } else if(state.matches(0, EToken.EQUAL_DOT2)) {
+        // reverse sequence, inclusive
+        f.isReversed = true;
+        f.isInclusive = true;
+        state.skip(EToken.EQUAL_DOT2);
+
+        parseEnd();
+
+    } else {
+        // while
+        f.isWhile = true;
+    }
+
+    // Body statements
+    state.skip(EToken.LBRACE);
+
+    while(state.etoken() != EToken.RBRACE) {
+        parseStatementAtFunctionScope(f, state);
+    }
+
+    state.skip(EToken.RBRACE);
 }

@@ -30,20 +30,25 @@ public:
     Statement[] thenStatements() { return children[1..numThenStatements+1].map!(v=>v.as!Statement).array; }
     Statement[] elseStatements() { return children[1+numThenStatements..$].map!(v=>v.as!Statement).array; }
 
-    bool isExpression() { return !parent.isA!Function; }
+    /** Note: This will need more work */
+    bool isExpression() {
+        if(parent.enode().isOneOf(ENode.FUNCTION, ENode.FOR)) return false;
 
-    Type thenType() { 
-        if(auto e = lastThenStatement()) return e.getType(); 
+        return true;
+    }
+
+    Type thenType() {
+        if(auto e = lastThenStatement()) return e.getType();
         return makeUnknownType();
     }
-    Type elseType() { 
-        if(auto e = lastElseStatement()) return e.getType(); 
-        return makeUnknownType(); 
+    Type elseType() {
+        if(auto e = lastElseStatement()) return e.getType();
+        return makeUnknownType();
     }
 
     Statement lastThenStatement() {
 
-        // If this is an if expression then there should be at least one 'then' statement which will be 
+        // If this is an if expression then there should be at least one 'then' statement which will be
         // checked later but for now we can just return null
         if(numThenStatements == 0) return null;
 
@@ -55,7 +60,7 @@ public:
 
     Statement lastElseStatement() {
 
-        // If this is an if expression then there should be at least one 'else' statement which will be 
+        // If this is an if expression then there should be at least one 'else' statement which will be
         // checked later but for now we can just return null.
         // For now we will require an if expression to have both a 'then' and an 'else' branch
         // but we could possibly return an optional as the Type instead

@@ -49,6 +49,9 @@ import ppl7.ast.node.Node;
 import ppl7.ast.node.NodeRef;
 
 import ppl7.ast.stmts.Assert;
+import ppl7.ast.stmts.Break;
+import ppl7.ast.stmts.Continue;
+import ppl7.ast.stmts.For;
 import ppl7.ast.stmts.Return;
 import ppl7.ast.stmts.Statement;
 import ppl7.ast.stmts.Variable;
@@ -67,6 +70,7 @@ import ppl7.ast.types.TypeRef;
 
 import ppl7.checking.check;
 import ppl7.checking.check_binary;
+import ppl7.checking.check_for;
 import ppl7.checking.check_function;
 import ppl7.checking.check_identifier;
 import ppl7.checking.check_type;
@@ -79,6 +83,7 @@ import ppl7.generating.generate;
 import ppl7.generating.generate_array;
 import ppl7.generating.generate_binary;
 import ppl7.generating.generate_call;
+import ppl7.generating.generate_for;
 import ppl7.generating.generate_function;
 import ppl7.generating.generate_identifier;
 import ppl7.generating.generate_if;
@@ -127,9 +132,13 @@ final class SyntaxError : Exception {
 }
 
 __gshared {
+
+    Type STATIC_VOID;
+
     // All static initialisation needs to go in here to avoid circular dependencies
     static this() {
         g_logMutex = new Mutex();
+        STATIC_VOID = makeVoidType();
     }
     // All static destruction
     static ~this() {

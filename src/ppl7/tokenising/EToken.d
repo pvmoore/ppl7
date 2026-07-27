@@ -69,11 +69,17 @@ enum EToken {
     COLON2,             // ::
     SEMICOLON,          // ;
 
+    DOT2,               // ..
     ELLIPSIS,           // ...
 
     QUESTION,           // ?
     AT,                 // @
     DOLLAR,             // $
+
+    EQUAL_DOT2,         // =..
+    RANGLE_DOT2,        // >..
+    DOT2_LANGLE,        // ..<
+    DOT2_EQUAL,         // ..=
 }
 int lengthOf(EToken t) {
     final switch(t) with(EToken) {
@@ -129,6 +135,7 @@ int lengthOf(EToken t) {
         case RSQUARE2:
         case SLASH2:
         case PERCENT2:
+        case DOT2:
             return 2;
         case SLASH2_EQUAL:
         case PERCENT2_EQUAL:
@@ -138,6 +145,10 @@ int lengthOf(EToken t) {
         case ELLIPSIS:
         case ULT:
         case UGT:
+        case EQUAL_DOT2:
+        case RANGLE_DOT2:
+        case DOT2_LANGLE:
+        case DOT2_EQUAL:
             return 3;
         case RANGLE3_EQUAL:
         case ULTE:
@@ -209,5 +220,10 @@ string stringOf(EToken t) {
         case UGT: return "|>|";
         case ULTE: return "|<=|";
         case UGTE: return "|>=|";
+        case DOT2: return "..";
+        case DOT2_EQUAL: return "..=";
+        case DOT2_LANGLE: return "..<";
+        case RANGLE_DOT2: return ">..";
+        case EQUAL_DOT2: return "=..";
     }
 }

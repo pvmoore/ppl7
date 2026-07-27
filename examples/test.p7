@@ -31,7 +31,8 @@ public fn main() -> int {
 
 [[noinline]]
 fn testPete() {
-    const int SIZE = 7
-    int[SIZE] array
+
+
+
 }
 

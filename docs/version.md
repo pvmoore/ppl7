@@ -1,5 +1,12 @@
 # Version History
 
+## 0.2.28
+
+- Add for expression
+- Add labels
+- Add continue statement
+- Add break statement
+
 ## 0.2.27
 
 - Add folding phase for As expressions

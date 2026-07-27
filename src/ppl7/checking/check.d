@@ -36,8 +36,11 @@ void checkChildren(Node parent) {
             case ENode.ARRAY_LITERAL: checkArrayLiteral(n.as!ArrayLiteral); break;
             case ENode.AS: checkAs(n.as!As); break;
             case ENode.BINARY: checkBinary(n.as!Binary); break;
+            case ENode.BREAK: checkBreak(n.as!Break); break;
             case ENode.CALL: checkCall(n.as!Call); break;
+            case ENode.CONTINUE: checkContinue(n.as!Continue); break;
             case ENode.ENUM: checkEnum(n.as!Enum); break;
+            case ENode.FOR: checkFor(n.as!For); break;
             case ENode.FUNCTION: checkFunction(n.as!Function); break;
             case ENode.IDENTIFIER: checkIdentifier(n.as!Identifier); break;
             case ENode.STRUCT: checkStruct(n.as!Struct); break;
@@ -69,6 +72,20 @@ void checkArrayLiteral(ArrayLiteral n) {
     }
 }
 
+void checkBreak(Break n) {
+    // Must have an enclosing loop
+    if(!n.hasAncestor(ENode.FOR)) {
+        semanticError(n, EError.BREAK_INVALID_LOCATION);
+    }
+}
+
+void checkContinue(Continue n) {
+    // Must have an enclosing loop
+    if(!n.hasAncestor(ENode.FOR)) {
+        semanticError(n, EError.CONTINUE_INVALID_LOCATION);
+    }
+}
+
 void checkCall(Call n) {
     //log(" Checking call %s", n.name);
 
@@ -91,7 +108,6 @@ void checkCall(Call n) {
         }
     }
 }
-
 
 void checkStruct(Struct n) {
     if(n.name) {

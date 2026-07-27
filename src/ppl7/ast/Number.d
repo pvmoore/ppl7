@@ -35,21 +35,22 @@ public:
     // Expression
     override int precedence() { return Precedence.LOWEST; }
 
-    bool isZero() {
-        switch(_type.etype()) {
-            case EType.BOOL:   return value.byteValue == 0;
-            case EType.BYTE:   return value.byteValue == 0;
-            case EType.SHORT:  return value.shortValue == 0;
-            case EType.INT:    return value.intValue == 0;
-            case EType.LONG:   return value.longValue == 0;
-            case EType.FLOAT:  return value.floatValue == 0.0;
-            case EType.DOUBLE: return value.doubleValue == 0.0;
-            default: assert(false, "We shouldn't get here. type is %s".format(_type.etype()));
-        }
-        assert(false);
-    }
+
+
+    bool isInteger() { return _type.isInteger(); }
+    bool isReal() { return _type.isReal(); }
+    bool isZero() { return stringValue == "0" || stringValue == "0.0" || stringValue == "-0.0"; }
 
     void setType(Type type) { this._type = type; }
+
+    int getAsInt() {
+        assert(isInteger());
+        return toInt(stringValue);
+    }
+    long getAsLong() {
+        assert(isInteger());
+        return toLong(stringValue);
+    }
 
     override string toString() {
         string[] info;
@@ -57,6 +58,19 @@ public:
         return "%s %s".format(stringValue, info.join(", "));
     }
 
+    // bool isZero() {
+    //     switch(_type.etype()) {
+    //         case EType.BOOL:   return value.byteValue == 0;
+    //         case EType.BYTE:   return value.byteValue == 0;
+    //         case EType.SHORT:  return value.shortValue == 0;
+    //         case EType.INT:    return value.intValue == 0;
+    //         case EType.LONG:   return value.longValue == 0;
+    //         case EType.FLOAT:  return value.floatValue == 0.0;
+    //         case EType.DOUBLE: return value.doubleValue == 0.0;
+    //         default: assert(false, "We shouldn't get here. type is %s".format(_type.etype()));
+    //     }
+    //     assert(false);
+    // }
     // bool getValueAsBool() {
     //     switch(_type.etype()) {
     //         case EType.BOOL:   return value.byteValue != 0;
@@ -69,17 +83,17 @@ public:
     //         default: assert(false, "We shouldn't get here. type is %s".format(_type.etype()));
     //     }
     // }
-    int getValueAsInt() {
-        switch(_type.etype()) {
-            case EType.BYTE:   return value.byteValue;
-            case EType.SHORT:  return value.shortValue;
-            case EType.INT:    return value.intValue;
-            case EType.LONG:   return value.longValue.as!int;
-            case EType.FLOAT:  return value.floatValue.as!int;
-            case EType.DOUBLE: return value.doubleValue.as!int;
-            default: assert(false);
-        }
-    }
+    // int getValueAsInt() {
+    //     switch(_type.etype()) {
+    //         case EType.BYTE:   return value.byteValue;
+    //         case EType.SHORT:  return value.shortValue;
+    //         case EType.INT:    return value.intValue;
+    //         case EType.LONG:   return value.longValue.as!int;
+    //         case EType.FLOAT:  return value.floatValue.as!int;
+    //         case EType.DOUBLE: return value.doubleValue.as!int;
+    //         default: assert(false);
+    //     }
+    // }
     // float getValueAsFloat() {
     //     switch(_type.etype()) {
     //         case EType.BYTE:   return value.byteValue;
@@ -180,4 +194,22 @@ Number makeDoubleNumber(double value) {
     n.value.doubleValue = value;
     n.setType(makeDoubleType());
     return n;
+}
+
+/**
+ * Return Number from expression if possible.
+ */
+Number getConstantNumber(Expression e) {
+    assert(e.isResolved());
+
+    if(auto num = e.as!Number) {
+        return num;
+    }
+    if(auto id = e.extract!Identifier) {
+        if(!id.target.isConst()) return null;
+        if(!id.target.isVariable()) return null;
+
+        return getConstantNumber(id.target.var.initialiser());
+    }
+    return null;
 }

@@ -28,6 +28,30 @@ void generateAs(As n, GenerateState state) {
     state.castType(state.rhs, n.expr().getType(), n.getType());
 }
 
+void generateBreak(Break n, GenerateState state) {
+    // We should be in the body of a for at this point. We just need to jump to the exit label
+    For f = n.getAncestor!For;
+    assert(f);
+    assert(f.llvmBreakBlock);
+
+    LLVMBuildBr(state.builder, f.llvmBreakBlock);
+
+    auto afterBreak = LLVMAppendBasicBlockInContext(state.context, state.currentFunction, "after-break");
+    LLVMPositionBuilderAtEnd(state.builder, afterBreak);
+}
+
+void generateContinue(Continue n, GenerateState state) {
+    // We should be in the body of a for at this point. We just need to jump to the continue label
+    For f = n.getAncestor!For;
+    assert(f);
+    assert(f.llvmContinueBlock);
+
+    LLVMBuildBr(state.builder, f.llvmContinueBlock);
+
+    auto afterContinue = LLVMAppendBasicBlockInContext(state.context, state.currentFunction, "after-continue");
+    LLVMPositionBuilderAtEnd(state.builder, afterContinue);
+}
+
 void generateDot(Dot n, GenerateState state) {
     state.generate(n.container());
     if(n.container().getType().isPointer()) {

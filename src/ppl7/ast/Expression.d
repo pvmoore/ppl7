@@ -4,7 +4,7 @@ import ppl7.all;
 
 abstract class Expression : Statement {
 public:
-    abstract int precedence(); 
+    abstract int precedence();
 
     final bool isStartOfChain() {
         if(!parent.isA!Dot) return true;

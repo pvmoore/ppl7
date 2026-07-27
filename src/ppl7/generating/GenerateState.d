@@ -112,9 +112,12 @@ public:
             case ENode.ARRAY_LITERAL: generateArrayLiteral(n.as!ArrayLiteral, this); break;
             case ENode.AS: generateAs(n.as!As, this); break;
             case ENode.BINARY: generateBinary(n.as!Binary, this); break;
+            case ENode.BREAK: generateBreak(n.as!Break, this); break;
             case ENode.CALL: generateCall(n.as!Call, this); break;
+            case ENode.CONTINUE: generateContinue(n.as!Continue, this); break;
             case ENode.DOT: generateDot(n.as!Dot, this); break;
             case ENode.ENUM_MEMBER: generateEnumMember(n.as!EnumMember, this); break;
+            case ENode.FOR: generateFor(n.as!For, this); break;
             case ENode.FUNCTION: generateFunctionBody(n.as!Function, this); break;
             case ENode.IDENTIFIER: generateIdentifier(n.as!Identifier, this); break;
             case ENode.IF: generateIf(n.as!If, this); break;

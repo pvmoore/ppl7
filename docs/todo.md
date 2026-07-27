@@ -20,6 +20,7 @@ Possible alternatives:
 ```c
 fn foo(int a) int
 fn foo(int a; int)
+fn foo(int a -> int)
 ```
 Note: Having the type after the bracket could cause ambiguous parsing.
 
@@ -27,7 +28,7 @@ Note: Having the type after the bracket could cause ambiguous parsing.
 
 eg.
 
-ARRAY_MISSING_LENGTH  -> E10301
+ARRAY_MISSING_LENGTH -> E10301
 
 We can test for this in the test suite. This would be better because messages can be improved without
 having to change a lot of tests.
@@ -161,7 +162,7 @@ Add debugging metadata
 ## Scope block expressions
 
 Allow inner scope blocks to be used as expressions eg.
-```
+```c
   int a = { int b = 1; b + 1; }
 ```
 This would yield the final expression as the result of the block. Maybe disallow return statements inside the block.
@@ -169,7 +170,7 @@ This would yield the final expression as the result of the block. Maybe disallow
 ## Select expression
 
 Add a 'select' expression that can be used like a switch but with more flexibility eg.
-```
+```c
   int a = select(t) {
     1: 10
     2: 20
@@ -190,7 +191,7 @@ Add a 'select' expression that can be used like a switch but with more flexibili
 
 Add an Optional type eg. int? that can be null. This would be a struct under the hood but with
 some syntactic sugar to make it easier to use.
-```
+```c
   int? a = 10
   if(a?hasValue) {
     int b = a?value;
@@ -200,7 +201,7 @@ some syntactic sugar to make it easier to use.
 ## Auto type inference
 
 Add auto type:
-```
+```c
   auto a = 1
 ```
 
@@ -208,35 +209,48 @@ Add auto type:
 
 Implement loops.
 
-```
-for(int i = 0; 0..<3) {
+```c
+// forward
+for int i, 0..<3 {}
+for int i, 0..<3, 1 {}   // equivalent to above
+for int i, 0..=4, 2 {}   // i += 2 after each iteration
+for i, 0..<3 {}          // i is int by default
+for 0..=3 {}             // variable is optional
+for a..=b {}
 
+// reversed
+for int i, 3>..0, 1 {}
+for int i, 4=..0, 2 {}
+for i, 4=..0, n {}      // i is int by default
+for i, b=..a, n {}
+for long i, 0..<1000 {}
+for short j, 0..<1000 {}
+for byte k, 0..<1000 {}   // this is an error. the end is > 127
+
+// while loop
+for true {}
+for int i, flag {}    // i in incremented per iteration
+for i, flag {}        // i is int by default, incremented per iteration
+
+for i, true  {
+  if(i > 10) break
+  if(i < 10) continue
 }
-for(int i = 0; 0..=2) {
-
-}
 ```
 
-Is this expression a range ? --> x..<y
+Note: the variable cannot be manually initialised.
 
-## Loop expression
-
-```
-  int a = for(int i = 0..<10) {
-    i + 1
-  }
-  assert(a is 10)
-
-  int a = for(int i = 0..=10) {
-    if(i is 5) break i;
-    i + 1
-  }
-  assert(a is 5)
-```
+For
+  [ Variable ]  // optional variable
+  Expression    // start
+  Expression    // end
+  Expression    // step
+  bool reversed
+  bool inclusive
 
 ## Defer statement
 
-```
+```c
   defer {
     // This block is executed when the current scope exits
   }
@@ -245,13 +259,13 @@ Is this expression a range ? --> x..<y
 ## Vararg functions
 
 We need to support functions with variable parameters for internal calls. We already support extern functions with varargs but we cannot call PPL7 functions in this way.
-```
+```c
   fn foo(int a, ... args) {
     // args is a slice of Type (requires slices)
   }
-```
+```c
   It might be better to use arrays or tuples for this eg.
-```
+```c
   fn foo(int a, int[] args) {}
 
   fn foo(int a, struct (int, float, bool) args) {}
@@ -261,7 +275,7 @@ We need to support functions with variable parameters for internal calls. We alr
 ## Slices
 
 Add slices eg. slice<int> that can be used for non-owning array views.
-```
+```c
   int[3] a = [1, 2, 3]
   slice<int> b = a[0..<2];   assert(b is [1, 2])
   slice<int> c = a[1..];     assert(c is [2, 3])
@@ -281,7 +295,7 @@ Slices should also have the same property but we won't know at compile time whet
 ## Lambdas
 
 Decide on a syntax. Maybe one of:
-```
+```c
 fn thing1(fn(int; int) a)         // single lambda param
 fn thing2(int a, fn(int; int) b)  // two params, lambda param at the end
 
@@ -296,7 +310,8 @@ thing2(3, (a){ return 1})
 ## Function and function ptr syntax
 
 Change function syntax to one of:
-```
+```c
 fn name(int a, int b; int)  // move the return type inside the parenthesis
+fn name(int a, int b -> int)
 fn name(int a, int b) int   // just remove '->'
 ```

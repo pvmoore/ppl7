@@ -152,8 +152,11 @@ public:
                         break;
                     }
                     Match[] m = [
-                        {EToken.ELLIPSIS, ".."},
-                        {EToken.DOT,      "."}
+                        {EToken.ELLIPSIS,    "..."},
+                        {EToken.DOT2_EQUAL,  "..="},
+                        {EToken.DOT2_LANGLE, "..<"},
+                        {EToken.DOT2,        ".."},
+                        {EToken.DOT,         "."}
                     ];
                     matchFirst(m);
                     break;
@@ -168,8 +171,9 @@ public:
                 }
                 case '=': {
                     Match[] m = [
-                        {EToken.EQUAL2, "=="},
-                        {EToken.EQUAL,  "="}
+                        {EToken.EQUAL_DOT2, "=.."},
+                        {EToken.EQUAL2,     "=="},
+                        {EToken.EQUAL,      "="}
                     ];
                     matchFirst(m);
                     break;
@@ -191,6 +195,7 @@ public:
                         {EToken.RANGLE2_EQUAL,  ">>="},
                         {EToken.RANGLE2,        ">>"},
                         {EToken.RANGLE_EQUAL,   ">="},
+                        {EToken.RANGLE_DOT2,    ">.."},
                         {EToken.RANGLE,         ">"},
                     ];
                     matchFirst(m);

@@ -97,6 +97,18 @@ public:
         }
         return -1;
     }
+
+    /**
+     * Find the next offset of token starting from currentPos + startOffset.
+     */
+    // int findOffsetOf(int startOffset, EToken tk) {
+    //     int p = this.pos + startOffset;
+    //     while(p < tokens.length) {
+    //         if(tokens[p].etoken == tk) return p-pos;
+    //         p++;
+    //     }
+    //     return -1;
+    // }
     /**
      * Find the offset of tok within the current scope. Assumes the current token is the opening bracket.
      * The current scope is defined as the tokens between the opening and closing bracket
