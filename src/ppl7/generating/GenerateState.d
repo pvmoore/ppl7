@@ -166,13 +166,13 @@ public:
         this.builder = normalBuilder;
     }
 
-     LLVMBasicBlockRef createBlock(string name) {
+    LLVMBasicBlockRef createBlock(string name) {
         LLVMValueRef functionValue = currentFunction;
         if(builder is initFunctionBuilder) {
             functionValue = initFunctionValue;
         }
         return LLVMAppendBasicBlockInContext(context, functionValue, name.toStringz());
-     }
+    }
     LLVMTypeRef getLLVMFunctionType(Function f) {
         if(f.llvmType) return f.llvmType;
 

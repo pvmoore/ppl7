@@ -77,12 +77,54 @@ void checkBreak(Break n) {
     if(!n.hasAncestor(ENode.FOR)) {
         semanticError(n, EError.BREAK_INVALID_LOCATION);
     }
+
+    // numScopes must be a const integer
+    auto numScopes = getConstantNumber(n.numScopesExpr());
+    if(!numScopes) {
+        semanticError(n, EError.BREAK_NUM_SCOPES_MUST_BE_POSITIVE_CONST_INTEGER);
+        return;
+    }
+
+    // numScopes must be > 0
+    int numScopesInt = numScopes.getAsInt();
+    if(numScopesInt < 1) {
+        semanticError(n, EError.BREAK_NUM_SCOPES_MUST_BE_POSITIVE_CONST_INTEGER);
+        return;
+    }
+
+    // numScopes must be < the actual number of 'for' parents
+    For f = n.getAncestor!For(numScopesInt);
+    if(!f) {
+        semanticError(n, EError.BREAK_NUM_SCOPES_TOO_LARGE);
+        return;
+    }
 }
 
 void checkContinue(Continue n) {
     // Must have an enclosing loop
     if(!n.hasAncestor(ENode.FOR)) {
         semanticError(n, EError.CONTINUE_INVALID_LOCATION);
+    }
+
+    // numScopes must be a const integer
+    auto numScopes = getConstantNumber(n.numScopesExpr());
+    if(!numScopes) {
+        semanticError(n, EError.CONTINUE_NUM_SCOPES_MUST_BE_POSITIVE_CONST_INTEGER);
+        return;
+    }
+
+    // numScopes must be > 0
+    int numScopesInt = numScopes.getAsInt();
+    if(numScopesInt < 1) {
+        semanticError(n, EError.CONTINUE_NUM_SCOPES_MUST_BE_POSITIVE_CONST_INTEGER);
+        return;
+    }
+
+    // numScopes must be < the actual number of 'for' parents
+    For f = n.getAncestor!For(numScopesInt);
+    if(!f) {
+        semanticError(n, EError.CONTINUE_NUM_SCOPES_TOO_LARGE);
+        return;
     }
 }
 

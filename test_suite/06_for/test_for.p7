@@ -7,6 +7,7 @@
 public fn main() {
     forwardSequence()
     reverseSequence()
+    loopInLoop()
     whileLoop()
     errors()
 }
@@ -35,37 +36,18 @@ fn forwardSequence() {
     assert start is 1
     assert end is 3
 
-    # break
+    int count6
+    int start2 = 1
+    int end2   = 3
+    for int i, start2 ..< end2 {
 
-    int count4before
-    int count4after
-    int value4
-    for i, 0..<4 {
-        count4before += 1
-        value4 = i
-        if(i is 1) break
-        count4after += 1
+        # updating start2 and end2 here does not affect the loop
+        start2 = 2
+        end2 = 0
+
+        count6 += 1
     }
-    assert count4before is 2
-    assert count4after is 1
-    assert value4 is 1
-
-    # continue
-
-    int count5before
-    int count5after
-    int value5
-    for i, 0..<10 {
-        # 0,1,2,3,4,5,6,7,8,9
-        count5before += 1
-        value5 = i
-        if(i < 5) continue
-        # 0,1,2,3,4
-        count5after += 1
-    }
-    assert count5before is 10
-    assert count5after is 5
-    assert value5 is 9
+    assert count6 is 2
 }
 fn reverseSequence() {
 
@@ -84,40 +66,9 @@ fn reverseSequence() {
     assert count2 is 10
     assert value2 is 1
 
-    # break
-
-    int count3before
-    int count3after
-    int value3
-    for i, 4>..0 {
-        # 3,2,1,0
-        count3before += 1
-        value3 = i
-        if(i is 2) break
-        count3after += 1
-    }
-    assert count3before is 2
-    assert count3after is 1
-    assert value3 is 2
-
-    # continue
-
-    int count4before
-    int count4after
-    int value4
-    for i, 10>..0 {
-        # 9,8,7,6,5,4,3,2,1,0
-        count4before += 1
-        value4 = i
-        if(i < 5) continue
-        # 9,8,7,6,5
-        count4after += 1
-    }
-    assert count4before is 10
-    assert count4after is 5
-    assert value4 is 0
-
-    # for int i, 0..=0 {}     # ok - one iteration will occur
+    int count3
+    for int i, 0..=0 { count3 += 1 }
+    assert count3 is 1
 }
 fn whileLoop() {
     int count1
@@ -153,10 +104,25 @@ fn condition() -> bool {
     return g_conditionCount < 3
 }
 
+fn loopInLoop() {
+    int count1
+    int count2
+    for int i, 0..<5 {
+        # 0,1,2,3,4
+        count1 += 1
+        for int j, 0..<5 {
+            # 0,1,2,3,4
+            count2 += 1
+        }
+    }
+    assert count1 is 5
+    assert count2 is 25
+}
+
 fn errors() {
 
-    #error "break outside of loop" Break must be inside a for loop
-    break
+    #error "no iterations" For loop will never run because the start and end are equal but isInclusive is false
+    for int i, 0..<0 {}
     #end
 
     #error "shadowing" Variable 'dupe' shadows another variable in the same scope

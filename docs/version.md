@@ -1,9 +1,19 @@
 # Version History
 
+## 0.2.29
+
+- Add abilty to break or continue multiple scopes
+```c
+for int i, 0..<3 {
+    for int j, 0..<3 {
+        break 2 // break out of both loops
+    }
+}
+```
+
 ## 0.2.28
 
 - Add for expression
-- Add labels
 - Add continue statement
 - Add break statement
 

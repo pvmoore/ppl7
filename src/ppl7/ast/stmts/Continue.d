@@ -4,6 +4,7 @@ import ppl7.all;
 
 /**
  * Continue
+ *      [ Expression ]     number of scopes to continue out of
  */
 final class Continue : Statement {
 public:
@@ -13,6 +14,9 @@ public:
 
     // Statement
     override Type getType() { return STATIC_VOID; }
+
+    Expression numScopesExpr() { return first().as!Expression; }
+    int numScopes() { return getConstantNumber(numScopesExpr()).getAsInt(); }
 
     override string toString() {
         return "Continue";

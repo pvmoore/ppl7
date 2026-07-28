@@ -30,7 +30,7 @@ void generateAs(As n, GenerateState state) {
 
 void generateBreak(Break n, GenerateState state) {
     // We should be in the body of a for at this point. We just need to jump to the exit label
-    For f = n.getAncestor!For;
+    For f = n.getAncestor!For(n.numScopes());
     assert(f);
     assert(f.llvmBreakBlock);
 
@@ -42,7 +42,7 @@ void generateBreak(Break n, GenerateState state) {
 
 void generateContinue(Continue n, GenerateState state) {
     // We should be in the body of a for at this point. We just need to jump to the continue label
-    For f = n.getAncestor!For;
+    For f = n.getAncestor!For(n.numScopes());
     assert(f);
     assert(f.llvmContinueBlock);
 

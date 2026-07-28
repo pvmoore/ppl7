@@ -46,11 +46,11 @@ import ppl7.all;
  * exit:
  */
 void generateFor(For n, GenerateState state) {
-    auto forBlock       = LLVMAppendBasicBlockInContext(state.context, state.currentFunction, "for");
-    auto conditionBlock = LLVMAppendBasicBlockInContext(state.context, state.currentFunction, "for-condition");
-    auto bodyBlock      = LLVMAppendBasicBlockInContext(state.context, state.currentFunction, "for-body");
-    auto afterBodyBlock = LLVMAppendBasicBlockInContext(state.context, state.currentFunction, "for-after-body");
-    auto exitBlock      = LLVMAppendBasicBlockInContext(state.context, state.currentFunction, "for-exit");
+    auto forBlock       = state.createBlock("for");
+    auto conditionBlock = state.createBlock("for-condition");
+    auto bodyBlock      = state.createBlock("for-body");
+    auto afterBodyBlock = state.createBlock("for-after-body");
+    auto exitBlock      = state.createBlock("for-exit");
 
     n.llvmBreakBlock = exitBlock;
     n.llvmContinueBlock = afterBodyBlock;

@@ -44,6 +44,10 @@ string getSummaryMessage(CompilationError error) {
 
         case BREAK_INVALID_LOCATION:
             return "Break must be inside a for loop";
+        case BREAK_NUM_SCOPES_MUST_BE_POSITIVE_CONST_INTEGER:
+            return "Break number of scopes must be a positive constant integer";
+        case BREAK_NUM_SCOPES_TOO_LARGE:
+            return "Break number of scopes is greater than the number of enclosing for loops";
 
         case BUILTIN_PROPERTY_MISSING_TYPE:
             return "@property first argument must be a type";
@@ -86,7 +90,10 @@ string getSummaryMessage(CompilationError error) {
 
         case CONTINUE_INVALID_LOCATION:
             return "Continue must be inside a for loop";
-
+        case CONTINUE_NUM_SCOPES_MUST_BE_POSITIVE_CONST_INTEGER:
+            return "Continue number of scopes must be a positive constant integer";
+        case CONTINUE_NUM_SCOPES_TOO_LARGE:
+            return "Continue number of scopes is greater than the number of enclosing for loops";
 
         case ENUM_MEMBER_TYPE_MISMATCH: {
             auto member = error.stmt.parent.as!EnumMember; assert(member);

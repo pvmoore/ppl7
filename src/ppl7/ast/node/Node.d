@@ -69,9 +69,11 @@ public:
         if(parent !is null) return parent.hasAncestor(n);
         return false;
     }
-    T getAncestor(T)() {
-        if(this.isA!T) return this.as!T;
-        if(parent !is null) return parent.getAncestor!T;
+    T getAncestor(T)(int count = 1) {
+        if(this.isA!T) {
+            if(--count == 0) return this.as!T;
+        }
+        if(parent !is null) return parent.getAncestor!T(count);
         return null;
     }
 

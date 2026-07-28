@@ -1,0 +1,137 @@
+/**
+ * magic!!
+ * name "continue"
+ * tags [for,continue]
+ * args []
+ */
+public fn main() {
+    simpleContinueForwardSequence()
+    simpleContinueReverseSequence()
+    continueInInnerLoop()
+    continueInOuterLoop()
+    continueOutOf2Loops()
+    errors()
+}
+
+fn simpleContinueForwardSequence() {
+    int count5before
+    int count5after
+    int value5
+    for i, 0..<10 {
+        # 0,1,2,3,4,5,6,7,8,9
+        count5before += 1
+        value5 = i
+        if(i < 5) continue
+        # 0,1,2,3,4
+        count5after += 1
+    }
+    assert count5before is 10
+    assert count5after is 5
+    assert value5 is 9
+}
+fn simpleContinueReverseSequence() {
+    int count4before
+    int count4after
+    int value4
+    for i, 10>..0 {
+        # 9,8,7,6,5,4,3,2,1,0
+        count4before += 1
+        value4 = i
+        if(i < 5) continue
+        # 9,8,7,6,5
+        count4after += 1
+    }
+    assert count4before is 10
+    assert count4after is 5
+    assert value4 is 0
+}
+fn continueInInnerLoop() {
+    int before1
+    int before2
+    int after1
+    int after2
+    for int i, 0..<5 {
+        # 0,1,2,3,4
+        before1 += 1
+        for int j, 0..<5 {
+            # 0,1,2,3,4
+            before2 += 1
+
+            if(j is 3) continue
+
+            after2 += 1
+        }
+        after1 += 1
+    }
+    assert before1 is 5
+    assert before2 is 25
+    assert after1 is 5
+    assert after2 is 20
+}
+fn continueInOuterLoop() {
+    int before
+    int after
+    int inner
+    for int i, 0..<5 {
+        # 0,1,2,3,4
+        before += 1
+
+        if(i is 3) continue
+
+        # 0,1,2,4
+
+        for int j, 0..<5 {
+            # 0,1,2,3,4
+            inner += 1
+        }
+        after += 1
+    }
+    assert before is 5
+    assert after is 4
+    assert inner is 20
+}
+
+fn continueOutOf2Loops() {
+    int before1
+    int after1
+    int before2
+    int after2
+    for i, 0..<3 {
+        # 0,1,2
+        before1 += 1
+
+        for j, 0..<3 {
+            # 0,1,2
+            before2 += 1
+
+            continue 2
+
+            # we will never get here
+            after2 += 1
+        }
+        # we will never get here
+        after1 += 1
+    }
+    assert before1 is 3
+    assert after1 is 0
+    assert before2 is 3
+    assert after2 is 0
+}
+
+fn errors() {
+    #error "continue outside of loop" Continue must be inside a for loop
+    continue
+    #end
+
+    #error "shadowing" Variable 'i' shadows another variable in the same scope
+    for int i, 0..<2 {
+        for int i, 0..<2 {}
+    }
+    #end
+
+    #error "invalid continue scope" Continue number of scopes is greater than the number of enclosing for loops
+    for int i, 0..<2 {
+        continue 2
+    }
+    #end
+}

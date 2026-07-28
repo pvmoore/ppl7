@@ -197,23 +197,37 @@ void parseAssert(Node parent, ParseState state) {
 }
 
 /**
- * 'break'
+ * 'break' [ number ]
  */
 void parseBreak(Node parent, ParseState state) {
     auto b = makeNode!Break(state);
     parent.add(b);
 
     state.skip("break");
+
+    if(state.isOnSameLine() && state.etoken() != EToken.SEMICOLON) {
+        parseExpression(b, state);
+    } else {
+        // Add default number
+        b.add(makeIntNumber(1));
+    }
 }
 
 /**
- * 'continue'
+ * 'continue' [ number ]
  */
 void parseContinue(Node parent, ParseState state) {
     auto c = makeNode!Continue(state);
     parent.add(c);
 
     state.skip("continue");
+
+    if(state.isOnSameLine() && state.etoken() != EToken.SEMICOLON) {
+        parseExpression(c, state);
+    } else {
+        // Add default number
+        c.add(makeIntNumber(1));
+    }
 }
 
 /**
@@ -457,7 +471,7 @@ void parseReturn(Statement parent, ParseState state) {
     state.skip("return");
 
     // If there is something on the same line then assume it is an expression
-    if(state.isOnSameLine()) {
+    if(state.isOnSameLine() && state.etoken() != EToken.SEMICOLON) {
         parseExpression(r, state);
     }
 }
