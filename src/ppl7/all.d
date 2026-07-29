@@ -82,6 +82,7 @@ import ppl7.errors.EError;
 import ppl7.generating.generate;
 import ppl7.generating.generate_array;
 import ppl7.generating.generate_binary;
+import ppl7.generating.generate_builtin;
 import ppl7.generating.generate_call;
 import ppl7.generating.generate_for;
 import ppl7.generating.generate_function;
@@ -134,11 +135,13 @@ final class SyntaxError : Exception {
 __gshared {
 
     Type STATIC_VOID;
+    Type STATIC_LONG;
 
     // All static initialisation needs to go in here to avoid circular dependencies
     static this() {
         g_logMutex = new Mutex();
         STATIC_VOID = makeVoidType();
+        STATIC_LONG = makeLongType();
     }
     // All static destruction
     static ~this() {

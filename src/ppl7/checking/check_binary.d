@@ -21,6 +21,7 @@ void checkBinary(Binary n) {
     if(n.op.isAssign()) {
         checkAssignment(n);
     }
+
     // If this is a boolean and/or then check that the order of precendence is not ambiguous
     if(n.op.isOneOf(Operator.BOOL_AND, Operator.BOOL_OR)) {
         if(n.left().isA!Binary && n.left().as!Binary.op.isOneOf(Operator.BOOL_AND, Operator.BOOL_OR, Operator.EQUAL)) {

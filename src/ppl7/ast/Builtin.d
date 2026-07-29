@@ -35,6 +35,8 @@ import ppl7.all;
  * @shr(Expression, Expression)
  * @shl(Expression, Expression)
  *
+ * @pointerAdd(Expression, Expression)
+ *
  */
 final class Builtin : Expression {
 public:
@@ -42,11 +44,16 @@ public:
         _type = makeUnknownType();
     }
 
+    Type _type;
     string name;
 
     override ENode enode() { return ENode.BUILTIN; }
     override bool isResolved() {
-        // Builtin should always be replaced by some other node
+        // Builtin should always be replaced by some other node unless it is one of:
+        //   - @pointerAdd
+        if(name.isOneOf("@pointerAdd")) {
+            return _type.isResolved();
+        }
         return false;
     }
 
@@ -61,7 +68,5 @@ public:
     override string toString() {
         return "Builtin %s".format(name);
     }
-private:
-    Type _type;
 }
 

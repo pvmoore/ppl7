@@ -113,6 +113,7 @@ public:
             case ENode.AS: generateAs(n.as!As, this); break;
             case ENode.BINARY: generateBinary(n.as!Binary, this); break;
             case ENode.BREAK: generateBreak(n.as!Break, this); break;
+            case ENode.BUILTIN: generateBuiltin(n.as!Builtin, this); break;
             case ENode.CALL: generateCall(n.as!Call, this); break;
             case ENode.CONTINUE: generateContinue(n.as!Continue, this); break;
             case ENode.DOT: generateDot(n.as!Dot, this); break;
@@ -368,10 +369,12 @@ public:
             throwIf(true, "Can't cast Arrays. They should exactly match (%s -> %s)", from, to);
         }
 
+        // Pointer arithmetic
         if(from.isPointer() && to.isInteger()) {
             this.rhs = LLVMBuildPtrToInt(builder, value, toType, namez);
             return this.rhs;
         }
+        // Pointer arithmetic
         if(from.isInteger() && to.isPointer()) {
             this.rhs = LLVMBuildIntToPtr(builder, value, toType, namez);
             return this.rhs;

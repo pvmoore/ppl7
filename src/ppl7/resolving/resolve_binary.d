@@ -10,7 +10,7 @@ void resolveBinary(Binary n, ResolveState state) {
 
     // Resolve the Type
 
-    auto leftType = n.left().getType();
+    auto leftType  = n.left().getType();
     auto rightType = n.right().getType();
 
     if(!leftType.isResolved() || !rightType.isResolved()) return;
@@ -25,5 +25,14 @@ void resolveBinary(Binary n, ResolveState state) {
         return;
     }
 
-    n.type = selectCommonType(n.left().getType(), n.right().getType());
+    if(Type type = selectCommonType(leftType, rightType)) {
+        n.type = type;
+    } else {
+        if(leftType.isPointer() != rightType.isPointer()) {
+            semanticError(n, EError.BINARY_POINTER_ARITHMETIC);
+            return;
+        }
+
+        semanticError(n, EError.BINARY_TYPE_MISMATCH);
+    }
 }

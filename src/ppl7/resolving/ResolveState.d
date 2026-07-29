@@ -39,6 +39,8 @@ public:
     void convertUnresolvedNodesToErrors() {
         EError ek;
         foreach(n; unresolvedNodes) {
+            //writefln(" unresolved: %s", n.enode());
+
             switch(n.enode()) {
                 case ENode.IDENTIFIER:
                     ek = EError.IDENTIFIER_NOT_FOUND;

@@ -33,6 +33,8 @@ string getSummaryMessage(CompilationError error) {
             return "Add parentheses to this expression to resolve ambiguity";
         case BINARY_UNSIGNED_WITH_REAL:
             return "Cannot use unsigned operator with real numbers";
+        case BINARY_TYPE_MISMATCH:
+            return "%s to %s are incompatible types".format(stmt.as!Binary.rightType().shortName(), stmt.as!Binary.leftType().shortName());
         case BINARY_ASSIGNMENT_TYPE_MISMATCH:
             return "Cannot assign %s to %s".format(error.stmt.as!Binary.rightType().shortName(), error.stmt.as!Binary.leftType().shortName());
         case BINARY_ASSIGNMENT_TO_CONST:
@@ -41,6 +43,8 @@ string getSummaryMessage(CompilationError error) {
             return "Cannot shift a non-integer type";
         case BINARY_ASSIGNMENT_TO_IMMUTABLE:
             return "Cannot assign to immutable variable";
+        case BINARY_POINTER_ARITHMETIC:
+            return "use @pointerAdd for pointer arithmetic";
 
         case BREAK_INVALID_LOCATION:
             return "Break must be inside a for loop";
@@ -61,6 +65,11 @@ string getSummaryMessage(CompilationError error) {
             return "@property value cannot be converted to the expected type";
         case BUILTIN_PROPERTY_INVALID_DEFAULT_VALUE:
             return "@property default value cannot be converted to the expected type";
+
+        case BUILTIN_POINTER_ARITHMETIC_REQUIRES_POINTER_ON_LHS:
+            return "@pointerAdd and @pointerSub require a pointer type on the left hand side";
+        case BUILTIN_POINTER_ARITHMETIC_REQUIRES_INTEGER_ON_RHS:
+            return "@pointerAdd and @pointerSub require an integer type on the right hand side";
 
         case BUILTIN_OFFSET_OF_NOT_MEMBER:
             return "@offsetOf() requires a struct member as the first argument";

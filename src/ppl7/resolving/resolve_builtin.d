@@ -118,6 +118,10 @@ void resolveBuiltin(Builtin n, ResolveState state) {
             auto size = expr.getType().size();
             rewriteToInt(state, n, size);
             break;
+        case "@pointerAdd":
+            // These are passed to the generator as is but we need to resolve the type
+            handlePointerArithmetic(state, n);
+            break;
         case "@property":
             handleProperty(state, n);
             break;
@@ -248,4 +252,17 @@ void handleProperty(ResolveState state, Builtin n) {
 
         rewrite(state, n, defaultExpr);
     }
+}
+void handlePointerArithmetic(ResolveState state, Builtin n) {
+    if(n._type.isResolved()) return;
+
+    Expression[] args = n.arguments();
+    if(!args[0].getType().isPointer()) {
+        semanticError(args[0], EError.BUILTIN_POINTER_ARITHMETIC_REQUIRES_POINTER_ON_LHS);
+    }
+    if(!args[1].getType().isInteger()) {
+        semanticError(args[1], EError.BUILTIN_POINTER_ARITHMETIC_REQUIRES_INTEGER_ON_RHS);
+    }
+
+    n._type = args[0].getType();
 }

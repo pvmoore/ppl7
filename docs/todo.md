@@ -1,5 +1,11 @@
 # PPL7 ToDo List
 
+## Pointer arithmetic
+
+We can either:
+(1) Allow adding and subtracting integers to pointers or
+(2) Force the use of a builtin @ptrAdd(ptr, 2) and @ptrSub(ptr, 2)
+
 ## Remove function declaration brackets if there are no parameters?
 
 ```c
@@ -204,49 +210,6 @@ Add auto type:
 ```c
   auto a = 1
 ```
-
-## Loops
-
-Implement loops.
-
-```c
-// forward
-for int i, 0..<3 {}
-for int i, 0..<3, 1 {}   // equivalent to above
-for int i, 0..=4, 2 {}   // i += 2 after each iteration
-for i, 0..<3 {}          // i is int by default
-for 0..=3 {}             // variable is optional
-for a..=b {}
-
-// reversed
-for int i, 3>..0, 1 {}
-for int i, 4=..0, 2 {}
-for i, 4=..0, n {}      // i is int by default
-for i, b=..a, n {}
-for long i, 0..<1000 {}
-for short j, 0..<1000 {}
-for byte k, 0..<1000 {}   // this is an error. the end is > 127
-
-// while loop
-for true {}
-for int i, flag {}    // i in incremented per iteration
-for i, flag {}        // i is int by default, incremented per iteration
-
-for i, true  {
-  if(i > 10) break
-  if(i < 10) continue
-}
-```
-
-Note: the variable cannot be manually initialised.
-
-For
-  [ Variable ]  // optional variable
-  Expression    // start
-  Expression    // end
-  Expression    // step
-  bool reversed
-  bool inclusive
 
 ## Defer statement
 

@@ -32,7 +32,16 @@ public fn main() -> int {
 [[noinline]]
 fn testPete() {
 
+    int delta = 2
 
+    int[10] array = [0,10,20,30,40,50,60,70,80,90]
+
+    int* ptr  = &array
+    int* ptr2 = @pointerAdd(ptr, 5)
+    assert *ptr2 is 50
+
+    int* ptr3 = @pointerAdd(ptr2, -2)
+    assert *ptr3 is 30
 
 }
 

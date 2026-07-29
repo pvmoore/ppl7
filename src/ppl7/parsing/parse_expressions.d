@@ -362,6 +362,7 @@ void parseBuiltin(Node parent, ParseState state) {
         case "@ushr":
         case "@shr":
         case "@shl":
+        case "@pointerAdd":
             // These must have 2 arguments
             state.skip(EToken.LPAREN);
 

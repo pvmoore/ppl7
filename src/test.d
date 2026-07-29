@@ -189,5 +189,7 @@ void main(string[] args) {
     // writefln("b = %s", Blackberry.b.offsetof);
     // writefln("c = %s", Blackberry.c.offsetof);
     // writefln("d = %s", Blackberry.d.offsetof);
+
+
 }
 

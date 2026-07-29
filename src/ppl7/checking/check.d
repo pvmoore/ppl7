@@ -37,6 +37,7 @@ void checkChildren(Node parent) {
             case ENode.AS: checkAs(n.as!As); break;
             case ENode.BINARY: checkBinary(n.as!Binary); break;
             case ENode.BREAK: checkBreak(n.as!Break); break;
+            case ENode.BUILTIN: checkBuiltin(n.as!Builtin); break;
             case ENode.CALL: checkCall(n.as!Call); break;
             case ENode.CONTINUE: checkContinue(n.as!Continue); break;
             case ENode.ENUM: checkEnum(n.as!Enum); break;
@@ -98,6 +99,10 @@ void checkBreak(Break n) {
         semanticError(n, EError.BREAK_NUM_SCOPES_TOO_LARGE);
         return;
     }
+}
+
+void checkBuiltin(Builtin n) {
+    assert(n.name.isOneOf("@pointerAdd", "@pointerSub"));
 }
 
 void checkContinue(Continue n) {

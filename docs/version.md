@@ -1,5 +1,15 @@
 # Version History
 
+## 0.2.30
+
+- Add pointer arithmetic
+```c
+int a
+int* ptr  = &a
+int* ptr2 = @pointerAdd(ptr, 1)
+int* ptr3 = @pointerAdd(ptr, -1)
+```
+
 ## 0.2.29
 
 - Add abilty to break or continue multiple scopes

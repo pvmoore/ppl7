@@ -37,7 +37,7 @@ void checkExplicitCast(As n, Type lt, Type rt, ResolveState state) {
     }
 
     if(lt.isPointer() && rt.isValue()) {
-        // Thie is ok if the right type is integer
+        // This is ok if the right type is integer
         if(!rt.isInteger()) {
             semanticError(n, EError.CAST_INVALID);
             return;
